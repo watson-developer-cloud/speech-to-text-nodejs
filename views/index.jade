@@ -1,0 +1,58 @@
+//- index.jade
+extends ./layout.jade
+
+block row-content
+  div.row
+    div.col-lg-6.col-md-6.col-xs-12
+      h2 Transcribe from Streaming Audio
+      div.mic-container.well.overlay-container
+        div.unsupported-overlay
+          h4 This application only works in recent versions of 
+            a(href="https://www.google.com/intl/en/chrome/browser/desktop/", target="_blank") Chrome
+            |  supporting HTML5 audio capture.
+        div.row
+          div.col-lg-12.col-md-12.col-xs-12
+            p.form-group For best results, please use a hi-speed internet connection and a close talking microphone (e.g., from a headset) in a quiet area.  
+            div.microphone
+              div.micButton-preload
+              div.micButton
+              p.micText Press to start speaking
+      h2 Transcribe from Audio Files
+      div.row.well
+        div.col-lg-12.col-md-12.col-xs-12
+          div.row.form-group
+            div.col-lg-12.col-md-12.col-xs-12.upload-label
+              span Use an existing file for the service to transcribe.
+          div.row
+            div.sample-audio.col-lg-6.col-md-6.col-xs-6.text-center
+              a.sample-btn.audio1(href='javascript:void(0);')
+                img.sample-icon(src='images/play-icon.svg')
+                p.sample-title Sample1.wav
+              a.btn.btn-block.send-api-audio1 Send to API
+            div.sample-audio.col-lg-6.col-md-6.col-xs-6.text-center
+              a.sample-btn.audio2(href='javascript:void(0);')
+                img.sample-icon(src='images/play-icon.svg')
+                p.sample-title Sample2.wav
+                a.btn.btn-block.send-api-audio2 Send to API
+
+    div.col-lg-6.col-md-6.col-xs-12
+      h2 Output
+      p To test your mic, say "one two three four five."
+        | If the words are not recorded correctly, you may need to
+        | adjust your audio input device or settings. If the response seems slow,
+        | it could be a network issue. If you're still having trouble,
+        | please use the sample files instead.
+      div.well
+        div.form-group.row.loading.text-center(style='display:none')
+          img(src='images/watson.gif')
+        div.errorMsg
+        div#text
+  div.row
+    div.help-block.text-center
+      small This application only works in recent versions of Chrome supporting HTML5 audio capture
+  //- Preload sample audios
+  div.hidden
+    audio.sample1(preload='auto', autobuffer, controls, src='audio/sample1.wav')
+    audio.sample2(preload='auto', autobuffer, controls, src='audio/sample2.wav')
+    form.upload-form#fileupload(method='POST', enctype='multipart/form-data', action='/')
+     input.url-input(type='hidden', name='url')

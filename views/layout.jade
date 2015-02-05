@@ -1,0 +1,46 @@
+//- layout.jade
+doctype html
+html(lang='en')
+  head
+    block title
+      title Speech to Text
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
+    link(rel='shortcut icon', href='/images/favicon.ico', type='image/x-icon')
+    link(rel='icon', href='/images/favicon.ico', type='image/x-icon')
+    link(rel='stylesheet', href='/css/watson-bootstrap-dark.css')
+    link(rel='stylesheet', href='/css/style.css')
+
+  body
+    div.container
+      div.row
+        div.col-lg-12
+          div.row.top-nav
+            div.col-lg-12
+              a.left(href='http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/speech-to-text.html') Learn more about this service
+              a.right.fork(href='https://github.com/watson-developer-cloud/speech-to-text-nodejs') Fork
+              a.right(href='mailto:watsondevelopercloud@ibm.com') Contact Us
+              a.right(href='https://developer.ibm.com/watson/') Watson Community
+          div.row.header(style='padding-bottom:0px;')
+            div.avatar.img-container.col-lg-1.col-xs-1
+              img(src='/images/app.png')
+            div.col-lg-6.col-xs-6
+              h2 Speech to Text NodeJS Starter Application
+              p The Speech to Text service uses IBM's speech recognition capabilities
+                | to convert English speech into text. The transcription of incoming
+                | audio is continuously sent back to the client with minimal delay,
+                | and it is corrected as more speech is heard.
+                | The service can be accessed via a REST interface.
+            div.col-lg-4.col-xs-4
+              h3 Keep Exploring:
+              a.left(href='http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/speech-to-text/') Documentation
+              a.right(href='http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/#!/speech-to-text') API Details
+      block row-content
+
+    script(type='text/javascript', src='/js/browser-detect.js')
+    script(type='text/javascript', src='/js/jquery-1.11.1.min.js')
+    script(type='text/javascript', src='/js/speech-recognizer.js')
+    script(type='text/javascript', src='/js/socket.io.js')
+    script(type='text/javascript', src='/js/demo.js')

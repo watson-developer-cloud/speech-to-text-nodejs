@@ -1,0 +1,7 @@
+applications:
+- services:
+  - speech-to-text-service
+  name: speech-to-text-nodejs
+  command: node app.js
+  path: .
+  memory: 256m
