@@ -25,9 +25,9 @@ var app = require('express')(),
 
 // if bluemix credentials exists, then override local
 var credentials = extend({
-     "password": "kQ9yeF5iRRkv",
-     "url": "https://gateway.watsonplatform.net:8443/speech-to-text-beta/api",
-     "username": "e2e32f93-58aa-4ce5-b7a4-b8b3bc5e495b"
+  url: '<url>',
+  username: '<username>',
+  password: '<password>'
 }, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
 
 // Save bluemix credentials
