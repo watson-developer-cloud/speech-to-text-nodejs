@@ -30,7 +30,10 @@ function Microphone(_options) {
   this.outputChannels = options.outputChannels || 1;
   this.recording = false;
   this.requestedAccess = false;
-
+  this.sampleRate = 16000; // 16 khz
+  // auxiliar buffer to keep unused samples (used when doing downsampling)
+  this.bufferUnusedSamples = new Float32Array(0);
+  
   // Chrome or Firefox or IE User media
   if (!navigator.getUserMedia) {
     navigator.getUserMedia = navigator.webkitGetUserMedia ||
@@ -74,8 +77,11 @@ Microphone.prototype.onMediaStream =  function(stream) {
 
   this.mic = this.audioContext.createScriptProcessor(this.bufferSize,
     this.inputChannels, this.outputChannels);
-  console.log('Microphone.onMediaStream(): sampling rate is:', this.audioContext.sampleRate);
-  this.sampleRate = this.audioContext.sampleRate;
+
+  // uncomment the following line if you want to use your microphone sample rate
+  //this.sampleRate = this.audioContext.sampleRate;
+  console.log('Microphone.onMediaStream(): sampling rate is:', this.sampleRate);
+  
   this.mic.onaudioprocess = this._onaudioprocess.bind(this);
   this.stream = stream;
 
@@ -101,8 +107,11 @@ Microphone.prototype._onaudioprocess = function(data) {
   // (the user isn't saying anything)
   var chan = data.inputBuffer.getChannelData(0);
 
-  this.onAudio(this._exportDataBuffer(new Float32Array(chan)));
-  //this.onAudio(this._convertFloat32ToInt16(chan));
+  this.onAudio(this._exportDataBufferTo16Khz(new Float32Array(chan)));
+
+  //export with microphone mhz, remember to update the this.sampleRate
+  // with the sample rate from your microphone
+  //this.onAudio(this._exportDataBuffer(new Float32Array(chan)));
 };
 
 /**
@@ -138,11 +147,77 @@ Microphone.prototype.stop = function() {
 };
 
 /**
- * Creates a Blob type: 'audio/l16' with the chunk
+ * Creates a Blob type: 'audio/l16' with the chunk and downsampling to 16 kHz
  * coming from the microphone.
+ * Explanation for the math: The raw values captured from the Web Audio API are
+ * in 32-bit Floating Point, between -1 and 1 (per the specification).
+ * The values for 16-bit PCM range between -32768 and +32767 (16-bit signed integer).
+ * Multiply to control the volume of the output. We store in little endian.
  * @param  {Object} buffer Microphone audio chunk
  * @return {Blob} 'audio/l16' chunk
  * @deprecated This method is depracated
+ */
+Microphone.prototype._exportDataBufferTo16Khz = function(bufferNewSamples) {
+  var buffer = null,
+    newSamples = bufferNewSamples.length,
+    unusedSamples = this.bufferUnusedSamples.length;
+
+  if (unusedSamples > 0) {
+    buffer = new Float32Array(unusedSamples + newSamples);
+    for (var i = 0; i < unusedSamples; ++i) {
+      buffer[i] = this.bufferUnusedSamples[i];
+    }
+    for (i = 0; i < newSamples; ++i) {
+      buffer[unusedSamples + i] = bufferNewSamples[i];
+    }
+  } else {
+    buffer = bufferNewSamples;
+  }
+
+  // downsampling variables
+  var filter = [
+      -0.037935, -0.00089024, 0.040173, 0.019989, 0.0047792, -0.058675, -0.056487,
+      -0.0040653, 0.14527, 0.26927, 0.33913, 0.26927, 0.14527, -0.0040653, -0.056487,
+      -0.058675, 0.0047792, 0.019989, 0.040173, -0.00089024, -0.037935
+    ],
+    samplingRateRatio = this.audioContext.sampleRate / 16000,
+    nOutputSamples = Math.floor((buffer.length - filter.length) / (samplingRateRatio)) + 1,
+    pcmEncodedBuffer16k = new ArrayBuffer(nOutputSamples * 2),
+    dataView16k = new DataView(pcmEncodedBuffer16k),
+    index = 0,
+    volume = 0x7FFF, //range from 0 to 0x7FFF to control the volume
+    nOut = 0;
+
+  for (var i = 0; i + filter.length - 1 < buffer.length; i = Math.round(samplingRateRatio * nOut)) {
+    var sample = 0;
+    for (var j = 0; j < filter.length; ++j) {
+      sample += buffer[i + j] * filter[j];
+    }
+    sample *= volume;
+    dataView16k.setInt16(index, sample, true); // 'true' -> means little endian
+    index += 2;
+    nOut++;
+  }
+
+  var indexSampleAfterLastUsed = Math.round(samplingRateRatio * nOut);
+  var remaining = buffer.length - indexSampleAfterLastUsed;
+  if (remaining > 0) {
+    this.bufferUnusedSamples = new Float32Array(remaining);
+    for (i = 0; i < remaining; ++i) {
+      this.bufferUnusedSamples[i] = buffer[indexSampleAfterLastUsed + i];
+    }
+  } else {
+    this.bufferUnusedSamples = new Float32Array(0);
+  }
+
+  return new Blob([dataView16k], {
+    type: 'audio/l16'
+  });
+  };
+
+/**
+ * Creates a Blob type: 'audio/l16' with the
+ * chunk coming from the microphone.
  */
 Microphone.prototype._exportDataBuffer = function(buffer) {
   var pcmEncodedBuffer = null,
@@ -166,6 +241,7 @@ Microphone.prototype._exportDataBuffer = function(buffer) {
   // l16 is the MIME type for 16-bit PCM
   return new Blob([dataView], { type: 'audio/l16' });
 };
+
 
 // Functions used to control Microphone events listeners.
 Microphone.prototype.onStartRecording =  function() {};
@@ -208,7 +284,6 @@ function SpeechRecognizer(_options) {
   this.mic.onStopRecording = function() {
     console.log('mic.onStopRecording()');
     self.socket.emit('message', {disconnect:true});
-    //self.socket.disconnect();
   };
 }
 
