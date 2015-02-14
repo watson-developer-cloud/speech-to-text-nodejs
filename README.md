@@ -2,6 +2,10 @@
 
   The [Speech to Text][service_url] service uses IBM's speech recognition capabilities to convert English speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service can be accessed via a REST interface.
 
+Give it a try! Click the button below to fork into IBM DevOps Services and deploy your own copy of this application on Bluemix.
+
+[![Deploy to Bluemix](deploy-button.png)](https://bluemix.net/deploy?repository=https://github.com/watson-developer-cloud/speech-to-text-nodejs.git)
+
 ## Getting Started
 
 1. Create a Bluemix Account
