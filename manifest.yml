@@ -1,6 +1,6 @@
 ---
 declared-services:
-  speech-to-text-service:
+- speech-to-text-service:
     label: speech_to_text
     plan: free
 applications:
