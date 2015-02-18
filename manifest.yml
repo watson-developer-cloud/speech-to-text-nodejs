@@ -1,3 +1,7 @@
+declared-services:
+- speech-to-text-service:
+    type: speech_to_text
+    plan: free
 applications:
 - name: speech-to-text-nodejs
   command: node app.js
@@ -5,7 +9,3 @@ applications:
   memory: 256m
   services:
   - speech-to-text-service
-  declared-services:
-    speech-to-text-service:
-      label: speech_to_text
-      plan: free
