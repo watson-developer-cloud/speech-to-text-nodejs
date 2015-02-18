@@ -1,6 +1,7 @@
+---
 declared-services:
 - speech-to-text-service:
-    type: speech_to_text
+    label: speech_to_text
     plan: free
 applications:
 - name: speech-to-text-nodejs
