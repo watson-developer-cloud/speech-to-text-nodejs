@@ -46,7 +46,7 @@ See the full [Getting Started][getting_started] documentation for more details, 
 
 ## Running locally
 
-  The application uses [Node.js][http://nodejs.org/] and [npm][https://www.npmjs.com/] so you will have to download and install them as part of the steps below.
+  The application uses [Node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/) so you will have to download and install them as part of the steps below.
 
 1. Copy the credentials from your `speech-to-text-service` service in Bluemix to `app.js`, you can see the credentials using:
 
