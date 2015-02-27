@@ -1,0 +1,91 @@
+.img-container img {
+  width: 100%;
+  height: auto;
+}
+
+.top-nav {
+  background-color: #404041;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.top-nav .heading {
+  margin: 0px;
+  color: white;
+  font-weight: 200;
+  font-size: 19px;
+}
+.top-nav .heading span {
+  font-weight: 500;
+  color: #00b2ef;
+}
+.top-nav a {
+  font-size: 14px;
+  font-weight: 300;
+  text-decoration: underline;
+  color: white;
+}
+.top-nav a:hover {
+  color: #E0E0E0;
+}
+.top-nav .right {
+  float: right;
+  margin-right: 20px;
+}
+.top-nav .left {
+  float: left;
+}
+.header {
+  padding-bottom:0px;
+  margin-bottom: 0px;
+  position: relative;
+}
+.header h2 {
+  font-weight: 400;
+}
+.header h3 {
+  color: #00b2ef;
+  font-weight: 400;
+}
+.header .fork:before {
+  content: " ";
+  background: url("../images/fork-icon.svg") no-repeat;
+  height: 16px;
+  width: 16px;
+  vertical-align: text-bottom;
+  display: inline-block;
+  margin-right: 3px;
+}
+.header .build-your-own a {
+  font-weight: 500;
+}
+.avatar {
+  padding-right: 0px;
+}
+.avatar img {
+  margin-top: 9px;
+}
+.header a {
+  font-size: 14px;
+  font-weight: 300;
+  text-decoration: underline;
+  color: #404041;
+  display: block;
+  margin-bottom: 3px;
+}
+.header a:hover {
+  color: #777677;
+}
+.header .feedback {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  margin: 0px;
+}
+.header .learn-more {
+  color: #00b2ef;
+  font-weight: 400;
+  margin-bottom: 15px;
+}
+.header .learn-more:hover {
+  color: #82D1F5;
+}

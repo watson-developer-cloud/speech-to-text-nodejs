@@ -30,10 +30,10 @@ function Microphone(_options) {
   this.outputChannels = options.outputChannels || 1;
   this.recording = false;
   this.requestedAccess = false;
-  this.sampleRate = 16000; // 16 khz
+  this.sampleRate = 16000;
   // auxiliar buffer to keep unused samples (used when doing downsampling)
   this.bufferUnusedSamples = new Float32Array(0);
-  
+
   // Chrome or Firefox or IE User media
   if (!navigator.getUserMedia) {
     navigator.getUserMedia = navigator.webkitGetUserMedia ||
@@ -81,7 +81,7 @@ Microphone.prototype.onMediaStream =  function(stream) {
   // uncomment the following line if you want to use your microphone sample rate
   //this.sampleRate = this.audioContext.sampleRate;
   console.log('Microphone.onMediaStream(): sampling rate is:', this.sampleRate);
-  
+
   this.mic.onaudioprocess = this._onaudioprocess.bind(this);
   this.stream = stream;
 
@@ -112,6 +112,7 @@ Microphone.prototype._onaudioprocess = function(data) {
   //export with microphone mhz, remember to update the this.sampleRate
   // with the sample rate from your microphone
   //this.onAudio(this._exportDataBuffer(new Float32Array(chan)));
+
 };
 
 /**
@@ -242,7 +243,6 @@ Microphone.prototype._exportDataBuffer = function(buffer) {
   return new Blob([dataView], { type: 'audio/l16' });
 };
 
-
 // Functions used to control Microphone events listeners.
 Microphone.prototype.onStartRecording =  function() {};
 Microphone.prototype.onStopRecording =  function() {};
@@ -263,7 +263,6 @@ function SpeechRecognizer(_options) {
   this.mic = options.mic || new Microphone(_options);
   this.ws = options.ws || '';
   this.sessions = [];
-  this.session_id = null;
 
   var self = this;
 

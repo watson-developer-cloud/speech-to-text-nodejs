@@ -120,7 +120,7 @@ $(document).ready(function() {
   var audio1 = 'audio/sample1.wav',
     audio2 = 'audio/sample2.wav';
 
-  function _error() {
+  function _error(xhr) {
     $('.loading').hide();
     displayError('Error processing the request, please try again.');
   }

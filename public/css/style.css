@@ -1,69 +1,7 @@
 .bold {
   font-weight: bold;
 }
-.img-container img {
-    width: 100%;
-    height: auto;
-}
-.top-nav {
-    background-color: #404041;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-.top-nav a {
-    font-size: 14px;
-    font-weight: 300;
-    text-decoration: underline;
-    color: white;
-}
-.top-nav a:hover {
-    color: #E0E0E0;
-}
-.top-nav .right {
-    float: right;
-    margin-right: 20px;
-}
-.top-nav .left {
-    float: left;
-}
-.top-nav .fork:before {
-    content: ' ';
-    background: url('../images/fork-icon.svg') no-repeat;
-    height: 16px;
-    width: 16px;
-    vertical-align: text-bottom;
-    display: inline-block;
-    margin-right: 3px;
-}
-.header {
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-}
-.header h2 {
-    font-weight: 400;
-}
-.header h3 {
-    color: #00b2ef;
-    font-weight: 400;
-}
-.avatar {
-    padding-right: 0px;
-}
-.avatar img {
-    margin-top: 9px;
-}
-.header a {
-    font-size: 14px;
-    font-weight: 300;
-    text-decoration: underline;
-    color: #404041;
-    display: block;
-    margin-left: 20px;
-    margin-bottom: 3px;
-}
-.header a:hover {
-    color: #777677;
-}
+
 input[type="file"] {
     height: 0px;
     width: 0px;
@@ -209,7 +147,4 @@ input[type="file"]:focus + .browse {
 .audio-staged {
   display: none;
   max-width: 100%;
-}
-.upload-label {
-  /*height: 38px;*/
 }

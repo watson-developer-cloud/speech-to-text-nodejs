@@ -20,24 +20,21 @@ var app = require('express')(),
   server = require('http').Server(app),
   io = require('socket.io')(server),
   bluemix = require('./config/bluemix'),
-  SpeechToText = require('./speech-to-text'),
+  watson = require('watson-developer-cloud'),
   extend = require('util')._extend;
 
 // if bluemix credentials exists, then override local
 var credentials = extend({
-  url: '<url>',
-  username: '<username>',
-  password: '<password>'
+  version:'v1',
+	username: '<username>',
+	password: '<password>'
 }, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
 
-// Save bluemix credentials
-app.set('service',credentials);
-
 // Create the service wrapper
-var speechToText = new SpeechToText(credentials);
+var speechToText = watson.speech_to_text(credentials);
 
 // Configure express
-require('./config/express')(app,speechToText);
+require('./config/express')(app, speechToText);
 
 // Configure sockets
 require('./config/socket')(io, speechToText);

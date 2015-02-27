@@ -43,12 +43,17 @@ app.get('/', function(req, res) {
 });
 
 app.post('/', function(req, res) {
-  if (!req.body.url || req.body.url.indexOf('audio/') !==0)
+  var audio;
+
+  if(req.body.url && req.body.url.indexOf('audio/') === 0) {
+    // sample audio
+    audio = fs.createReadStream(__dirname + '/../public/' + req.body.url);
+  } else {
+    // malformed url
     return res.status(500).json({ error: 'Malformed URL' });
+  }
 
-  var audio = fs.createReadStream(__dirname + '/../public/' + req.body.url);
-
-  speechToText.recognize({audio: audio}, function(err, transcript){
+  speechToText.recognize({audio: audio, content_type: 'audio/l16; rate=44100'}, function(err, transcript){
     if (err)
       return res.status(500).json({ error: err });
     else
