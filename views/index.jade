@@ -36,6 +36,23 @@ block row-content
                 a.btn.btn-block.send-api-audio2 Send to API
 
     div.col-lg-6.col-md-6.col-xs-12
+      h2 Options
+      div.row
+        div.col-lg-12.col-md-12.col-xs-12.select-options
+          div.row
+            span Please select the audio language and bandwidth
+          div.row.form-group
+            label(for="languageSelect").control-label Language
+            select(name="languageSelect").form-control
+              option(value="english") English
+              option(value="spanish") Spanish
+              option(value="japanese") Japanese
+          div.row.form-group
+            label(for="bandwidthSelect").control-label Bandwidth
+            select(name="bandwidthSelect").form-control
+              option(value="narrowband") Narrow-band
+              option(value="wideband") Wide-band
+
       h2 Output
       p To test your mic, say "one two three four five."
         | If the words are not recorded correctly, you may need to
