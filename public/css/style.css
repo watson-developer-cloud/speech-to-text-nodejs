@@ -148,3 +148,19 @@ input[type="file"]:focus + .browse {
   display: none;
   max-width: 100%;
 }
+
+#fileUploadTarget {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 200px;
+  text-align: center
+}
+
+.custom-file {
+  margin-top: 20px;
+}
+
+.custom-label {
+  margin-bottom: 20px;
+}

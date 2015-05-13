@@ -118,7 +118,7 @@ $(document).ready(function() {
 
   //Sample audios
   var audio1 = 'audio/sample1.wav',
-    audio2 = 'audio/sample2.wav';
+      audio2 = 'audio/sample2.wav';
 
   function _error(xhr) {
     $('.loading').hide();
@@ -174,5 +174,58 @@ $(document).ready(function() {
       error: _error
     });
   }
+
+  function sendDraggedFile(file) {
+    var uri = "/";
+    var xhr = new XMLHttpRequest();
+    var fd = new FormData();
+
+    xhr.open("POST", uri, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        console.log(xhr.responseText);
+      }
+    };
+    fd.append('url', file);
+    // Initiate a multipart/form-data upload
+    xhr.send(fd);
+  }
+
+  function handleFileUploadEvent(evt) {
+    var file = evt.dataTransfer.files[0];
+    var objectUrl = URL.createObjectURL(file);
+    $('.custom.sample-title').text(file.name);
+    $('.audio3').click(function() {
+      console.log('evt', evt);
+      $('.sample3').prop('src', objectUrl);
+      stopSounds();
+      $('.sample3').get(0).play();
+    });
+    $('.send-api-audio3').click(function() {
+      console.log('click! API');
+      sendDraggedFile(file);
+    });
+  }
+
+  var target = $("#fileUploadTarget");
+  target.on('dragenter', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      $(this).css('border', '2px solid #0B85A1');
+  });
+  target.on('dragover', function (e) {
+       e.stopPropagation();
+       e.preventDefault();
+  });
+  target.on('drop', function (e) {
+   
+       $(this).css('border', '2px dotted #0B85A1');
+       e.preventDefault();
+       var evt = e.originalEvent;
+   
+       // Handle dragged file event
+       handleFileUploadEvent(evt);
+  });
+
 
 });

@@ -34,6 +34,15 @@ block row-content
                 img.sample-icon(src='images/play-icon.svg')
                 p.sample-title Sample2.wav
                 a.btn.btn-block.send-api-audio2 Send to API
+          div.row.custom-file
+            div.col-lg-12.col-md-12.col-xs-12.custom-label
+              span Or drag your own file for transcription.
+            div.sample-audio.col-lg-6.col-md-6.col-xs-6.text-center
+              a.sample-btn.audio3(href='javascript:void(0);')
+                img.sample-icon(src='images/play-icon.svg')
+                p.custom.sample-title [Your file].wav
+                a.btn.btn-block.send-api-audio3 Send to API
+            div.col-lg-6.col-md-6.col-xs-6#fileUploadTarget Drag your file here
 
     div.col-lg-6.col-md-6.col-xs-12
       h2 Options
@@ -71,5 +80,6 @@ block row-content
   div.hidden
     audio.sample1(preload='auto', autobuffer, controls, src='audio/sample1.wav')
     audio.sample2(preload='auto', autobuffer, controls, src='audio/sample2.wav')
+    audio.sample3(preload='none', autobuffer, controls, src='')
     form.upload-form#fileupload(method='POST', enctype='multipart/form-data', action='/')
-     input.url-input(type='hidden', name='url')
+      input.url-input(type='hidden', name='url')
