@@ -23,11 +23,12 @@ var app = require('express')(),
   watson = require('watson-developer-cloud'),
   extend = require('util')._extend;
 
+
 // if bluemix credentials exists, then override local
 var credentials = extend({
   version:'v1',
-	username: '<username>',
-	password: '<password>'
+    username: '<username>',
+    password: '<password>'
 }, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
 
 // Create the service wrapper
