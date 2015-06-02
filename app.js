@@ -21,15 +21,12 @@ var app = require('express')(),
   io = require('socket.io')(server),
   bluemix = require('./config/bluemix'),
   watson = require('watson-developer-cloud'),
+  config = require(process.env.WATSON_CONFIG_FILE),
   extend = require('util')._extend;
 
 
 // if bluemix credentials exists, then override local
-var credentials = extend({
-  version:'v1',
-    username: '<username>',
-    password: '<password>'
-}, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
+var credentials = extend(config, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
 
 // Create the service wrapper
 var speechToText = watson.speech_to_text(credentials);
@@ -40,6 +37,9 @@ require('./config/express')(app, speechToText);
 // Configure sockets
 require('./config/socket')(io, speechToText);
 
+// Configure proxy
+require('./config/proxy')(credentials);
+
 var port = process.env.VCAP_APP_PORT || 3000;
 server.listen(port);
-console.log('listening at:', port);
+console.log('Server listening at:', port);
