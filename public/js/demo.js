@@ -100,17 +100,19 @@ $(document).ready(function() {
         var paragraph = transcript.children().last(),
           text = data.results[0].alternatives[0].transcript || '';
 
+        console.log('text', text);
         //Capitalize first word
         text = text.charAt(0).toUpperCase() + text.substring(1);
         // if final results, append a new paragraph
-        if (data.results[0].final){
-          text = text.trim() + '.';
-          $('<p></p>').appendTo(transcript);
-        }
-        paragraph.text(text);
+        // if (data.results[0].final){
+        text = text.trim() + '.';
+        $('.loading').hide();
+        $('#text').append(text);
+        // }
+        // paragraph.text(text);
       }
     }
-    transcript.show();
+    // transcript.show();
   }
 
   function displayError(error) {
@@ -193,7 +195,8 @@ $(document).ready(function() {
   };
   ws.onmessage = function(evt) { 
     console.log('msg ', evt.data); 
-    var j = JSON.parse(evt.data);
+    var data = JSON.parse(evt.data);
+    showResult(data);
   };
 
   ws.onerror = function(evt) { 
@@ -201,23 +204,11 @@ $(document).ready(function() {
   };
 
   function sendDraggedFile(file) {
+    $('.loading').show();
     // var blob = new Blob(file, {type : 'audio/l16;rate=48000'});
     console.log('loading blob: ');
     ws.send(file);
     ws.send(JSON.stringify({'action': 'stop'}));
-    // var uri = "/";
-    // var xhr = new XMLHttpRequest();
-    // var fd = new FormData();
-    //
-    // xhr.open("POST", uri, true);
-    // xhr.onreadystatechange = function() {
-    //   if (xhr.readyState == 4 && xhr.status == 200) {
-    //     console.log(xhr.responseText);
-    //   }
-    // };
-    // fd.append('url', file);
-    // // Initiate a multipart/form-data upload
-    // xhr.send(fd);
   }
 
   function handleFileUploadEvent(evt) {
