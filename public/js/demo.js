@@ -30,10 +30,21 @@ $(document).ready(function() {
     transcript = $('#text'),
     errorMsg = $('.errorMsg');
 
-  // Service
+  // Test out CORS
+  // var url = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+  // var request = new XMLHttpRequest();
+  // request.open("GET", url, true);
+  // request.onload = function(evt) {
+  //   console.log('response', request.responseText);
+  // };
+  // request.send();
+
+
+
+// Service
   var recording = false,
-    speech = new SpeechRecognizer({
-      ws: '',
+    speech = new SpeechRecognition({
+      ws: 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize',
       model: 'WatsonModel'
     });
 
@@ -51,9 +62,9 @@ $(document).ready(function() {
   };
 
   speech.onerror = function(error) {
-    console.log('demo.onerror():', error);
-    recording = false;
-    micButton.removeClass('recording');
+    // console.log('demo.onerror():', error);
+    // recording = false;
+    // micButton.removeClass('recording');
     displayError(error);
   };
 
@@ -65,7 +76,7 @@ $(document).ready(function() {
   };
 
   speech.onresult = function(data) {
-    //console.log('demo.onresult()');
+    console.log('demo.onresult()', data);
     showResult(data);
   };
 
@@ -174,26 +185,46 @@ $(document).ready(function() {
       error: _error
     });
   }
+  var ws = new WebSocket('ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize');
+  window.ws = ws;
+  ws.onopen = function(evt) {
+    console.log('loading');
+    ws.send(JSON.stringify({'action': 'start', 'content-type': 'audio/l16;rate=48000'}));
+  };
+  ws.onmessage = function(evt) { 
+    console.log('msg ', evt.data); 
+    var j = JSON.parse(evt.data);
+  };
+
+  ws.onerror = function(evt) { 
+    console.log('error ', evt); 
+  };
 
   function sendDraggedFile(file) {
-    var uri = "/";
-    var xhr = new XMLHttpRequest();
-    var fd = new FormData();
-
-    xhr.open("POST", uri, true);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        console.log(xhr.responseText);
-      }
-    };
-    fd.append('url', file);
-    // Initiate a multipart/form-data upload
-    xhr.send(fd);
+    // var blob = new Blob(file, {type : 'audio/l16;rate=48000'});
+    console.log('loading blob: ');
+    ws.send(file);
+    ws.send(JSON.stringify({'action': 'stop'}));
+    // var uri = "/";
+    // var xhr = new XMLHttpRequest();
+    // var fd = new FormData();
+    //
+    // xhr.open("POST", uri, true);
+    // xhr.onreadystatechange = function() {
+    //   if (xhr.readyState == 4 && xhr.status == 200) {
+    //     console.log(xhr.responseText);
+    //   }
+    // };
+    // fd.append('url', file);
+    // // Initiate a multipart/form-data upload
+    // xhr.send(fd);
   }
 
   function handleFileUploadEvent(evt) {
+    console.log('uploading file');
     var file = evt.dataTransfer.files[0];
     var objectUrl = URL.createObjectURL(file);
+    sendDraggedFile(file);
     $('.custom.sample-title').text(file.name);
     $('.audio3').click(function() {
       console.log('evt', evt);
