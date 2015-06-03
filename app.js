@@ -21,7 +21,7 @@ var app = require('express')(),
   io = require('socket.io')(server),
   bluemix = require('./config/bluemix'),
   watson = require('watson-developer-cloud'),
-  config = require(process.env.WATSON_CONFIG_FILE),
+  config = JSON.parse(process.env.WATSON_CONFIG),
   extend = require('util')._extend;
 
 
@@ -37,8 +37,8 @@ require('./config/express')(app, speechToText);
 // Configure sockets
 require('./config/socket')(io, speechToText);
 
-// Configure proxy
-require('./config/proxy')(credentials);
+// // Configure proxy
+// require('./config/proxy')(credentials);
 
 var port = process.env.VCAP_APP_PORT || 3000;
 server.listen(port);
