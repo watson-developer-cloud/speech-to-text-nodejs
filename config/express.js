@@ -19,9 +19,10 @@
 // Module dependencies
 var express    = require('express'),
   errorhandler = require('errorhandler'),
+  request      = require('request'),
   bodyParser   = require('body-parser'),
   fs           = require('fs');
-module.exports = function (app, speechToText) {
+module.exports = function (app, speechToText, credentials) {
 
   // Configure Express
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,6 +37,20 @@ module.exports = function (app, speechToText) {
   if (!process.env.VCAP_SERVICES) {
     app.use(errorhandler());
   }
+
+app.get('/token', function(req, res) {
+  request.get({'url': 
+    'https://stream-d.watsonplatform.net/authorization/api/v1/token?url=https://stream-d.watsonplatform.net/text-to-speech-beta/api',
+    'auth': {
+      'user': credentials.username,
+      'pass': credentials.password,
+      'sendImmediately': false
+    }}, function(err, response, body) {
+      res.send(body);
+    }
+  );
+});
+
 
 // render index page
 app.get('/', function(req, res) {
