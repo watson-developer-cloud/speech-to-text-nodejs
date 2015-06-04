@@ -36,13 +36,8 @@ block row-content
                 a.btn.btn-block.send-api-audio2 Send to API
           div.row.custom-file
             div.col-lg-12.col-md-12.col-xs-12.custom-label
-              span Or drag your own file for transcription.
-            div.sample-audio.col-lg-6.col-md-6.col-xs-6.text-center
-              a.sample-btn.audio3(href='javascript:void(0);')
-                img.sample-icon(src='images/play-icon.svg')
-                p.custom.sample-title [Your file].wav
-                a.btn.btn-block.send-api-audio3 Send to API
-            div.col-lg-6.col-md-6.col-xs-6#fileUploadTarget Drag your file here
+              div#dragText Or drag your own file for transcription:
+            div.col-lg-6.col-md-6.col-xs-6.col-xs-offset-3#fileUploadTarget Drag your file here
 
     div.col-lg-6.col-md-6.col-xs-12
       h2 Options
