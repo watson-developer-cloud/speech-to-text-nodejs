@@ -32,7 +32,7 @@ var credentials = extend(config, bluemix.getServiceCreds('speech_to_text')); // 
 var speechToText = watson.speech_to_text(credentials);
 
 // Configure express
-require('./config/express')(app, speechToText);
+require('./config/express')(app, speechToText, credentials);
 
 // Configure sockets
 require('./config/socket')(io, speechToText);
@@ -40,6 +40,6 @@ require('./config/socket')(io, speechToText);
 // // Configure proxy
 // require('./config/proxy')(credentials);
 
-var port = process.env.VCAP_APP_PORT || 3000;
+var port = process.env.VCAP_APP_PORT || 80;
 server.listen(port);
 console.log('Server listening at:', port);
