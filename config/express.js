@@ -32,15 +32,6 @@ module.exports = function (app, speechToText, credentials) {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  var creds = new Buffer(credentials.username + ':' + credentials.password).toString('base64');
-
-  app.get('/v1/*', function(req, res) {
-    req.headers['Authorization'] = 'Basic ' + creds;
-    apiProxy.web(req, res, { target: credentials.url, secure: false } );
-    apiProxy.on('error', function(err) {
-      console.log('err', err);
-    });
-  });
 
   // Setup static public directory
   app.use(express.static(__dirname + '/../public'));
@@ -87,6 +78,16 @@ module.exports = function (app, speechToText, credentials) {
         return res.status(500).json({ error: err });
       else
         return res.json(transcript);
+    });
+  });
+
+  var creds = new Buffer(credentials.username + ':' + credentials.password).toString('base64');
+
+  app.get('/v1/*', function(req, res) {
+    req.headers['Authorization'] = 'Basic ' + creds;
+    apiProxy.web(req, res, { target: credentials.url, secure: false } );
+    apiProxy.on('error', function(err) {
+      console.log('err', err);
     });
   });
 
