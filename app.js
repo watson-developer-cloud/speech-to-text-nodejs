@@ -18,28 +18,25 @@
 
 var app = require('express')(),
   server = require('http').Server(app),
-  io = require('socket.io')(server),
   bluemix = require('./config/bluemix'),
   watson = require('watson-developer-cloud'),
   config = JSON.parse(process.env.WATSON_CONFIG),
   extend = require('util')._extend;
 
-
 // if bluemix credentials exists, then override local
 var credentials = extend(config, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
 
 // Create the service wrapper
+// Have to save copy of config first, because watson library deletes certain keys
+var creds = extend({}, credentials);
 var speechToText = watson.speech_to_text(credentials);
 
 // Configure express
-require('./config/express')(app, speechToText, credentials);
+require('./config/express')(app, speechToText, creds);
 
-// Configure sockets
-require('./config/socket')(io, speechToText);
+// // Configure websockets proxy
+require('./config/proxy')(creds);
 
-// // Configure proxy
-// require('./config/proxy')(credentials);
-
-var port = process.env.VCAP_APP_PORT || 80;
+var port = process.env.VCAP_APP_PORT || 3000;
 server.listen(port);
 console.log('Server listening at:', port);
