@@ -42,6 +42,9 @@ module.exports = function(credentials) {
   proxyServer.on('upgrade', function (req, socket, head) {
     req.headers['Authorization'] = 'Basic ' + creds;
     proxy.ws(req, socket, head);
+    proxy.on('error', function(err) {
+      console.log('WS proxy error: ', err);
+    });
   });
 
   var websocketPort = 8020;
