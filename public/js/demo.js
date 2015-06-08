@@ -30,65 +30,123 @@ $(document).ready(function() {
     transcript = $('#text'),
     errorMsg = $('.errorMsg');
 
-  // Test out CORS
-  // var url = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
-  // var request = new XMLHttpRequest();
-  // request.open("GET", url, true);
-  // request.onload = function(evt) {
-  //   console.log('response', request.responseText);
-  // };
-  // request.send();
+  var speech = new SpeechRecognition({
+    ws: 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize',
+    model: 'WatsonModel'
+  });
 
+  speech.onresult = function(result) {
+    console.log('got a result: ', result);
+  };
+
+  speech.onerror = function(err) {
+    console.log('got a error: ', err);
+  };
+
+  // Test out library
+  var sampleUrl = 'audio/sample1.flac';
+  var sampleRequest = new XMLHttpRequest();
+  sampleRequest.open("GET", sampleUrl, true);
+  sampleRequest.responseType = 'blob';
+  sampleRequest.onload = function(evt) {
+    console.log('speech started...');
+    var blob = sampleRequest.response;
+    var trimmedBlob = blob.slice(0, 4);
+    var reader = new FileReader();
+    reader.addEventListener("loadend", function() {
+      console.log('state', reader.readyState);
+      console.log('bytes', reader.result);
+      if (reader.result === 'fLaC') {
+        speech._init('audio/flac');
+      } else {
+        speech._init('audio/l16;rate=48000');
+      }
+      speech.onstart = function(evt) {
+        speech.recognize(sampleRequest.response);
+      };
+    });
+    reader.readAsText(trimmedBlob);
+  };
+  sampleRequest.send();
+
+  // Test out token
+  var tokenUrl = '/token';
+  var tokenRequest = new XMLHttpRequest();
+  tokenRequest.open("GET", tokenUrl, true);
+  tokenRequest.onload = function(evt) {
+    // console.log('token ', tokenRequest.responseText);
+    // console.log('response', request.responseText);
+    // var xhr = new XMLHttpRequest();
+    // var url = 'https://stream-d.watsonplatform.net/text-to-speech-beta/api/v1/voices';
+    // xhr.open('GET', url, true);
+    // xhr.setRequestHeader('X-Watson-Authorization-Token', request.responseText);
+    // xhr.setRequestHeader('Authorization ', 'none');
+    // xhr.send();
+    // xhr.onload = function(evt) {
+    //   console.log('speech data', xhr.responseText);
+    //   alert('responsetext', xhr.responseText);
+    // };
+  };
+  tokenRequest.send();
+
+  var modelsUrl = '/v1/models';
+  var modelsRequest = new XMLHttpRequest();
+  modelsRequest.open("GET", modelsUrl, true);
+  // request.setRequestHeader('Authorization', 'Basic ' + creds);
+  modelsRequest.onload = function(evt) {
+    // console.log('token ', request.responseText);
+  };
+  modelsRequest.send();
 
 
 // Service
-  var recording = false,
-    speech = new SpeechRecognition({
-      ws: 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize',
-      model: 'WatsonModel'
-    });
+  // var recording = false,
+  //   speech = new SpeechRecognition({
+  //     ws: 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize',
+  //     model: 'WatsonModel'
+  //   });
 
-  speech.onstart = function() {
-    console.log('demo.onstart()');
-    recording = true;
-    micButton.addClass('recording');
-    micText.text('Press again when finished');
-    errorMsg.hide();
-    transcript.show();
-
-    // Clean the paragraphs
-    transcript.empty();
-    $('<p></p>').appendTo(transcript);
-  };
-
-  speech.onerror = function(error) {
-    // console.log('demo.onerror():', error);
-    // recording = false;
-    // micButton.removeClass('recording');
-    displayError(error);
-  };
-
-  speech.onend = function() {
-    console.log('demo.onend()');
-    recording = false;
-    micButton.removeClass('recording');
-    micText.text('Press to start speaking');
-  };
-
-  speech.onresult = function(data) {
-    console.log('demo.onresult()', data);
-    showResult(data);
-  };
-
-  micButton.click(function() {
-    if (!recording) {
-      speech.start();
-    } else {
-      speech.stop();
-      micButton.removeClass('recording');
-      micText.text('Processing speech');
-    }
-  });
+  // speech.onstart = function() {
+  //   console.log('demo.onstart()');
+  //   recording = true;
+  //   micButton.addClass('recording');
+  //   micText.text('Press again when finished');
+  //   errorMsg.hide();
+  //   transcript.show();
+  //
+  //   // Clean the paragraphs
+  //   transcript.empty();
+  //   $('<p></p>').appendTo(transcript);
+  // };
+  //
+  // speech.onerror = function(error) {
+  //   // console.log('demo.onerror():', error);
+  //   // recording = false;
+  //   // micButton.removeClass('recording');
+  //   displayError(error);
+  // };
+  //
+  // speech.onend = function() {
+  //   console.log('demo.onend()');
+  //   recording = false;
+  //   micButton.removeClass('recording');
+  //   micText.text('Press to start speaking');
+  // };
+  //
+  // speech.onresult = function(data) {
+  //   console.log('demo.onresult()', data);
+  //   showResult(data);
+  // };
+  //
+  // micButton.click(function() {
+  //   if (!recording) {
+  //     speech.start();
+  //   } else {
+  //     speech.stop();
+  //     micButton.removeClass('recording');
+  //     micText.text('Processing speech');
+  //   }
+  // });
 
   function showResult(data) {
     //console.log(data);
@@ -187,28 +245,28 @@ $(document).ready(function() {
       error: _error
     });
   }
-  var ws = new WebSocket('ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize');
-  window.ws = ws;
-  ws.onopen = function(evt) {
-    console.log('loading');
-    ws.send(JSON.stringify({'action': 'start', 'content-type': 'audio/l16;rate=48000'}));
-  };
-  ws.onmessage = function(evt) { 
-    console.log('msg ', evt.data); 
-    var data = JSON.parse(evt.data);
-    showResult(data);
-  };
-
-  ws.onerror = function(evt) { 
-    console.log('error ', evt); 
-  };
+  // var ws = new WebSocket('ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize');
+  // window.ws = ws;
+  // ws.onopen = function(evt) {
+  //   console.log('loading');
+  //   ws.send(JSON.stringify({'action': 'start', 'content-type': 'audio/l16;rate=48000'}));
+  // };
+  //
+  // ws.onmessage = function(evt) { 
+  //   console.log('msg ', evt.data); 
+  //   var data = JSON.parse(evt.data);
+  //   showResult(data);
+  // };
+  //
+  // ws.onerror = function(evt) { 
+  //   console.log('error ', evt); 
+  // };
 
   function sendDraggedFile(file) {
     $('.loading').show();
-    // var blob = new Blob(file, {type : 'audio/l16;rate=48000'});
     console.log('loading blob: ');
-    ws.send(file);
-    ws.send(JSON.stringify({'action': 'stop'}));
+    // ws.send(file);
+    // ws.send(JSON.stringify({'action': 'stop'}));
   }
 
   function handleFileUploadEvent(evt) {
@@ -235,10 +293,12 @@ $(document).ready(function() {
       e.preventDefault();
       $(this).css('border', '2px solid #0B85A1');
   });
+
   target.on('dragover', function (e) {
        e.stopPropagation();
        e.preventDefault();
   });
+
   target.on('drop', function (e) {
    
        $(this).css('border', '2px dotted #0B85A1');
