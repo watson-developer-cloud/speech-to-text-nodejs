@@ -20,7 +20,7 @@ var app = require('express')(),
   server = require('http').Server(app),
   bluemix = require('./config/bluemix'),
   watson = require('watson-developer-cloud'),
-  config = JSON.parse(process.env.WATSON_CONFIG),
+  config = JSON.parse(process.env.WATSON_CONFIG_STAGING),
   extend = require('util')._extend;
 
 // if bluemix credentials exists, then override local

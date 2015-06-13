@@ -19,10 +19,14 @@
 module.exports = function(credentials) {
 
   var http = require('http'),
+      connect = require('connect'),
+      transformerProxy = require('transformer-proxy'),
       httpProxy = require('http-proxy');
 
 
-  var proxyUrl = 'https://stream-d.watsonplatform.net';
+  var proxyUrl = credentials.hostname;
+
+	console.log('proxyUrl', proxyUrl);
 
   var proxy = httpProxy.createProxyServer({
     target: proxyUrl,
@@ -34,12 +38,13 @@ module.exports = function(credentials) {
     proxy.web(req, res);
   });
 
+
   var creds = new Buffer(credentials.username + ':' + credentials.password).toString('base64');
 
   // Listen to the `upgrade` event and proxy the
   // WebSocket requests as well.
-  //
   proxyServer.on('upgrade', function (req, socket, head) {
+    console.log('upgrade request', req);
     req.headers['Authorization'] = 'Basic ' + creds;
     proxy.ws(req, socket, head);
     proxy.on('error', function(err) {

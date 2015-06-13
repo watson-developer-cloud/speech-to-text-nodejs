@@ -28,6 +28,8 @@ module.exports = function (app, speechToText, credentials) {
   
   console.log('module credentials', credentials);
 
+	var token;
+
   // Configure Express
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -44,22 +46,28 @@ module.exports = function (app, speechToText, credentials) {
   }
 
   app.get('/token', function(req, res) {
-    request.get({'url': 
-      credentials.authenticationUrl + '/v1/token?url=https://stream-d.watsonplatform.net/text-to-speech-beta/api',
-      'auth': {
-        'user': credentials.username,
-        'pass': credentials.password,
-        'sendImmediately': false
-      }}, function(err, response, body) {
-        res.send(body);
-      }
-    );
+		if (!token) {
+			request.get({'url': 
+				credentials.authenticationUrl + '/v1/token?url=https://stream-s.watsonplatform.net/speech-to-text-beta/api',
+				'auth': {
+					'user': credentials.username,
+					'pass': credentials.password,
+					'sendImmediately': false
+				}}, function(err, response, body) {
+					console.log('response', response);
+					token = body;
+					res.send(body);
+				}
+			);
+		} else {
+			res.send(token);
+		}
   });
 
 
   // render index page
   app.get('/', function(req, res) {
-    res.render('index');
+		res.render('index');
   });
 
   app.post('/', function(req, res) {

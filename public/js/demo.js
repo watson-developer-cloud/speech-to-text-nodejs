@@ -30,52 +30,22 @@ $(document).ready(function() {
     transcript = $('#text'),
     errorMsg = $('.errorMsg');
 
-  var speech = new SpeechRecognition({
-    ws: 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize',
-    model: 'WatsonModel'
-  });
-
-  speech.onresult = function(result) {
-    console.log('got a result: ', result);
-  };
-
-  speech.onerror = function(err) {
-    console.log('got a error: ', err);
-  };
-
-  // Test out library
-  var sampleUrl = 'audio/sample1.flac';
-  var sampleRequest = new XMLHttpRequest();
-  sampleRequest.open("GET", sampleUrl, true);
-  sampleRequest.responseType = 'blob';
-  sampleRequest.onload = function(evt) {
-    console.log('speech started...');
-    var blob = sampleRequest.response;
-    var trimmedBlob = blob.slice(0, 4);
-    var reader = new FileReader();
-    reader.addEventListener("loadend", function() {
-      console.log('state', reader.readyState);
-      console.log('bytes', reader.result);
-      if (reader.result === 'fLaC') {
-        speech._init('audio/flac');
-      } else {
-        speech._init('audio/l16;rate=48000');
-      }
-      speech.onstart = function(evt) {
-        speech.recognize(sampleRequest.response);
-      };
+  function speechInit(contentType) {
+    console.log('contentType is', contentType);
+    var speech = new SpeechRecognition({
+			serviceURI: 'ws://127.0.0.1:8020',
+      model: 'WatsonModel',
+      contentType: contentType
     });
-    reader.readAsText(trimmedBlob);
-  };
-  sampleRequest.send();
+    return speech;
+  }
 
   // Test out token
   var tokenUrl = '/token';
   var tokenRequest = new XMLHttpRequest();
   tokenRequest.open("GET", tokenUrl, true);
   tokenRequest.onload = function(evt) {
-    // console.log('token ', tokenRequest.responseText);
-    // console.log('response', request.responseText);
+    console.log('token ', tokenRequest.responseText);
     // var xhr = new XMLHttpRequest();
     // var url = 'https://stream-d.watsonplatform.net/text-to-speech-beta/api/v1/voices';
     // xhr.open('GET', url, true);
@@ -92,7 +62,6 @@ $(document).ready(function() {
   var modelsUrl = '/v1/models';
   var modelsRequest = new XMLHttpRequest();
   modelsRequest.open("GET", modelsUrl, true);
-  // request.setRequestHeader('Authorization', 'Basic ' + creds);
   modelsRequest.onload = function(evt) {
     // console.log('token ', request.responseText);
   };
