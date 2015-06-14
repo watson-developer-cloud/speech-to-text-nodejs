@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 IBM Corp. All Rights Reserved.
+ * Copyright 2014, 2015 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,59 @@
 
 'use strict';
 
-var app = require('express')(),
-  server = require('http').Server(app),
-  bluemix = require('./config/bluemix'),
-  watson = require('watson-developer-cloud'),
-  config = JSON.parse(process.env.WATSON_CONFIG_STAGING),
-  extend = require('util')._extend;
+var express = require('express'),
+    app = express(),
+    errorhandler = require('errorhandler'),
+    bluemix = require('./config/bluemix'),
+    request = require('request'),
+    path = require('path'),
+    // environmental variable points to demo's json config file
+    config = require(process.env.WATSON_CONFIG_FILE),
+    extend = require('util')._extend;
 
 // if bluemix credentials exists, then override local
-var credentials = extend(config, bluemix.getServiceCreds('speech_to_text')); // VCAP_SERVICES
-
-// Create the service wrapper
-// Have to save copy of config first, because watson library deletes certain keys
+var credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
+// Save copy of config first, because Watson library deletes certain keys
 var creds = extend({}, credentials);
-var speechToText = watson.speech_to_text(credentials);
 
-// Configure express
-require('./config/express')(app, speechToText, creds);
+// Setup static public directory
+app.use(express.static(path.join(__dirname , './public')));
 
-// // Configure websockets proxy
+// Add error handling in dev
+if (!process.env.VCAP_SERVICES) {
+  app.use(errorhandler());
+}
+
+// serve home page
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, './public', 'index.html'));
+});
+
+
+// Get token from Watson using your credentials
+app.get('/token', function(req, res) {
+  if (!token) {
+    request.get({'url': 
+      credentials.hostname + '/authorization/api/v1/token?url=' + credentials.hostname + '/speech-to-text-beta/api',
+      'auth': {
+        'user': credentials.username,
+      'pass': credentials.password,
+      'sendImmediately': false
+      }
+    }, function(err, response, body) {
+      console.log('response', response);
+      token = body;
+      res.send(body);
+    }
+    );
+  } else {
+    res.send(token);
+  }
+});
+
+// Configure temporary websockets proxy
 require('./config/proxy')(creds);
 
 var port = process.env.VCAP_APP_PORT || 3000;
-server.listen(port);
-console.log('Server listening at:', port);
+app.listen(port);
+console.log('listening at:', port);
