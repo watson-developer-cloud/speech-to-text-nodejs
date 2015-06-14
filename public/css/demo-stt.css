@@ -1,0 +1,55 @@
+.col-lg-12 {
+  padding: 0px!important;
+}
+.col-md-12 {
+  padding: 0px!important;
+}
+.col-sm-12 {
+  padding: 0px!important;
+}
+
+.row {
+  margin-left: 0px!important;
+  margin-right: 0px!important;
+}
+.navbar-text {
+	overflow: hidden;
+	white-space: nowrap;
+	margin:0;
+	padding: 0;
+}
+
+.nav-inverse-color {
+  padding: 5px 0;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  float: left;
+}
+@media (min-width: 500px) {
+  .nav-inverse-color {
+  width: 50%;
+  }
+}
+@media (min-width: 730px) {
+  .nav-inverse-color {
+  width: 25%;
+  }
+}
+input[type="radio"], input[type="checkbox"] {
+  margin: 1em 1em 1em 0;
+  margin-top: 1px \9;
+  line-height: normal;
+}
+
+.alt-hypothesis {
+  margin-top: 2em;
+}
+.alt-hypothesis > p {
+  margin-bottom: 0;
+}
+.hypothesis {
+	color: #5a5a5a; /*gray 60*/
+	clear: both;
+	float: left;
+}

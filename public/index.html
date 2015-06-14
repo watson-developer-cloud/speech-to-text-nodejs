@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo Sample -  Speech to Text Layout</title>
+
+    <!-- Bootstrap -->
+    <link href="css/watson-bootstrap-style.css" rel="stylesheet">
+    <!-- browser-compatibility.css handles cross-browser incompatibilities used with css_browser_selector.js -->
+    <link href="css/browser-compatibility.css" rel="stylesheet">
+    <link href="css/demo-stt.css" rel="stylesheet">
+
+  </head>
+  <body>
+    <!-- top nav section -->
+    <div class="navbar-wrapper">
+       
+            <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="container">
+                  <!-- IBM Watson Logo -->
+                    <div class="navbar-header">
+                        <a class="navbar-brand no-underline" href="index.html"><span class="thin-branding">IBM</span> Watson Developer Cloud</a>
+                    </div>
+                    <div class="float-right">
+                        <ul class="nav navbar-nav">
+                            <li><a href="index.html" class="no-underline">Getting Started</a></li>
+                            <li><a href="#" class="no-underline">Services</a></li>
+                            <li><a href="#"class="no-underline">Docs</a></li>
+                            <li><a href="#"class="no-underline">App Gallery</a></li>
+                            <li><a href="#"class="no-underline">Community</a></li>
+                        </ul>
+                    </div><!-- .navbar right-->
+                </div><!-- .container -->
+            </div><!-- .navbar -->
+       
+    </div><!-- .navbar-wrapper -->
+
+    <!-- Service Description Bar -->
+
+      <div class="header">
+         <div class="container">
+            <div class="col-lg-2 col-md-12 col-sm-12">
+              <img src="img/stt.svg" class="service-icon">
+            </div><!-- .col-lg-2 -->
+        
+          <div class="col-lg-10 col-md-12 col-sm-12">
+            <h1>Speech to Text</h1>
+            <p>TThe IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Japanese, and Spanish speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service can be accessed via a REST interface.</p>
+            <p><img src="img/link.svg" class="glyph"><strong>Resources:</strong></br>
+              <div class="resources">
+                <a href="#">API Overview</a>
+                <a href="#">Documentation</a>
+                <a href="#">Fork and Deploy on Bluemix</a>
+                <a href="#">Fork on Github</a>
+              </div><!-- .resources -->
+            </p>
+          </div><!-- .col-lg-10 -->
+        </div><!-- .container -->
+      </div><!-- .header -->
+
+
+<!-- Step 1 Section-->
+
+    <div class="container"> 
+
+
+<!-- Step 3 Section-->
+  
+  <!-- First column of inputs -->
+    <div class="row"> 
+      <div class="col-lg-12 col-md-12 col-sm-12">
+       <h2>Transcribe Audio</h2> 
+          <div class="col-lg-8 col-md-12 col-sm-12">
+          <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only in <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a>), upload pre-recorded audio (Insert formats here), or use the sample audio samples provided. The returned text includes metadata that provides the time it takes to transcribe individual words, confidence scores behind those words, silence detected between words and alternative hypotheses for phrases.</p>
+  		</div><!-- .col-lg-8 --> 
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <div class="opt-box">
+                  <h6><strong>Would you like to help make this service better?</strong><br><br>
+         <div class="form-group opt-box-input">
+            <input type="radio">Allow Watson to learn from this session<br><input type="radio" name="group1" value="">Opt out
+          </div></h6>
+          </div>
+        </div>
+
+      </div><!-- .col-lg-12 -->
+
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            <span class="dropdown-text">English (US)</span>
+            <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Spanish</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Japanese</a></li>
+            </ul>
+          </div>
+        </div><!-- .col-lg-6 -->
+      </div>
+
+    </div><!-- row -->
+
+
+
+
+ <div class="row">
+<nav class="navbar navbar-inverse">
+<ul class="navbar-text">
+  <li class="nav-inverse-color">
+    <a href="#">
+      <img src="img/microphone.svg" class="icon">
+      <span class="nav-label">Record Audio</span>
+    </a>
+  </li>
+  <li class="nav-inverse-color">
+    <a href="#">
+      <img src="img/upload.svg" class="icon">
+      <span class="nav-label">Upload/ Drop File</span>
+    </a>
+  </li>
+  <li class="nav-inverse-color">
+    <a href="#">
+      <img src="img/play.svg" class="icon">
+      <span class="nav-label">Play Sample 1</span>
+    </a>
+  </li>
+  <li class="nav-inverse-color">
+    <a href="#">
+      <img src="img/play.svg" class="icon">
+      <span class="nav-label">Play Sample 1</span>
+    </a>
+  </li>
+</ul>
+
+</nav>
+</div>
+
+
+
+<!-- Tab panes -->
+    <div class="row" style="  margin: 0;"> 
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 0;">
+      <div class="well">
+        <form class="form-horizontal">
+<div role="tabpanel">
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
+            <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
+          </ul> 
+          
+          <div class="hr-tab"></div>
+
+          <fieldset>
+
+            <div class="form-group row">
+              <div class="col-lg-12">
+                 <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="home2"><textarea>This is my first recording. So far it is working out.
+                  </textarea></div>
+                <div role="tabpanel" class="tab-pane" id="profile2"><textarea>Example of JSON</textarea></div>
+            </div>       
+              </div><!-- .col-lg-12 -->
+            </div><!-- .form -->
+
+          </fieldset>
+          </div>
+
+
+                               
+
+        </form>
+        </div>
+      </div><!-- /.well -->
+      </div><!-- /.tabpanel -->
+
+
+      <div class="row">
+        <div class="col-md-12">
+         <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3>Metadata</h3>
+              <span class="pull-right clickable"><i class="caret-up" style="  margin-top: -1.3em;"></i></span>
+            </div>
+            <div class="panel-body">
+                                <!-- Table -->
+                          <div class="table-scroll">
+                              <table>
+                                        <thead>
+                                          <tr>
+                                            <th>Phrase</th>
+                                            <th>This</th>
+                                            <th>_</th>
+                                            <th>is</th>
+                                            <th>_</th>
+                                            <th>my</th>
+                                            <th>_</th>
+                                            <th>first</th>
+                                            <th>_</th>
+                                            <th>recording</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <td data-label="Phrase"><strong>Time Length</strong></td>
+                                            <td data-label="This">10ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="is">4ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="my">4ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="first">7ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="recording">12ms</td>
+
+                                          </tr>
+                                          <tr>
+                                            <td data-label="Phrase"><strong>Confidence Score</strong></td>
+                                            <td data-label="This">98%</td>
+                                            <td data-label=""></td>
+                                            <td data-label="is">67%</td>
+                                            <td data-label=""></td>
+                                            <td data-label="my">87%</td>
+                                            <td data-label=""></td>
+                                            <td data-label="first">97%</td>
+                                            <td data-label=""></td>
+                                            <td data-label="recording">90%</td>
+                                          </tr>
+                                          <tr>
+                                            <td data-label="Phrase"><strong>Silence Detection</strong></td>
+                                            <td data-label=""></td>
+                                            <td data-label="This_is">1ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="is_my">1ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="my_first">1ms</td>
+                                            <td data-label=""></td>
+                                            <td data-label="first_recording">2ms</td>
+                                            <td data-label=""></td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                      </div>
+
+                                  <!-- END Table -->
+<div class="alt-hypothesis">
+                              <h5>Alternate Hypotheses</h5><hr>
+                              <p><strong>This is my first recording:</strong></p>
+                              <p>
+                               <div class="hypothesis">This his my first recording.&emsp;|&emsp;His is my first recording.&emsp;|&emsp;This miss my first recording.</div></p>
+                              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+            <!-- Spacer-->
+            <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+            <br><br></div></div>
+
+
+        </div><!-- /.row -->
+        </div>
+        </div>
+
+ 
+    </div><!-- /.container -->
+
+
+
+
+
+
+
+    <!-- Place js files at the end of the document -->
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="js/css_browser_selector.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script>
+    $('#nav-tabs a').on("click", function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+      $('.panel-heading span.clickable').on("click", function (e) {
+            if ($(this).hasClass('panel-collapsed')) {
+                // expand the panel
+                $(this).parents('.panel').find('.panel-body').slideDown();
+                $(this).removeClass('panel-collapsed');
+                $(this).find('i').removeClass('caret-down').addClass('caret-up');
+            }
+            else {
+                // collapse the panel
+                $(this).parents('.panel').find('.panel-body').slideUp();
+                $(this).addClass('panel-collapsed');
+                $(this).find('i').removeClass('caret-up').addClass('caret-down');
+            }
+        });
+
+
+
+    </script> 
+
+  </body>
+</html>

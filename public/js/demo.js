@@ -278,5 +278,103 @@ $(document).ready(function() {
        handleFileUploadEvent(evt);
   });
 
+  console.log('mic', Microphone);
+
+  // ncaught RangeError: Offset is outside the bounds of the DataView
+
+  var options = {
+    samplingRate: 16000
+  };
+
+  var mic = new Microphone();
+
+  function initSocket(socket) {
+
+    var running = false;
+
+    var session = {
+      audio: true,
+      video: false
+    };
+
+    var audioButton = document.getElementById("audioButton");
+
+    audioButton.onclick = function(evt) {
+      if (running) {
+        mic.stop();
+      } else {
+        mic.record();
+        running = true;
+      }
+    };
+
+    mic.onAudio = function(blob) {
+
+      socket.send(blob);
+
+    };
+
+
+    function onError(err) {
+      console.log('audio error: ', err);
+    }
+
+  }
+
+  function websocketTest(token) {
+    // Test out websocket
+    // var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' + token;
+    var wsUrl = 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize';
+    var ws = new WebSocket(wsUrl);
+    ws.onopen = function(evt) {
+      console.log('ws opened');
+      ws.send(JSON.stringify({
+        'action': 'start',
+        'content-type': 'audio/l16;rate=16000',
+        'interim_results': true,
+        'continuous': true
+      }));
+      initSocket(ws);
+    };
+    ws.onmessage = function(evt) {
+      console.log('ws message', evt.data);
+    };
+    ws.onerror = function(evt) {
+      console.log('ws error', evt);
+    };
+    return ws;
+  }
+  // function callRESTApi(token) {
+  // 	var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+  // 	var sttRequest = new XMLHttpRequest();
+  // 	sttRequest.open("GET", modelUrl, true);
+  // 	sttRequest.withCredentials = true;
+  // 	sttRequest.setRequestHeader('Accept', 'application/json');
+  // 	sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
+  // 	sttRequest.onload = function(evt) {
+  // 			console.log('STT Models ', sttRequest.responseText);
+  // 			// We wait until we've given this request a chance to load and (ideally) set the cookie
+  // 			// But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
+  // 			websocketTest(sttRequest.responseText);
+  // 		};
+  // 	sttRequest.send();
+  // }
+  // // callRESTApi(TOKEN);
+  // // Make call to API to try and get cookie
+  // var url = '/token';
+  // var tokenRequest = new XMLHttpRequest();
+  // tokenRequest.open("GET", url, true);
+  // tokenRequest.onload = function(evt) {
+  // 	var token = tokenRequest.responseText;
+  // 	console.log('Token ', decodeURIComponent(token));
+  //
+  // 	callRESTApi(token);
+  // }
+  //
+  // tokenRequest.send();
+
+  websocketTest()
+
 
 });
+

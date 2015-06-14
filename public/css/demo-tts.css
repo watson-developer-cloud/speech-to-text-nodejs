@@ -1,0 +1,14 @@
+.btn-secondary {
+  width:100%;
+
+}
+
+.speak-button {
+  color: #e0e0e0; /*gray10*/
+}
+
+input[type="radio"], input[type="checkbox"] {
+  margin: 1em 1em 1em 0;
+  margin-top: 1px \9;
+  line-height: normal;
+}
