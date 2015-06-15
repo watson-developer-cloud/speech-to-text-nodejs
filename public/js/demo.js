@@ -26,121 +26,11 @@ $(document).ready(function() {
 
   // UI
   var micButton = $('.micButton'),
-    micText = $('.micText'),
-    transcript = $('#text'),
-    errorMsg = $('.errorMsg');
-
-  function speechInit(contentType) {
-    console.log('contentType is', contentType);
-    var speech = new SpeechRecognition({
-			serviceURI: 'ws://127.0.0.1:8020',
-      model: 'WatsonModel',
-      contentType: contentType
-    });
-    return speech;
-  }
-
-  // Test out token
-  var tokenUrl = '/token';
-  var tokenRequest = new XMLHttpRequest();
-  tokenRequest.open("GET", tokenUrl, true);
-  tokenRequest.onload = function(evt) {
-    console.log('token ', tokenRequest.responseText);
-    // var xhr = new XMLHttpRequest();
-    // var url = 'https://stream-d.watsonplatform.net/text-to-speech-beta/api/v1/voices';
-    // xhr.open('GET', url, true);
-    // xhr.setRequestHeader('X-Watson-Authorization-Token', request.responseText);
-    // xhr.setRequestHeader('Authorization ', 'none');
-    // xhr.send();
-    // xhr.onload = function(evt) {
-    //   console.log('speech data', xhr.responseText);
-    //   alert('responsetext', xhr.responseText);
-    // };
-  };
-  tokenRequest.send();
-
-  var modelsUrl = '/v1/models';
-  var modelsRequest = new XMLHttpRequest();
-  modelsRequest.open("GET", modelsUrl, true);
-  modelsRequest.onload = function(evt) {
-    // console.log('token ', request.responseText);
-  };
-  modelsRequest.send();
+  micText = $('.micText'),
+  transcript = $('#text'),
+  errorMsg = $('.errorMsg');
 
 
-// Service
-  // var recording = false,
-  //   speech = new SpeechRecognition({
-  //     ws: 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize',
-  //     model: 'WatsonModel'
-  //   });
-
-  // speech.onstart = function() {
-  //   console.log('demo.onstart()');
-  //   recording = true;
-  //   micButton.addClass('recording');
-  //   micText.text('Press again when finished');
-  //   errorMsg.hide();
-  //   transcript.show();
-  //
-  //   // Clean the paragraphs
-  //   transcript.empty();
-  //   $('<p></p>').appendTo(transcript);
-  // };
-  //
-  // speech.onerror = function(error) {
-  //   // console.log('demo.onerror():', error);
-  //   // recording = false;
-  //   // micButton.removeClass('recording');
-  //   displayError(error);
-  // };
-  //
-  // speech.onend = function() {
-  //   console.log('demo.onend()');
-  //   recording = false;
-  //   micButton.removeClass('recording');
-  //   micText.text('Press to start speaking');
-  // };
-  //
-  // speech.onresult = function(data) {
-  //   console.log('demo.onresult()', data);
-  //   showResult(data);
-  // };
-  //
-  // micButton.click(function() {
-  //   if (!recording) {
-  //     speech.start();
-  //   } else {
-  //     speech.stop();
-  //     micButton.removeClass('recording');
-  //     micText.text('Processing speech');
-  //   }
-  // });
-
-  function showResult(data) {
-    //console.log(data);
-    //if there are transcripts
-    if (data.results && data.results.length > 0) {
-
-      //if is a partial transcripts
-      if (data.results.length === 1 ) {
-        var paragraph = transcript.children().last(),
-          text = data.results[0].alternatives[0].transcript || '';
-
-        console.log('text', text);
-        //Capitalize first word
-        text = text.charAt(0).toUpperCase() + text.substring(1);
-        // if final results, append a new paragraph
-        // if (data.results[0].final){
-        text = text.trim() + '.';
-        $('.loading').hide();
-        $('#text').append(text);
-        // }
-        // paragraph.text(text);
-      }
-    }
-    // transcript.show();
-  }
 
   function displayError(error) {
     var message = error;
@@ -214,22 +104,6 @@ $(document).ready(function() {
       error: _error
     });
   }
-  // var ws = new WebSocket('ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize');
-  // window.ws = ws;
-  // ws.onopen = function(evt) {
-  //   console.log('loading');
-  //   ws.send(JSON.stringify({'action': 'start', 'content-type': 'audio/l16;rate=48000'}));
-  // };
-  //
-  // ws.onmessage = function(evt) { 
-  //   console.log('msg ', evt.data); 
-  //   var data = JSON.parse(evt.data);
-  //   showResult(data);
-  // };
-  //
-  // ws.onerror = function(evt) { 
-  //   console.log('error ', evt); 
-  // };
 
   function sendDraggedFile(file) {
     $('.loading').show();
@@ -258,24 +132,24 @@ $(document).ready(function() {
 
   var target = $("#fileUploadTarget");
   target.on('dragenter', function (e) {
-      e.stopPropagation();
-      e.preventDefault();
-      $(this).css('border', '2px solid #0B85A1');
+    e.stopPropagation();
+    e.preventDefault();
+    $(this).css('border', '2px solid #0B85A1');
   });
 
   target.on('dragover', function (e) {
-       e.stopPropagation();
-       e.preventDefault();
+    e.stopPropagation();
+    e.preventDefault();
   });
 
   target.on('drop', function (e) {
-   
-       $(this).css('border', '2px dotted #0B85A1');
-       e.preventDefault();
-       var evt = e.originalEvent;
-   
-       // Handle dragged file event
-       handleFileUploadEvent(evt);
+
+    $(this).css('border', '2px dotted #0B85A1');
+    e.preventDefault();
+    var evt = e.originalEvent;
+
+    // Handle dragged file event
+    handleFileUploadEvent(evt);
   });
 
   console.log('mic', Microphone);
@@ -292,17 +166,23 @@ $(document).ready(function() {
 
     var running = false;
 
+    var time = performance.now || performance.webkitNow,
+        t0, t1;
+
     var session = {
       audio: true,
       video: false
     };
 
-    var audioButton = document.getElementById("audioButton");
+    var recordButton = document.getElementById("recordButton");
 
-    audioButton.onclick = function(evt) {
+    recordButton.onclick = function(evt) {
       if (running) {
+        console.log('stopping mic');
         mic.stop();
+        running = false;
       } else {
+        console.log('starting mic');
         mic.record();
         running = true;
       }
@@ -310,7 +190,9 @@ $(document).ready(function() {
 
     mic.onAudio = function(blob) {
 
-      socket.send(blob);
+      setTimeout(function() {
+        socket.send(blob);
+      }, 100);
 
     };
 
@@ -326,6 +208,7 @@ $(document).ready(function() {
     // var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' + token;
     var wsUrl = 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize';
     var ws = new WebSocket(wsUrl);
+    var $textArea = $('#resultsText');
     ws.onopen = function(evt) {
       console.log('ws opened');
       ws.send(JSON.stringify({
@@ -338,42 +221,157 @@ $(document).ready(function() {
     };
     ws.onmessage = function(evt) {
       console.log('ws message', evt.data);
+      var msg = evt.data;
+      if (msg.results) {
+        showResult(msg);
+        var transcript = msg.results[0].alternatives[0].transcript;
+        console.log('transcript', transcript);
+        $('#resultsText').val(transcript);
+      }
     };
     ws.onerror = function(evt) {
       console.log('ws error', evt);
     };
     return ws;
   }
-  // function callRESTApi(token) {
-  // 	var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
-  // 	var sttRequest = new XMLHttpRequest();
-  // 	sttRequest.open("GET", modelUrl, true);
-  // 	sttRequest.withCredentials = true;
-  // 	sttRequest.setRequestHeader('Accept', 'application/json');
-  // 	sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
-  // 	sttRequest.onload = function(evt) {
-  // 			console.log('STT Models ', sttRequest.responseText);
-  // 			// We wait until we've given this request a chance to load and (ideally) set the cookie
-  // 			// But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
-  // 			websocketTest(sttRequest.responseText);
-  // 		};
-  // 	sttRequest.send();
-  // }
+
+  function callRESTApi(token) {
+    // var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+    var modelUrl = '/models';
+    var sttRequest = new XMLHttpRequest();
+    sttRequest.open("GET", modelUrl, true);
+    sttRequest.withCredentials = true;
+    sttRequest.setRequestHeader('Accept', 'application/json');
+    sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
+    sttRequest.onload = function(evt) {
+      console.log('STT Models ', sttRequest.responseText);
+      // We wait until we've given this request a chance to load and (ideally) set the cookie
+      // But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
+      // websocketTest(sttRequest.responseText);
+      console.log('models', sttRequest.responseText);
+    };
+    sttRequest.send();
+  }
+  callRESTApi('');
   // // callRESTApi(TOKEN);
   // // Make call to API to try and get cookie
   // var url = '/token';
   // var tokenRequest = new XMLHttpRequest();
   // tokenRequest.open("GET", url, true);
   // tokenRequest.onload = function(evt) {
-  // 	var token = tokenRequest.responseText;
-  // 	console.log('Token ', decodeURIComponent(token));
+  //   var token = tokenRequest.responseText;
+  //   console.log('Token ', decodeURIComponent(token));
   //
-  // 	callRESTApi(token);
+  //   callRESTApi(token);
   // }
   //
   // tokenRequest.send();
+  var arr = [{
+     "results": [
+        {
+           "alternatives": [
+              {
+                 "confidence": 0.7147521376609802, 
+                 "transcript": "blah interim "
+              }
+           ], 
+           "final": false
+        }
+     ], 
+     "result_index": 0
+  }, {
+     "results": [
+        {
+           "alternatives": [
+              {
+                 "confidence": 0.7147521376609802, 
+                 "transcript": "int ...yes three s. "
+              }
+           ], 
+           "final": false
+        }
+     ], 
+     "result_index": 0
+  }, {
+     "results": [
+        {
+           "alternatives": [
+              {
+                 "confidence": 0.7147521376609802, 
+                 "transcript": "yes the one two three s. "
+              }
+           ], 
+           "final": true
+        }
+     ], 
+     "result_index": 0
+  }, {
+     "results": [
+        {
+           "alternatives": [
+              {
+                 "confidence": 0.7147521376609802, 
+                 "transcript": "another interim ..."
+              }
+           ], 
+           "final": false
+        }
+     ], 
+     "result_index": 0
+  }, {
+     "results": [
+        {
+           "alternatives": [
+              {
+                 "confidence": 0.7147521376609802, 
+                 "transcript": "last one transcript. "
+              }
+           ], 
+           "final": true
+        }
+     ], 
+     "result_index": 0
+  }];
 
-  websocketTest()
+  var baseString = '';
+
+  function showResult(data) {
+    //if there are transcripts
+    if (data.results && data.results.length > 0) {
+
+      var text = data.results[0].alternatives[0].transcript || '';
+
+      //if is a partial transcripts
+      if (data.results.length === 1 ) {
+
+        //Capitalize first word
+        // if final results, append a new paragraph
+        if (data.results[0].final){
+          console.log('final res:', text);
+          baseString += text;
+          baseString = baseString.charAt(0).toUpperCase() + baseString.substring(1);
+          baseString = baseString.trim() + '.';
+          $('#resultsText').val(baseString);
+        } else {
+          console.log('interimResult res:', text);
+          var temp = baseString + text;
+          $('#resultsText').val(temp);
+        }
+      }
+    }
+    // transcript.show();
+  }
+
+  arr.forEach(function(sample, i) {
+    console.log('next result');
+    setTimeout(function() {
+      if (sample.results) {
+        showResult(sample);
+      }
+    }, i * 1000);
+  });
+
+  // websocketTest()
 
 
 });
