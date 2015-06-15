@@ -24,9 +24,7 @@ module.exports = function(credentials) {
       httpProxy = require('http-proxy');
 
 
-  var proxyUrl = credentials.hostname;
-
-	console.log('proxyUrl', proxyUrl);
+  var proxyUrl = 'https://' + credentials.hostname;
 
   var proxy = httpProxy.createProxyServer({
     target: proxyUrl,
@@ -44,7 +42,7 @@ module.exports = function(credentials) {
   // Listen to the `upgrade` event and proxy the
   // WebSocket requests as well.
   proxyServer.on('upgrade', function (req, socket, head) {
-    console.log('upgrade request', req);
+    console.log('Upgrading WS Connection');
     req.headers['Authorization'] = 'Basic ' + creds;
     proxy.ws(req, socket, head);
     proxy.on('error', function(err) {
