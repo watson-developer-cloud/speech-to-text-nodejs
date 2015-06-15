@@ -27,9 +27,10 @@ var express = require('express'),
     extend = require('util')._extend;
 
 // if bluemix credentials exists, then override local
-var credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
-// Save copy of config first, because Watson library deletes certain keys
-var creds = extend({}, credentials);
+var token,
+    credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
+
+console.log('Starting app with credentials: ', credentials);
 
 // Setup static public directory
 app.use(express.static(path.join(__dirname , './public')));
@@ -48,15 +49,18 @@ app.get('/', function(req, res) {
 // Get token from Watson using your credentials
 app.get('/token', function(req, res) {
   if (!token) {
+    console.log('fetching token');
     request.get({'url': 
-      credentials.hostname + '/authorization/api/v1/token?url=' + credentials.hostname + '/speech-to-text-beta/api',
+      'https://' 
+        + credentials.hostname 
+        + '/authorization/api/v1/token?url=' 
+        + 'https://' + credentials.hostname + '/speech-to-text-beta/api',
       'auth': {
         'user': credentials.username,
       'pass': credentials.password,
       'sendImmediately': false
       }
     }, function(err, response, body) {
-      console.log('response', response);
       token = body;
       res.send(body);
     }
@@ -67,7 +71,7 @@ app.get('/token', function(req, res) {
 });
 
 // Configure temporary websockets proxy
-require('./config/proxy')(creds);
+require('./config/proxy')(credentials);
 
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
