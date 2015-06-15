@@ -54,26 +54,6 @@ $(document).ready(function() {
     displayError('Error processing the request, please try again.');
   }
 
-  function getSocket(options, onopen, onmessage, onerror) {
-    var model = options.model || 'en-US_BroadbandModel';
-    var token = options.token;
-    var message = options.message || {'action': 'start'};
-    var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' 
-      + token 
-      + '&model=' + model;
-    var socket = new WebSocket(wsUrl);
-    socket.onopen = function(evt) {
-      console.log('ws opened');
-      socket.send(JSON.stringify(message));
-      onopen(evt);
-    };
-    socket.onmessage = function(evt) {
-      onmessage(evt);
-    };
-    socket.onerror = function(evt) {
-      onerror(evt);
-    };
-  }
 
   function stopSounds() {
     $('.sample2').get(0).pause();
@@ -110,42 +90,80 @@ $(document).ready(function() {
   }
 
 
-  function initFileUpload(socket) {
+  function initFileUpload(token, models) {
 
-    function handleFileUploadEvent(evt) {
-      console.log('Uploading file');
-      var file = evt.dataTransfer.files[0];
-      parseFile(file, function(err, chunk) {
-        console.log('Handling chunk');
-        if (err) {
-          console.log('FileReader error', err)
-        } else if (chunk) {
-          socket.send(chunk);
-        } else {
-          socket.send(JSON.stringify({'action': 'stop'}));
-        }
+    var modelName = $('.dropdownMenu1').val(),
+        model;
+    models.forEach(function(obj) {
+      if (obj.name === modelName) {
+        model = obj;
+      }
+    });
+    var options = {};
+    options.token = token;
+    options.message = {
+      'action': 'start',
+      'content-type': 'audio/l16;rate=' + model.rate,
+      'interim_results': true,
+      'continuous': true,
+      'word_confidence': true,
+      'timestamps': true,
+      'max_alternatives': 3
+    };
+    options.model = modelName;
+
+    getSocket(options, function(socket) {
+
+      function handleFileUploadEvent(evt) {
+        console.log('Uploading file');
+        var file = evt.dataTransfer.files[0];
+        parseFile(file, function(err, chunk) {
+          console.log('Handling chunk');
+          if (err) {
+            console.log('FileReader error', err)
+          } else if (chunk) {
+            socket.send(chunk);
+          } else {
+            socket.send(JSON.stringify({'action': 'stop'}));
+          }
+        });
+      }
+
+      var target = $(".file-upload");
+      target.on('dragenter', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
       });
-    }
 
-    var target = $(".file-upload");
-    target.on('dragenter', function (e) {
-      e.stopPropagation();
-      e.preventDefault();
+      target.on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      });
+
+      target.on('drop', function (e) {
+        console.log('File dropped');
+        e.preventDefault();
+        var evt = e.originalEvent;
+        // Handle dragged file event
+        handleFileUploadEvent(evt);
+      });
+
+    }, function(evt) {
+      console.log('ws msg', evt.data);
+      var msg = JSON.parse(evt.data);
+      if (msg.results) {
+        showResult(msg);
+      }
+    }, function(err) {
+      console.log('err', err);
     });
 
-    target.on('dragover', function (e) {
-      e.stopPropagation();
-      e.preventDefault();
-    });
 
-    target.on('drop', function (e) {
-      console.log('File dropped');
-      e.preventDefault();
-      var evt = e.originalEvent;
-      // Handle dragged file event
-      handleFileUploadEvent(evt);
-    });
+  }
 
+  function showJSON(json) {
+    baseJSON += json;
+    $('#resultsJSON').val(baseJSON);
   }
 
   function showResult(data) {
@@ -206,7 +224,7 @@ $(document).ready(function() {
 
   }
 
-  function websocketTest(token) {
+  function initMicrophone(token, models) {
     // Test out websocket
     var options = {};
     options.token = token;
@@ -221,38 +239,17 @@ $(document).ready(function() {
     };
     getSocket(options, function() {}, function(evt) {
       console.log('ws msg', evt.data);
-      var msg = JSON.parse(evt.data);
+      var json = evt.data;
+      var msg = JSON.parse(json);
       if (msg.results) {
         showResult(msg);
+        showJSON(json);
       }
     }, function(err) {
       console.log('err', err);
     });
   }
 
-  function callRESTApi(token) {
-    var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
-    var sttRequest = new XMLHttpRequest();
-    sttRequest.open("GET", modelUrl, true);
-    sttRequest.withCredentials = true;
-    sttRequest.setRequestHeader('Accept', 'application/json');
-    sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
-    sttRequest.onload = function(evt) {
-      console.log('STT Models ', sttRequest.responseText);
-      // We wait until we've given this request a chance to load and (ideally) set the cookie
-      // But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
-      console.log('models', sttRequest.responseText);
-      var response = JSON.parse(sttRequest.responseText);
-      response.models.forEach(function(model) {
-        $("select#dropdownMenu1").append( $("<option>")
-            .val(model.name)
-            .html(model.description)
-        );
-      });
-    };
-    sttRequest.send();
-  }
-  // callRESTApi(TOKEN);
   // Make call to API to try and get cookie
   var url = '/token';
   var tokenRequest = new XMLHttpRequest();
@@ -260,9 +257,21 @@ $(document).ready(function() {
   tokenRequest.onload = function(evt) {
     var token = tokenRequest.responseText;
     console.log('Token ', decodeURIComponent(token));
-    callRESTApi(token);
-    websocketTest(token);
+    // Get available speech recognition models
+    // And display them in drop-down
+    getModels(token, function(models) {
+      console.log('STT Models ', models);
+      initFileUpload(token, models);
+      initMicrophone(token, models);
+      models.forEach(function(model) {
+        $("select#dropdownMenu1").append( $("<option>")
+            .val(model.name)
+            .html(model.description)
+        );
+      });
+    });
   }
+
 
   tokenRequest.send();
   var arr = [{

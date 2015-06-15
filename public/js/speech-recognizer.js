@@ -248,134 +248,82 @@ Microphone.prototype.onStartRecording =  function() {};
 Microphone.prototype.onStopRecording =  function() {};
 Microphone.prototype.onAudio =  function() {};
 
-/**
- *  @author Daniel Bolanos <dbolano@us.ibm.com>
- *  modified by German Attanasio <germanatt@us.ibm.com>
- *
- * @param {Object} _options configuration parameters
- * @param {String} _options.ws  WebSocket URL
- * @param {Microphone} _options.mic The Michrophone
- *
- */
-function SpeechRecognizer(_options) {
-  var options = _options || {};
 
-  this.mic = options.mic || new Microphone(_options);
-  this.ws = options.ws || '';
-  this.sessions = [];
+// From alediaferia's SO response
+// http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
+function parseFile(file, callback) {
+    var fileSize   = file.size;
+    var chunkSize  = 2048; // bytes
+    var offset     = 0;
+    var self       = this; // we need a reference to the current object
+    var block      = null;
 
-  var self = this;
+    var foo = function(evt) {
+        if (evt.target.error == null) {
+            offset += evt.target.result.length;
+            callback(null, evt.target.result); // callback for handling read chunk
+        } else {
+            console.log("Read error: " + evt.target.error);
+            callback(evt.target.error, null);
+            return;
+        }
+        if (offset >= fileSize) {
+            console.log("Done reading file");
+            callback(null, null);
+            return;
+        }
 
-  this.mic.onAudio = function(data) {
-    //console.log('onAudio():',data);
-    if (self.socket.connected)
-      self.socket.emit('message', {audio: data, rate: self.mic.sampleRate});
+        block(offset, chunkSize, file);
+    }
+
+    block = function(_offset, length, _file) {
+        var r = new FileReader();
+        var blob = _file.slice(_offset, length + _offset);
+        r.onload = foo;
+        r.readAsText(blob);
+    }
+
+    block(offset, chunkSize, file);
+}
+
+// Mini WS callback API, so we can initialize
+// with model and token in URI, plus
+// start message
+function getSocket(options, onlistening, onmessage, onerror) {
+  var model = options.model || 'en-US_BroadbandModel';
+  var token = options.token;
+  var message = options.message || {'action': 'start'};
+  var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' 
+    + token 
+    + '&model=' + model;
+  var socket = new WebSocket(wsUrl);
+  socket.onopen = function(evt) {
+    console.log('ws opened');
+    socket.send(JSON.stringify(message));
   };
-
-  this.mic.onError = function(error) {
-    self.onerror(error);
+  socket.onmessage = function(evt) {
+    if (evt.data.state === 'listening') {
+      onlistening(socket);
+    }
+    onmessage(evt);
   };
-
-  this.mic.onStartRecording = function() {
-    self._init();
-  };
-
-  this.mic.onStopRecording = function() {
-    console.log('mic.onStopRecording()');
-    self.socket.emit('message', {disconnect:true});
+  socket.onerror = function(evt) {
+    onerror(evt);
   };
 }
 
-/**
- * Create a Websocket and listen for server data
- */
-SpeechRecognizer.prototype._init = function() {
-  // If sockets exits then connect to it
-  // otherwise create a new socket
-  if (this.socket){
-    this.socket.connect();
-    return;
-  }
-
-  console.log('SpeechRecognizer._init():', this.ws);
-  var self = this;
-  this.socket = io.connect(this.ws);
-
-  this.socket.on('connect', function() {
-    console.log('socket.onconnect()');
-    self.connected = true;
-    self.onstart();
-  });
-
-  this.socket.on('disconnect', function() {
-    console.log('socket.ondisconnect()');
-    self.onend();
-  });
-
-  this.socket.on('session', function(session) {
-    console.log('session:',session);
-    self.sessions.push(session);
-    self.session_id = session;
-  });
-
-  this.socket.on('connect_failed', function() {
-    console.log('socket.connect_failed()');
-    self.onerror('WebSocket can not be contacted');
-  });
-
-  var onError = function(error) {
-    var errorStr = error ? error : 'A unknown error occurred';
-    console.log('socket.onerror()', errorStr);
-    self.onerror(errorStr);
+function getModels(token, callback) {
+  var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+  var sttRequest = new XMLHttpRequest();
+  sttRequest.open("GET", modelUrl, true);
+  sttRequest.withCredentials = true;
+  sttRequest.setRequestHeader('Accept', 'application/json');
+  sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
+  sttRequest.onload = function(evt) {
+    // We wait until we've given this request a chance to load and (ideally) set the cookie
+    // But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
+    var response = JSON.parse(sttRequest.responseText);
+    callback(response.models);
   };
-
-  this.socket.on('error', onError);
-  this.socket.on('onerror', onError);
-
-  this.socket.on('message', function(msg){
-    //console.log('socket.onmessage():', msg);
-    self.onresult(msg);
-  });
-
-};
-
-/**
- * The stop method represents an instruction to the
- * recognition service to start listening
- */
-SpeechRecognizer.prototype.start = function() {
-  try {
-    this.mic.record();
-  } catch (e) {
-    this.onerror(e);
-    return;
-  }
-};
-
-/**
- * The stop method represents an instruction to the
- * recognition service to stop listening to more audio
- */
-SpeechRecognizer.prototype.stop = function() {
-  try {
-    this.mic.stop();
-  } catch (e) {
-    this.onerror(e);
-    return;
-  }
-};
-
-/**
- * The abort method is a request to immediately stop
- * listening and stop recognizing and do not return
- * any information but that the system is done.
- */
-SpeechRecognizer.prototype.abort = function() {
-  this.stop();
-};
-
-// Functions used for speech recognition events listeners.
-SpeechRecognizer.prototype.onstart = function() {};
-SpeechRecognizer.prototype.onresult = function() {};
-SpeechRecognizer.prototype.onerror = function() {};
-SpeechRecognizer.prototype.onend = function() {};
+  sttRequest.send();
+}
