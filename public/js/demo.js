@@ -54,6 +54,27 @@ $(document).ready(function() {
     displayError('Error processing the request, please try again.');
   }
 
+  function getSocket(options, onopen, onmessage, onerror) {
+    var model = options.model || 'en-US_BroadbandModel';
+    var token = options.token;
+    var message = options.message || {'action': 'start'};
+    var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' 
+      + token 
+      + '&model=' + model;
+    var socket = new WebSocket(wsUrl);
+    socket.onopen = function(evt) {
+      console.log('ws opened');
+      socket.send(JSON.stringify(message));
+      onopen(evt);
+    };
+    socket.onmessage = function(evt) {
+      onmessage(evt);
+    };
+    socket.onerror = function(evt) {
+      onerror(evt);
+    };
+  }
+
   function stopSounds() {
     $('.sample2').get(0).pause();
     $('.sample2').get(0).currentTime = 0;
@@ -90,36 +111,26 @@ $(document).ready(function() {
 
 
   function initFileUpload(socket) {
-    function sendDraggedFile(file) {
-      $('.loading').show();
-      console.log('loading blob: ');
-      ws.send(file);
-      ws.send(JSON.stringify({'action': 'stop'}));
-    }
 
     function handleFileUploadEvent(evt) {
-      console.log('uploading file');
+      console.log('Uploading file');
       var file = evt.dataTransfer.files[0];
-      var objectUrl = URL.createObjectURL(file);
-      sendDraggedFile(file);
-      $('.custom.sample-title').text(file.name);
-      $('.audio3').click(function() {
-        console.log('evt', evt);
-        $('.sample3').prop('src', objectUrl);
-        stopSounds();
-        $('.sample3').get(0).play();
-      });
-      $('.send-api-audio3').click(function() {
-        console.log('click! API');
-        sendDraggedFile(file);
+      parseFile(file, function(err, chunk) {
+        console.log('Handling chunk');
+        if (err) {
+          console.log('FileReader error', err)
+        } else if (chunk) {
+          socket.send(chunk);
+        } else {
+          socket.send(JSON.stringify({'action': 'stop'}));
+        }
       });
     }
 
-    var target = $("#fileUploadTarget");
+    var target = $(".file-upload");
     target.on('dragenter', function (e) {
       e.stopPropagation();
       e.preventDefault();
-      $(this).css('border', '2px solid #0B85A1');
     });
 
     target.on('dragover', function (e) {
@@ -128,17 +139,14 @@ $(document).ready(function() {
     });
 
     target.on('drop', function (e) {
-
-      $(this).css('border', '2px dotted #0B85A1');
+      console.log('File dropped');
       e.preventDefault();
       var evt = e.originalEvent;
-
       // Handle dragged file event
       handleFileUploadEvent(evt);
     });
-  }
 
-  // ncaught RangeError: Offset is outside the bounds of the DataView
+  }
 
   function showResult(data) {
     //if there are transcripts
@@ -200,34 +208,26 @@ $(document).ready(function() {
 
   function websocketTest(token) {
     // Test out websocket
-    var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' + token;
-    var ws = new WebSocket(wsUrl);
-    var $textArea = $('#resultsText');
-    ws.onopen = function(evt) {
-      console.log('ws opened');
-      ws.send(JSON.stringify({
-        'action': 'start',
-        'content-type': 'audio/l16;rate=16000',
-        'interim_results': true,
-        'continuous': true
-        'word_confidence': true,
-        'timestamps': true,
-        'max_alternatives': 3
-      }));
-      initSpeech(ws);
+    var options = {};
+    options.token = token;
+    options.message = {
+      'action': 'start',
+      'content-type': 'audio/l16;rate=16000',
+      'interim_results': true,
+      'continuous': true,
+      'word_confidence': true,
+      'timestamps': true,
+      'max_alternatives': 3
     };
-    ws.onmessage = function(evt) {
-      console.log('ws message', evt.data);
+    getSocket(options, function() {}, function(evt) {
+      console.log('ws msg', evt.data);
       var msg = JSON.parse(evt.data);
       if (msg.results) {
         showResult(msg);
-        console.log('result', msg);
       }
-    };
-    ws.onerror = function(evt) {
-      console.log('ws error', evt);
-    };
-    return ws;
+    }, function(err) {
+      console.log('err', err);
+    });
   }
 
   function callRESTApi(token) {
@@ -241,9 +241,14 @@ $(document).ready(function() {
       console.log('STT Models ', sttRequest.responseText);
       // We wait until we've given this request a chance to load and (ideally) set the cookie
       // But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
-      // websocketTest(sttRequest.responseText);
       console.log('models', sttRequest.responseText);
-      // var models = JSON.parse(sttRequest.responseText);
+      var response = JSON.parse(sttRequest.responseText);
+      response.models.forEach(function(model) {
+        $("select#dropdownMenu1").append( $("<option>")
+            .val(model.name)
+            .html(model.description)
+        );
+      });
     };
     sttRequest.send();
   }
@@ -255,10 +260,8 @@ $(document).ready(function() {
   tokenRequest.onload = function(evt) {
     var token = tokenRequest.responseText;
     console.log('Token ', decodeURIComponent(token));
-
-    // callRESTApi(token);
+    callRESTApi(token);
     websocketTest(token);
-
   }
 
   tokenRequest.send();
