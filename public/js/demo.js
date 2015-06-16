@@ -216,26 +216,27 @@ $(document).ready(function() {
     var mic = new Microphone();
 
     var running = false;
-    var recordButton = document.getElementById("recordButton");
-    recordButton.onclick = function(evt) {
+    var recordButton = $("#recordButton");
+    recordButton.click(function(evt) {
       evt.preventDefault();
       evt.stopPropagation();
       if (running) {
+        recordButton.removeAttr('style');
+        recordButton.find('img').attr('src', 'img/microphone.svg');
         console.log('stopping mic');
         mic.stop();
         running = false;
       } else {
+        recordButton.css('background-color', '#d74108');
+        recordButton.find('img').attr('src', 'img/stop.svg');
         console.log('starting mic');
         mic.record();
         running = true;
       }
-    };
-    var count = 0;
+    });
+
     mic.onAudio = function(blob) {
-      // setTimeout(function() {
-        socket.send(blob)
-      // }, count * 100);
-      // count++;
+      socket.send(blob)
     };
 
 
@@ -324,7 +325,6 @@ $(document).ready(function() {
     });
   }
   // tokenRequest.send();
-
 
 });
 
