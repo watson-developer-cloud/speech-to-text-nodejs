@@ -89,14 +89,8 @@ $(document).ready(function() {
   //   $('<p></p>').appendTo(transcript);
   //   showResult(data);
   // }
-
-
-  function showAlternatives(alternatives) {
-    var $hypotheses = $('.hypotheses ul');
-    alternatives.forEach(function(alternative, idx) {
-      $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
-    });
-  }
+  //
+  var sockets = {};
 
   function showMetaData(timestamps) {
     timestamps.forEach(function(timestamp) {
@@ -108,6 +102,20 @@ $(document).ready(function() {
       $('.time-length-row').append('<td>' + timelength.toString().slice(0, 3) + ' s</td>');
     });
   }
+
+  function showAlternatives(alternatives) {
+    var $hypotheses = $('.hypotheses ul');
+    alternatives.forEach(function(alternative, idx) {
+      $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
+    });
+    $hypotheses.on('click', "li", function () {
+      console.log("showing metadata");
+      var idx = + $(this).data('hypothesis-index');
+      var timestamps = alternatives[idx].timestamps;
+      showMetaData(timestamps);
+    });
+  }
+
  
   function showJSON(json, baseJSON) {
     baseJSON += json;
@@ -119,7 +127,7 @@ $(document).ready(function() {
     //if there are transcripts
     if (data.results && data.results.length > 0) {
 
-      showMetaData(data.results[0].alternatives[0].timestamps);
+      // showMetaData(data.results[0].alternatives[0].timestamps);
 
       var text = data.results[0].alternatives[0].transcript || '';
 
@@ -207,46 +215,10 @@ $(document).ready(function() {
       }
     );
 
-
   }
 
 
-  function initSpeech(socket) {
-
-    var mic = new Microphone();
-
-    var running = false;
-    var recordButton = $("#recordButton");
-    recordButton.click(function(evt) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      if (running) {
-        recordButton.removeAttr('style');
-        recordButton.find('img').attr('src', 'img/microphone.svg');
-        console.log('stopping mic');
-        mic.stop();
-        running = false;
-      } else {
-        recordButton.css('background-color', '#d74108');
-        recordButton.find('img').attr('src', 'img/stop.svg');
-        console.log('starting mic');
-        mic.record();
-        running = true;
-      }
-    });
-
-    mic.onAudio = function(blob) {
-      socket.send(blob)
-    };
-
-
-    function onError(err) {
-      console.log('audio error: ', err);
-    }
-
-  }
-
-  function initMicrophone(token, model) {
+  function initMicrophone(token, model, mic, callback) {
     // Test out websocket
     var baseString = '';
     var baseJSON = '';
@@ -264,7 +236,15 @@ $(document).ready(function() {
     };
     options.model = model.name;
     getSocket(options, function(socket) {
-      initSpeech(socket);
+
+      mic.onAudio = function(blob) {
+        socket.send(blob)
+      };
+
+      callback(socket);
+
+      sockets[model.name] = socket;
+
     }, function(msg) {
       console.log('ws msg', msg);
       if (msg.results) {
@@ -274,11 +254,22 @@ $(document).ready(function() {
     }, function(err) {
       console.log('err', err);
     });
+
+    function onError(err) {
+      console.log('audio error: ', err);
+    }
+
   }
 
-  function initUI(token, model) {
-    initFileUpload(token, model);
-    initMicrophone(token, model);
+  function stopMicrophone(socket, callback) {
+    socket.send(JSON.stringify({'action': 'stop'}));
+    callback(socket);
+  }
+
+  function setMicrophoneListener(modelObject, token, callback) {
+
+    // recordButton.unbind('click');
+
   }
 
   function getModelObject(models, modelName) {
@@ -301,6 +292,7 @@ $(document).ready(function() {
     // Get available speech recognition models
     // And display them in drop-down
     getModels(token, function(models) {
+
       console.log('STT Models ', models);
       models.forEach(function(model) {
         $("select#dropdownMenu1").append( $("<option>")
@@ -309,22 +301,53 @@ $(document).ready(function() {
         );
       });
       // Initialize UI with default model
+      // TODO: need to wait to send start message
       var modelObject = getModelObject(models, 'en-US_BroadbandModel');
-      console.log('initUI', modelObject);
-      if (modelObject) {
-        initUI(token, modelObject);
-      }
-      // Re-initialize UI when model changes
-      // $("select#dropdownMenu1").change(function(evt) {
-      //   var modelName = $("select#dropdownMenu1").val();
-      //   var model = getModelObject(models, modelName);
-      //   if (model) {
-      //     initUI(token, model);
-      //   }
-      // });
+      var modelObject = {name: 'en-US_BroadbandModel'};
+
+      var running = false;
+      var recordButton = $('#recordButton');
+
+      recordButton.click(function(evt) {
+
+        var mic = new Microphone();
+
+        console.log('click!');
+
+        evt.preventDefault();
+        // evt.stopPropagation();
+
+        console.log('running state', running);
+
+        if (!running) {
+          initMicrophone(token, modelObject, mic, function(result) {
+            recordButton.css('background-color', '#d74108');
+            recordButton.find('img').attr('src', 'img/stop.svg');
+            console.log('starting mic');
+            mic.record();
+          });
+        } else {
+          console.log('stopping mic');
+          recordButton.removeAttr('style');
+          recordButton.find('img').attr('src', 'img/microphone.svg');
+          mic.stop();
+          sockets[modelObject.name].send(JSON.stringify({'action': 'stop'}));
+        }
+
+        running = !running;
+
+      });
+      
+      // Re-initialize event listener with appropriate model when model changes
+      $("select#dropdownMenu1").change(function(evt) {
+        var modelName = $("select#dropdownMenu1").val();
+        var newModelObject = getModelObject(models, modelName);
+        setMicrophoneListener(mic, modelObject, token);
+      });
+
     });
   }
-  // tokenRequest.send();
+  tokenRequest.send();
 
 });
 
