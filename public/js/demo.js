@@ -55,118 +55,47 @@ $(document).ready(function() {
   }
 
 
-  function stopSounds() {
-    $('.sample2').get(0).pause();
-    $('.sample2').get(0).currentTime = 0;
-    $('.sample1').get(0).pause();
-    $('.sample1').get(0).currentTime = 0;
-  }
+  // function stopSounds() {
+  //   $('.sample2').get(0).pause();
+  //   $('.sample2').get(0).currentTime = 0;
+  //   $('.sample1').get(0).pause();
+  //   $('.sample1').get(0).currentTime = 0;
+  // }
+  //
+  // $('.audio1').click(function() {
+  //   $('.audio-staged audio').attr('src', audio1);
+  //   stopSounds();
+  //   $('.sample1').get(0).play();
+  // });
+  //
+  // $('.audio2').click(function() {
+  //   $('.audio-staged audio').attr('src', audio2);
+  //   stopSounds();
+  //   $('.sample2').get(0).play();
+  // });
+  //
+  // $('.send-api-audio1').click(function() {
+  //   transcriptAudio(audio1);
+  // });
+  //
+  // $('.send-api-audio2').click(function() {
+  //   transcriptAudio(audio2);
+  // });
+  //
+  // function showAudioResult(data){
+  //   $('.loading').hide();
+  //   transcript.empty();
+  //   $('<p></p>').appendTo(transcript);
+  //   showResult(data);
+  // }
 
-  $('.audio1').click(function() {
-    $('.audio-staged audio').attr('src', audio1);
-    stopSounds();
-    $('.sample1').get(0).play();
-  });
-
-  $('.audio2').click(function() {
-    $('.audio-staged audio').attr('src', audio2);
-    stopSounds();
-    $('.sample2').get(0).play();
-  });
-
-  $('.send-api-audio1').click(function() {
-    transcriptAudio(audio1);
-  });
-
-  $('.send-api-audio2').click(function() {
-    transcriptAudio(audio2);
-  });
-
-  function showAudioResult(data){
-    $('.loading').hide();
-    transcript.empty();
-    $('<p></p>').appendTo(transcript);
-    showResult(data);
-  }
-
-
-  function initFileUpload(token, models) {
-
-    var modelName = $('.dropdownMenu1').val(),
-        model;
-    models.forEach(function(obj) {
-      if (obj.name === modelName) {
-        model = obj;
-      }
-    });
-    var options = {};
-    options.token = token;
-    options.message = {
-      'action': 'start',
-      'content-type': 'audio/l16;rate=' + model.rate,
-      'interim_results': true,
-      'continuous': true,
-      'word_confidence': true,
-      'timestamps': true,
-      'max_alternatives': 3
-    };
-    options.model = modelName;
-
-    getSocket(options, function(socket) {
-
-      function handleFileUploadEvent(evt) {
-        console.log('Uploading file');
-        var file = evt.dataTransfer.files[0];
-        parseFile(file, function(err, chunk) {
-          console.log('Handling chunk');
-          if (err) {
-            console.log('FileReader error', err)
-          } else if (chunk) {
-            socket.send(chunk);
-          } else {
-            socket.send(JSON.stringify({'action': 'stop'}));
-          }
-        });
-      }
-
-      var target = $(".file-upload");
-      target.on('dragenter', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-      });
-
-      target.on('dragover', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-      });
-
-      target.on('drop', function (e) {
-        console.log('File dropped');
-        e.preventDefault();
-        var evt = e.originalEvent;
-        // Handle dragged file event
-        handleFileUploadEvent(evt);
-      });
-
-    }, function(evt) {
-      console.log('ws msg', evt.data);
-      var msg = JSON.parse(evt.data);
-      if (msg.results) {
-        showResult(msg);
-      }
-    }, function(err) {
-      console.log('err', err);
-    });
-
-
-  }
-
-  function showJSON(json) {
+ 
+  function showJSON(json, baseJSON) {
     baseJSON += json;
     $('#resultsJSON').val(baseJSON);
   }
 
-  function showResult(data) {
+  function showResult(data, baseString) {
     //if there are transcripts
     if (data.results && data.results.length > 0) {
 
@@ -191,6 +120,74 @@ $(document).ready(function() {
       }
     }
   }
+
+  function initFileUpload(token, model) {
+
+    var baseString = '';
+    var baseJSON = '';
+
+    var options = {};
+    options.token = token;
+    options.message = {
+      'action': 'start',
+      'content-type': 'audio/l16', //;rate=' + model.rate,
+      'interim_results': true,
+      'continuous': true,
+      'word_confidence': true,
+      'timestamps': true,
+      'max_alternatives': 3
+    };
+    options.model = model.name;
+
+    getSocket(options, function(socket) {
+
+        function handleFileUploadEvent(evt) {
+          console.log('Uploading file');
+          var file = evt.dataTransfer.files[0];
+          var blob = new Blob([file], {type: 'audio/l16'});
+          parseFile(blob, function(chunk) {
+            console.log('Handling chunk', chunk);
+            // socket.send(chunk);
+          });
+        }
+
+        console.log('setting target');
+
+        var target = $("#fileUploadTarget");
+        target.on('dragenter', function (e) {
+          console.log('dragenter');
+          e.stopPropagation();
+          e.preventDefault();
+        });
+
+        target.on('dragover', function (e) {
+          console.log('dragover');
+          e.stopPropagation();
+          e.preventDefault();
+        });
+
+        target.on('drop', function (e) {
+          console.log('File dropped');
+          e.preventDefault();
+          var evt = e.originalEvent;
+          // Handle dragged file event
+          handleFileUploadEvent(evt);
+        });
+
+      }, function(msg) {
+        console.log('ws msg', msg);
+        if (msg.results) {
+          showResult(msg, baseString);
+          showJSON(JSON.stringify(msg.results), baseJSON);
+        }
+      }, function(err) {
+        console.log('err', err);
+      }
+    );
+
+
+  }
+
 
   function initSpeech(socket) {
 
@@ -224,8 +221,11 @@ $(document).ready(function() {
 
   }
 
-  function initMicrophone(token, models) {
+  function initMicrophone(token, model) {
     // Test out websocket
+    var baseString = '';
+    var baseJSON = '';
+
     var options = {};
     options.token = token;
     options.message = {
@@ -237,17 +237,33 @@ $(document).ready(function() {
       'timestamps': true,
       'max_alternatives': 3
     };
+    options.model = model.name;
     getSocket(options, function() {}, function(evt) {
       console.log('ws msg', evt.data);
       var json = evt.data;
       var msg = JSON.parse(json);
       if (msg.results) {
-        showResult(msg);
-        showJSON(json);
+        showResult(msg, baseString);
+        showJSON(JSON.stringify(msg.results), baseJSON);
       }
     }, function(err) {
       console.log('err', err);
     });
+  }
+
+  function initUI(token, model) {
+    initFileUpload(token, model);
+    // initMicrophone(token, model);
+  }
+
+  function getModelObject(models, modelName) {
+    var result = null;
+    models.forEach(function(model) {
+      if (model.name === modelName) {
+        result = model;
+      }
+    });
+    return result;
   }
 
   // Make call to API to try and get cookie
@@ -261,97 +277,29 @@ $(document).ready(function() {
     // And display them in drop-down
     getModels(token, function(models) {
       console.log('STT Models ', models);
-      initFileUpload(token, models);
-      initMicrophone(token, models);
       models.forEach(function(model) {
         $("select#dropdownMenu1").append( $("<option>")
             .val(model.name)
             .html(model.description)
         );
       });
+      // Initialize UI with default model
+      var modelObject = getModelObject(models, 'en-US_BroadbandModel');
+      console.log('initUI', modelObject);
+      if (modelObject) {
+        initUI(token, modelObject);
+      }
+      // Re-initialize UI when model changes
+      // $("select#dropdownMenu1").change(function(evt) {
+      //   var modelName = $("select#dropdownMenu1").val();
+      //   var model = getModelObject(models, modelName);
+      //   if (model) {
+      //     initUI(token, model);
+      //   }
+      // });
     });
   }
-
-
   tokenRequest.send();
-  var arr = [{
-     "results": [
-        {
-           "alternatives": [
-              {
-                 "confidence": 0.7147521376609802, 
-                 "transcript": "blah interim "
-              }
-           ], 
-           "final": false
-        }
-     ], 
-     "result_index": 0
-  }, {
-     "results": [
-        {
-           "alternatives": [
-              {
-                 "confidence": 0.7147521376609802, 
-                 "transcript": "int ...yes three s. "
-              }
-           ], 
-           "final": false
-        }
-     ], 
-     "result_index": 0
-  }, {
-     "results": [
-        {
-           "alternatives": [
-              {
-                 "confidence": 0.7147521376609802, 
-                 "transcript": "yes the one two three s. "
-              }
-           ], 
-           "final": true
-        }
-     ], 
-     "result_index": 0
-  }, {
-     "results": [
-        {
-           "alternatives": [
-              {
-                 "confidence": 0.7147521376609802, 
-                 "transcript": "another interim ..."
-              }
-           ], 
-           "final": false
-        }
-     ], 
-     "result_index": 0
-  }, {
-     "results": [
-        {
-           "alternatives": [
-              {
-                 "confidence": 0.7147521376609802, 
-                 "transcript": "last one transcript. "
-              }
-           ], 
-           "final": true
-        }
-     ], 
-     "result_index": 0
-  }];
-
-  var baseString = '';
-
-
-  // arr.forEach(function(sample, i) {
-  //   console.log('next result');
-  //   setTimeout(function() {
-  //     if (sample.results) {
-  //       showResult(sample);
-  //     }
-  //   }, i * 1000);
-  // });
 
 
 });

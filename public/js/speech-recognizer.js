@@ -220,13 +220,13 @@ Microphone.prototype._exportDataBufferTo16Khz = function(bufferNewSamples) {
  * Creates a Blob type: 'audio/l16' with the
  * chunk coming from the microphone.
  */
-Microphone.prototype._exportDataBuffer = function(buffer) {
+var exportDataBuffer = function(buffer, bufferSize) {
   var pcmEncodedBuffer = null,
     dataView = null,
     index = 0,
     volume = 0x7FFF; //range from 0 to 0x7FFF to control the volume
 
-  pcmEncodedBuffer = new ArrayBuffer(this.bufferSize * 2);
+  pcmEncodedBuffer = new ArrayBuffer(bufferSize * 2);
   dataView = new DataView(pcmEncodedBuffer);
 
   /* Explanation for the math: The raw values captured from the Web Audio API are
@@ -242,6 +242,10 @@ Microphone.prototype._exportDataBuffer = function(buffer) {
   // l16 is the MIME type for 16-bit PCM
   return new Blob([dataView], { type: 'audio/l16' });
 };
+Microphone.prototype._exportDataBuffer = function(buffer){
+  exportDataBuffer(buffer, this.bufferSize);
+}; 
+
 
 // Functions used to control Microphone events listeners.
 Microphone.prototype.onStartRecording =  function() {};
@@ -249,40 +253,43 @@ Microphone.prototype.onStopRecording =  function() {};
 Microphone.prototype.onAudio =  function() {};
 
 
+// We evidently can't send as arraybuffer, so we have to read blob from File
+function dataURItoBlob(dataURI) {
+  var arr = dataURI.split(',');
+  return exportDataBuffer(arr, arr.length);
+}
+
 // From alediaferia's SO response
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
 function parseFile(file, callback) {
     var fileSize   = file.size;
-    var chunkSize  = 2048; // bytes
-    var offset     = 0;
+    var chunkSize  = 2048 * 4; // bytes
+    var offset     = 44;
     var self       = this; // we need a reference to the current object
     var block      = null;
-
     var foo = function(evt) {
-        if (evt.target.error == null) {
-            offset += evt.target.result.length;
-            callback(null, evt.target.result); // callback for handling read chunk
-        } else {
-            console.log("Read error: " + evt.target.error);
-            callback(evt.target.error, null);
-            return;
-        }
         if (offset >= fileSize) {
             console.log("Done reading file");
-            callback(null, null);
             return;
         }
-
+        if (evt.target.error == null) {
+            var len = evt.target.result.length;
+            offset += len;
+            var chunk = evt.target.result;
+            var blob = new Blob([exportDataBuffer(chunk, len)], {type: 'audio/l16'});
+            callback(blob); // callback for handling read chunk
+        } else {
+            console.log("Read error: " + evt.target.error);
+            return;
+        }
         block(offset, chunkSize, file);
     }
-
     block = function(_offset, length, _file) {
         var r = new FileReader();
         var blob = _file.slice(_offset, length + _offset);
         r.onload = foo;
-        r.readAsText(blob);
+        r.readAsBinaryString(blob);
     }
-
     block(offset, chunkSize, file);
 }
 
@@ -293,8 +300,9 @@ function getSocket(options, onlistening, onmessage, onerror) {
   var model = options.model || 'en-US_BroadbandModel';
   var token = options.token;
   var message = options.message || {'action': 'start'};
-  var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token=' 
-    + token 
+  console.log('URL model', model);
+  var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token='
+    + token
     + '&model=' + model;
   var socket = new WebSocket(wsUrl);
   socket.onopen = function(evt) {
@@ -302,10 +310,12 @@ function getSocket(options, onlistening, onmessage, onerror) {
     socket.send(JSON.stringify(message));
   };
   socket.onmessage = function(evt) {
-    if (evt.data.state === 'listening') {
+    var msg = JSON.parse(evt.data);
+    console.log('evt', evt);
+    if (msg.state === 'listening') {
       onlistening(socket);
     }
-    onmessage(evt);
+    onmessage(msg);
   };
   socket.onerror = function(evt) {
     onerror(evt);
