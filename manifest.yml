@@ -4,9 +4,9 @@ declared-services:
     label: speech_to_text
     plan: free
 applications:
-- name: speech-to-text-nodejs
+- services:
+  - speech-to-text-service
+  name: speech-to-text-early-alpha
   command: node app.js
   path: .
-  memory: 256m
-  services:
-  - speech-to-text-service
+  memory: 256M
