@@ -28,8 +28,7 @@ $(document).ready(function() {
   var micButton = $('.micButton'),
   micText = $('.micText'),
   transcript = $('#text'),
-  errorMsg = $('.errorMsg'),
-  modelSet = false;
+  errorMsg = $('.errorMsg');
 
 
   function displayError(error) {
@@ -296,9 +295,9 @@ $(document).ready(function() {
       console.log('STT Models ', models);
       models.forEach(function(model) {
         $("select#dropdownMenu1").append( $("<option>")
-            .val(model.name)
-            .html(model.description)
-        );
+          .val(model.name)
+          .html(model.description)
+          );
       });
       // Initialize UI with default model
       // TODO: need to wait to send start message
@@ -308,7 +307,7 @@ $(document).ready(function() {
       var running = false;
       var recordButton = $('#recordButton');
 
-      recordButton.click(function(evt) {
+      recordButton.click($.proxy(function(evt) {
 
         var mic = new Microphone();
 
@@ -320,6 +319,7 @@ $(document).ready(function() {
         console.log('running state', running);
 
         if (!running) {
+          count++;
           initMicrophone(token, modelObject, mic, function(result) {
             recordButton.css('background-color', '#d74108');
             recordButton.find('img').attr('src', 'img/stop.svg');
@@ -327,6 +327,7 @@ $(document).ready(function() {
             mic.record();
           });
         } else {
+          count++;
           console.log('stopping mic');
           recordButton.removeAttr('style');
           recordButton.find('img').attr('src', 'img/microphone.svg');
@@ -336,8 +337,8 @@ $(document).ready(function() {
 
         running = !running;
 
-      });
-      
+      }, this));
+
       // Re-initialize event listener with appropriate model when model changes
       $("select#dropdownMenu1").change(function(evt) {
         var modelName = $("select#dropdownMenu1").val();
