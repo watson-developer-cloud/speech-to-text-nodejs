@@ -263,21 +263,25 @@ function dataURItoBlob(dataURI) {
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
 function parseFile(file, callback) {
     var fileSize   = file.size;
-    var chunkSize  = 2048 * 4; // bytes
+    var chunkSize  = 2048 * 16; // bytes
     var offset     = 44;
     var self       = this; // we need a reference to the current object
     var block      = null;
+    var count      = 0;
     var foo = function(evt) {
         if (offset >= fileSize) {
             console.log("Done reading file");
             return;
         }
         if (evt.target.error == null) {
-            var len = evt.target.result.length;
+            var buffer = evt.target.result;
+            var len = buffer.byteLength;
             offset += len;
-            var chunk = evt.target.result;
-            var blob = new Blob([exportDataBuffer(chunk, len)], {type: 'audio/l16'});
-            callback(blob); // callback for handling read chunk
+            var finalBlob = exportDataBuffer(buffer, len);
+            setTimeout(function() {
+              callback(buffer); // callback for handling read chunk
+            }, count * 100);
+            count++;
         } else {
             console.log("Read error: " + evt.target.error);
             return;
@@ -288,7 +292,7 @@ function parseFile(file, callback) {
         var r = new FileReader();
         var blob = _file.slice(_offset, length + _offset);
         r.onload = foo;
-        r.readAsBinaryString(blob);
+        r.readAsArrayBuffer(blob);
     }
     block(offset, chunkSize, file);
 }

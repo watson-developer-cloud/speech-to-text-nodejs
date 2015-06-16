@@ -130,7 +130,7 @@ $(document).ready(function() {
     options.token = token;
     options.message = {
       'action': 'start',
-      'content-type': 'audio/l16', //;rate=' + model.rate,
+      'content-type': 'audio/l16;rate=44100',
       'interim_results': true,
       'continuous': true,
       'word_confidence': true,
@@ -144,10 +144,10 @@ $(document).ready(function() {
         function handleFileUploadEvent(evt) {
           console.log('Uploading file');
           var file = evt.dataTransfer.files[0];
-          var blob = new Blob([file], {type: 'audio/l16'});
+          var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
           parseFile(blob, function(chunk) {
             console.log('Handling chunk', chunk);
-            // socket.send(chunk);
+            socket.send(chunk);
           });
         }
 
