@@ -28,7 +28,8 @@ $(document).ready(function() {
   var micButton = $('.micButton'),
   micText = $('.micText'),
   transcript = $('#text'),
-  errorMsg = $('.errorMsg');
+  errorMsg = $('.errorMsg'),
+  modelSet = false;
 
 
   function displayError(error) {
@@ -217,6 +218,8 @@ $(document).ready(function() {
     var running = false;
     var recordButton = document.getElementById("recordButton");
     recordButton.onclick = function(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
       if (running) {
         console.log('stopping mic');
         mic.stop();
