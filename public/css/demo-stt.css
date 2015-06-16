@@ -73,3 +73,7 @@ input[type="radio"], input[type="checkbox"] {
 .hypotheses ul li:first-child:before {
   content: none;
 }
+
+#dropdownMenu1 {
+  margin-bottom: 2em;
+}
