@@ -13,10 +13,10 @@
   margin-right: 0px!important;
 }
 .navbar-text {
-	overflow: hidden;
-	white-space: nowrap;
-	margin:0;
-	padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  margin:0;
+  padding: 0;
 }
 
 .nav-inverse-color {
@@ -26,16 +26,19 @@
   width: 100%;
   float: left;
 }
+
 @media (min-width: 500px) {
   .nav-inverse-color {
-  width: 50%;
+    width: 50%;
   }
 }
+
 @media (min-width: 730px) {
   .nav-inverse-color {
-  width: 25%;
+    width: 25%;
   }
 }
+
 input[type="radio"], input[type="checkbox"] {
   margin: 1em 1em 1em 0;
   margin-top: 1px \9;
@@ -49,7 +52,24 @@ input[type="radio"], input[type="checkbox"] {
   margin-bottom: 0;
 }
 .hypothesis {
-	color: #5a5a5a; /*gray 60*/
-	clear: both;
-	float: left;
+  color: #5a5a5a; /*gray 60*/
+  clear: both;
+  float: left;
+}
+
+.hypotheses ul {
+  padding: 20px !important;
+}
+
+.hypotheses ul li {
+  list-style-type: none;
+  display: inline;
+}
+
+.hypotheses ul li:before {
+  content: " | ";
+}
+
+.hypotheses ul li:first-child:before {
+  content: none;
 }

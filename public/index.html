@@ -39,241 +39,203 @@
 
     <!-- Service Description Bar -->
 
-      <div class="header">
-         <div class="container">
-            <div class="col-lg-2 col-md-12 col-sm-12">
-              <img src="img/stt.svg" class="service-icon">
-            </div><!-- .col-lg-2 -->
-        
-          <div class="col-lg-10 col-md-12 col-sm-12">
-            <h1>Speech to Text</h1>
-            <p>TThe IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Japanese, and Spanish speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service can be accessed via a REST interface.</p>
-            <p><img src="img/link.svg" class="glyph"><strong>Resources:</strong></br>
-              <div class="resources">
-                <a href="#">API Overview</a>
-                <a href="#">Documentation</a>
-                <a href="#">Fork and Deploy on Bluemix</a>
-                <a href="#">Fork on Github</a>
-              </div><!-- .resources -->
-            </p>
-          </div><!-- .col-lg-10 -->
-        </div><!-- .container -->
-      </div><!-- .header -->
+    <div class="header">
+      <div class="container">
+        <div class="col-lg-2 col-md-12 col-sm-12">
+          <img src="img/stt.svg" class="service-icon">
+        </div><!-- .col-lg-2 -->
+
+        <div class="col-lg-10 col-md-12 col-sm-12">
+          <h1>Speech to Text</h1>
+          <p>TThe IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Japanese, and Spanish speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service can be accessed via a REST interface.</p>
+          <p><img src="img/link.svg" class="glyph"><strong>Resources:</strong></br>
+          <div class="resources">
+            <a href="#">API Overview</a>
+            <a href="#">Documentation</a>
+            <a href="#">Fork and Deploy on Bluemix</a>
+            <a href="#">Fork on Github</a>
+          </div><!-- .resources -->
+          </p>
+        </div><!-- .col-lg-10 -->
+      </div><!-- .container -->
+    </div><!-- .header -->
 
 
-<!-- Step 1 Section-->
+    <!-- Step 1 Section-->
 
     <div class="container"> 
 
 
-<!-- Step 3 Section-->
-  
-  <!-- First column of inputs -->
-    <div class="row"> 
-      <div class="col-lg-12 col-md-12 col-sm-12">
-       <h2>Transcribe Audio</h2> 
+      <!-- Step 3 Section-->
+
+      <!-- First column of inputs -->
+      <div class="row"> 
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <h2>Transcribe Audio</h2> 
           <div class="col-lg-8 col-md-12 col-sm-12">
-          <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only in <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a>), upload pre-recorded audio (Insert formats here), or use the sample audio samples provided. The returned text includes metadata that provides the time it takes to transcribe individual words, confidence scores behind those words, silence detected between words and alternative hypotheses for phrases.</p>
-  		</div><!-- .col-lg-8 --> 
-        <div class="col-lg-4 col-md-12 col-sm-12">
-          <div class="opt-box">
-                  <h6><strong>Would you like to help make this service better?</strong><br><br>
-         <div class="form-group opt-box-input">
-            <input type="radio">Allow Watson to learn from this session<br><input type="radio" name="group1" value="">Opt out
-          </div></h6>
-          </div>
-        </div>
-
-      </div><!-- .col-lg-12 -->
-
-    <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-12">
-
-        <div class="dropdown">
-          <select id="dropdownMenu1" class="form-control">
-          </select>
-        </div>
-
-      </div><!-- .col-lg-6 -->
-    </div><!-- row -->
-
-
-
-
- <div class="row">
-<nav class="navbar navbar-inverse">
-<ul id=recordButton" class="navbar-text">
-  <li class="nav-inverse-color">
-    <a href="#">
-      <img src="img/microphone.svg" class="icon">
-      <span class="nav-label">Record Audio</span>
-    </a>
-  </li>
-  <li class="file-upload nav-inverse-color">
-    <a href="#">
-      <img src="img/upload.svg" class="icon">
-      <span class="nav-label">Upload/ Drop File</span>
-    </a>
-  </li>
-  <li class="play-sample-1 nav-inverse-color">
-    <a href="#">
-      <img src="img/play.svg" class="icon">
-      <span class="nav-label">Play Sample 1</span>
-    </a>
-  </li>
-  <li class="play-sample-2 nav-inverse-color">
-    <a href="#">
-      <img src="img/play.svg" class="icon">
-      <span class="nav-label">Play Sample 1</span>
-    </a>
-  </li>
-</ul>
-
-</nav>
-</div>
-
-
-
-<!-- Tab panes -->
-    <div class="row" style="  margin: 0;"> 
-      <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 0;">
-      <div class="well">
-        <form class="form-horizontal">
-<div role="tabpanel">
-
-          <!-- Nav tabs -->
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
-            <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
-          </ul> 
-          
-          <div class="hr-tab"></div>
-
-          <fieldset>
-
-            <div class="form-group row">
-
-              <div class="col-lg-12">
-                <div class="tab-content">
-                  <div role="tabpanel" class="tab-pane active" id="home2">
-                    <textarea id="resultsText">
-                    </textarea>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="profile2">
-                    <textarea id="resultsJSON">
-                    </textarea>
-                  </div>
-                </div>       
-              </div><!-- .col-lg-12 -->
-
-            </div><!-- .form -->
-
-          </fieldset>
-          </div>
-
-
-                               
-
-        </form>
-        </div>
-      </div><!-- /.well -->
-      </div><!-- /.tabpanel -->
-
-
-      <div class="row">
-        <div class="col-md-12">
-         <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3>Metadata</h3>
-              <span class="pull-right clickable"><i class="caret-up" style="  margin-top: -1.3em;"></i></span>
-            </div>
-            <div class="panel-body">
-                                <!-- Table -->
-                          <div class="table-scroll">
-                              <table>
-                                        <thead>
-                                          <tr>
-                                            <th>Phrase</th>
-                                            <th>This</th>
-                                            <th>_</th>
-                                            <th>is</th>
-                                            <th>_</th>
-                                            <th>my</th>
-                                            <th>_</th>
-                                            <th>first</th>
-                                            <th>_</th>
-                                            <th>recording</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr>
-                                            <td data-label="Phrase"><strong>Time Length</strong></td>
-                                            <td data-label="This">10ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="is">4ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="my">4ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="first">7ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="recording">12ms</td>
-
-                                          </tr>
-                                          <tr>
-                                            <td data-label="Phrase"><strong>Confidence Score</strong></td>
-                                            <td data-label="This">98%</td>
-                                            <td data-label=""></td>
-                                            <td data-label="is">67%</td>
-                                            <td data-label=""></td>
-                                            <td data-label="my">87%</td>
-                                            <td data-label=""></td>
-                                            <td data-label="first">97%</td>
-                                            <td data-label=""></td>
-                                            <td data-label="recording">90%</td>
-                                          </tr>
-                                          <tr>
-                                            <td data-label="Phrase"><strong>Silence Detection</strong></td>
-                                            <td data-label=""></td>
-                                            <td data-label="This_is">1ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="is_my">1ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="my_first">1ms</td>
-                                            <td data-label=""></td>
-                                            <td data-label="first_recording">2ms</td>
-                                            <td data-label=""></td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                      </div>
-
-                                  <!-- END Table -->
-<div class="alt-hypothesis">
-                              <h5>Alternate Hypotheses</h5><hr>
-                              <p><strong>This is my first recording:</strong></p>
-                              <p>
-                               <div class="hypothesis">This his my first recording.&emsp;|&emsp;His is my first recording.&emsp;|&emsp;This miss my first recording.</div></p>
-                              
+            <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only in <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a>), upload pre-recorded audio (Insert formats here), or use the sample audio samples provided. The returned text includes metadata that provides the time it takes to transcribe individual words, confidence scores behind those words, silence detected between words and alternative hypotheses for phrases.</p>
+          </div><!-- .col-lg-8 --> 
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <div class="opt-box">
+              <h6><strong>Would you like to help make this service better?</strong><br><br>
+                <div class="form-group opt-box-input">
+                  <input type="radio">Allow Watson to learn from this session<br><input type="radio" name="group1" value="">Opt out
+              </div></h6>
             </div>
           </div>
+
+        </div><!-- .col-lg-12 -->
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-12">
+
+            <div class="dropdown">
+              <select id="dropdownMenu1" class="form-control">
+              </select>
+            </div>
+
+          </div><!-- .col-lg-6 -->
+        </div><!-- row -->
+
+
+
+
+        <div class="row">
+          <nav class="navbar navbar-inverse">
+          <ul class="navbar-text">
+            <li id="recordButton" class="nav-inverse-color">
+            <a href="#">
+              <img src="img/microphone.svg" class="icon">
+              <span class="nav-label">Record Audio</span>
+            </a>
+            </li>
+            <li class="file-upload nav-inverse-color">
+            <div id="fileUploadTarget">
+              <a href="#">
+                <img src="img/upload.svg" class="icon">
+                <span class="nav-label">Upload/ Drop File</span>
+              </a>
+            </div>
+            </li>
+            <li class="play-sample-1 nav-inverse-color">
+            <a href="#">
+              <img src="img/play.svg" class="icon">
+              <span class="nav-label">Play Sample 1</span>
+            </a>
+            </li>
+            <li class="play-sample-2 nav-inverse-color">
+            <a href="#">
+              <img src="img/play.svg" class="icon">
+              <span class="nav-label">Play Sample 1</span>
+            </a>
+            </li>
+          </ul>
+
+          </nav>
         </div>
-      </div>
+
+
+
+        <!-- Tab panes -->
+        <div class="row" style="  margin: 0;"> 
+          <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 0;">
+            <div class="well">
+              <form class="form-horizontal">
+                <div role="tabpanel">
+
+                  <!-- Nav tabs -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
+                    <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
+                  </ul> 
+
+                  <div class="hr-tab"></div>
+
+                  <fieldset>
+
+                    <div class="form-group row">
+
+                      <div class="col-lg-12">
+                        <div class="tab-content">
+                          <div role="tabpanel" class="tab-pane active" id="home2">
+                            <textarea id="resultsText">
+                            </textarea>
+                          </div>
+                          <div role="tabpanel" class="tab-pane" id="profile2">
+                            <textarea id="resultsJSON">
+                            </textarea>
+                          </div>
+                        </div>       
+                      </div><!-- .col-lg-12 -->
+
+                    </div><!-- .form -->
+
+                  </fieldset>
+                </div>
+
+
+
+
+              </form>
+            </div>
+          </div><!-- /.well -->
+        </div><!-- /.tabpanel -->
+
+
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3>Metadata</h3>
+                <span class="pull-right clickable"><i class="caret-up" style="  margin-top: -1.3em;"></i></span>
+              </div>
+              <div class="panel-body">
+                <!-- Table -->
+                <div class="table-scroll">
+                  <table id="metadataTable">
+                    <thead>
+                      <tr class="table-header-row">
+                        <th>Phrase:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="time-length-row">
+                        <td data-label="Phrase"><strong>Time Length:</strong></td>
+                      </tr>
+                      <tr class="confidence-score-row">
+                        <td data-label="Phrase"><strong>Confidence Score:</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- END Table -->
+                <div class="alt-hypothesis">
+                  <h5>Alternate Hypotheses</h5><hr>
+                  <div class="hypotheses">
+                    <ul></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
 
 
 
 
             <!-- Spacer-->
             <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-            <br><br></div></div>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <br><br>
+              </div>
+            </div>
 
 
+          </div><!-- /.col -->
         </div><!-- /.row -->
-        </div>
-        </div>
 
- 
-    </div><!-- /.container -->
+
+      </div><!-- /.container -->
 
 
 

@@ -89,15 +89,36 @@ $(document).ready(function() {
   //   showResult(data);
   // }
 
+
+  function showAlternatives(alternatives) {
+    var $hypotheses = $('.hypotheses ul');
+    alternatives.forEach(function(alternative, idx) {
+      $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
+    });
+  }
+
+  function showMetaData(timestamps) {
+    timestamps.forEach(function(timestamp) {
+      var word = timestamp[0],
+        t0 = timestamp[1],
+        t1 = timestamp[2];
+      var timelength = t1 - t0;
+      $('.table-header-row').append('<th>' + word + '</th>');
+      $('.time-length-row').append('<td>' + timelength.toString().slice(0, 3) + ' s</td>');
+    });
+  }
  
   function showJSON(json, baseJSON) {
     baseJSON += json;
     $('#resultsJSON').val(baseJSON);
   }
 
+  // TODO: Convert to closure approach
   function showResult(data, baseString) {
     //if there are transcripts
     if (data.results && data.results.length > 0) {
+
+      showMetaData(data.results[0].alternatives[0].timestamps);
 
       var text = data.results[0].alternatives[0].transcript || '';
 
@@ -238,10 +259,10 @@ $(document).ready(function() {
       'max_alternatives': 3
     };
     options.model = model.name;
-    getSocket(options, function() {}, function(evt) {
-      console.log('ws msg', evt.data);
-      var json = evt.data;
-      var msg = JSON.parse(json);
+    getSocket(options, function(socket) {
+      initSpeech(socket);
+    }, function(msg) {
+      console.log('ws msg', msg);
       if (msg.results) {
         showResult(msg, baseString);
         showJSON(JSON.stringify(msg.results), baseJSON);
@@ -253,7 +274,7 @@ $(document).ready(function() {
 
   function initUI(token, model) {
     initFileUpload(token, model);
-    // initMicrophone(token, model);
+    initMicrophone(token, model);
   }
 
   function getModelObject(models, modelName) {
@@ -299,7 +320,7 @@ $(document).ready(function() {
       // });
     });
   }
-  tokenRequest.send();
+  // tokenRequest.send();
 
 
 });
