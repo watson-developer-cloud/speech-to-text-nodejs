@@ -305,9 +305,10 @@ function getSocket(options, onlistening, onmessage, onerror) {
   var token = options.token;
   var message = options.message || {'action': 'start'};
   console.log('URL model', model);
-  var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token='
-    + token
-    + '&model=' + model;
+  // var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token='
+  //   + token
+  //   + '&model=' + model;
+  var wsUrl = 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize';
   var socket = new WebSocket(wsUrl);
   socket.onopen = function(evt) {
     console.log('ws opened');
@@ -327,7 +328,8 @@ function getSocket(options, onlistening, onmessage, onerror) {
 }
 
 function getModels(token, callback) {
-  var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+  // var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+  var modelUrl = '/api/models';
   var sttRequest = new XMLHttpRequest();
   sttRequest.open("GET", modelUrl, true);
   sttRequest.withCredentials = true;

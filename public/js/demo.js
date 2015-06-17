@@ -282,14 +282,16 @@ $(document).ready(function() {
   }
 
   // Make call to API to try and get cookie
-  var url = '/token';
-  var tokenRequest = new XMLHttpRequest();
-  tokenRequest.open("GET", url, true);
-  tokenRequest.onload = function(evt) {
-    var token = tokenRequest.responseText;
-    console.log('Token ', decodeURIComponent(token));
+  // var url = '/token';
+  // var tokenRequest = new XMLHttpRequest();
+  // tokenRequest.open("GET", url, true);
+  // tokenRequest.onload = function(evt) {
+    // var token = tokenRequest.responseText;
+    // console.log('Token ', decodeURIComponent(token));
+  function init() {
     // Get available speech recognition models
     // And display them in drop-down
+    var token = 'blah';
     getModels(token, function(models) {
 
       console.log('STT Models ', models);
@@ -319,7 +321,7 @@ $(document).ready(function() {
         console.log('running state', running);
 
         if (!running) {
-          count++;
+          console.log('not running, initMicrophone');
           initMicrophone(token, modelObject, mic, function(result) {
             recordButton.css('background-color', '#d74108');
             recordButton.find('img').attr('src', 'img/stop.svg');
@@ -327,7 +329,6 @@ $(document).ready(function() {
             mic.record();
           });
         } else {
-          count++;
           console.log('stopping mic');
           recordButton.removeAttr('style');
           recordButton.find('img').attr('src', 'img/microphone.svg');
@@ -348,7 +349,8 @@ $(document).ready(function() {
 
     });
   }
-  tokenRequest.send();
+  init();
+  // tokenRequest.send();
 
 });
 
