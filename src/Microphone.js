@@ -104,15 +104,14 @@ Microphone.prototype._onaudioprocess = function(data) {
     return;
   }
 
-  // Check the data to see if we're just getting 0s
-  // (the user isn't saying anything)
+  // Single channel
   var chan = data.inputBuffer.getChannelData(0);
 
   this.onAudio(this._exportDataBufferTo16Khz(new Float32Array(chan)));
 
   //export with microphone mhz, remember to update the this.sampleRate
   // with the sample rate from your microphone
-  //this.onAudio(this._exportDataBuffer(new Float32Array(chan)));
+  // this.onAudio(this._exportDataBuffer(new Float32Array(chan)));
 
 };
 

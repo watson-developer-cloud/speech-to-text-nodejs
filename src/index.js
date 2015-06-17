@@ -15,11 +15,15 @@
  */
 /*global $:false */
 
+'use strict';
+
+// TODO: refactor this into multiple smaller modules
 
 var utils = require('./utils');
+var initSocket = require('./socket').initSocket;
 var Microphone = require('./Microphone');
 
-'use strict';
+var wsUrl = 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize';
 
 // From alediaferia's SO response
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
@@ -59,38 +63,9 @@ function parseFile(file, callback) {
     block(offset, chunkSize, file);
 }
 
-// Mini WS callback API, so we can initialize
-// with model and token in URI, plus
-// start message
-function getSocket(options, onlistening, onmessage, onerror) {
-  var model = options.model || 'en-US_BroadbandModel';
-  var token = options.token;
-  var message = options.message || {'action': 'start'};
-  console.log('URL model', model);
-  // var wsUrl = 'wss://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token='
-  //   + token
-  //   + '&model=' + model;
-  var wsUrl = 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize';
-  var socket = new WebSocket(wsUrl);
-  socket.onopen = function(evt) {
-    console.log('ws opened');
-    socket.send(JSON.stringify(message));
-  };
-  socket.onmessage = function(evt) {
-    var msg = JSON.parse(evt.data);
-    console.log('evt', evt);
-    if (msg.state === 'listening') {
-      onlistening(socket);
-    }
-    onmessage(msg);
-  };
-  socket.onerror = function(evt) {
-    onerror(evt);
-  };
-}
 
 function getModels(token, callback) {
-  // var modelUrl = 'https://stream-d.watsonplatform.net/speech-to-text-beta/api/v1/models';
+  // var modelUrl = 'https://stream-s.watsonplatform.net/speech-to-text-beta/api/v1/models';
   var modelUrl = '/api/models';
   var sttRequest = new XMLHttpRequest();
   sttRequest.open("GET", modelUrl, true);
@@ -178,7 +153,6 @@ $(document).ready(function() {
   //   showResult(data);
   // }
   //
-  var sockets = {};
 
   function showMetaData(timestamps) {
     timestamps.forEach(function(timestamp) {
@@ -193,6 +167,7 @@ $(document).ready(function() {
 
   function showAlternatives(alternatives) {
     var $hypotheses = $('.hypotheses ul');
+    $hypotheses.html('');
     alternatives.forEach(function(alternative, idx) {
       $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
     });
@@ -204,39 +179,63 @@ $(document).ready(function() {
     });
   }
 
- 
-  function showJSON(json, baseJSON) {
+
+  function showJSON(msg, baseJSON) {
+    var json = JSON.stringify(msg);
     baseJSON += json;
+    baseJSON += '\n';
     $('#resultsJSON').val(baseJSON);
+    return baseJSON;
   }
 
   // TODO: Convert to closure approach
-  function showResult(data, baseString) {
-    //if there are transcripts
-    if (data.results && data.results.length > 0) {
+  function showResult(baseString, isFinished) {
 
-      // showMetaData(data.results[0].alternatives[0].timestamps);
-
-      var text = data.results[0].alternatives[0].transcript || '';
-
-      //if is a partial transcripts
-      if (data.results.length === 1 ) {
-
-        //Capitalize first word
-        // if final results, append a new paragraph
-        if (data.results[0].final){
-          console.log('final res:', text);
-          baseString += text;
-          baseString = baseString.charAt(0).toUpperCase() + baseString.substring(1);
-          baseString = baseString.trim() + '.';
-          $('#resultsText').val(baseString);
-        } else {
-          console.log('interimResult res:', text);
-          var temp = baseString + text;
-          $('#resultsText').val(temp);
-        }
-      }
+    if (isFinished) {
+      var formattedString = baseString.slice(0, -1);
+      formattedString = formattedString.charAt(0).toUpperCase() + formattedString.substring(1);
+      formattedString = formattedString.trim() + '.';
+      console.log('formatted final res:', formattedString);
+      $('#resultsText').val(formattedString);
+    } else {
+      console.log('interimResult res:', baseString);
+      $('#resultsText').val(baseString);
     }
+
+  }
+
+
+  function processString(msg, baseString, callback) {
+    //if there are transcripts
+    var idx = +msg.result_index;
+    var running = JSON.parse(localStorage.getItem('running'));
+
+    if (msg.results && msg.results.length > 0) {
+
+      var alternatives = msg.results[0].alternatives;
+      var text = msg.results[0].alternatives[0].transcript || '';
+
+      //Capitalize first word
+      // if final results, append a new paragraph
+      if (msg.results && msg.results[0] && msg.results[0].final) {
+        baseString += text;
+        console.log('final res:', baseString);
+        showResult(baseString, true);
+      } else {
+        var tempString = baseString + text;
+        console.log('interimResult res:', tempString);
+        showResult(tempString, false);
+      }
+
+    }
+
+    if (alternatives) {
+      showAlternatives(alternatives);
+      showMetaData(alternatives[0].timestamps);
+    }
+
+    return baseString;
+
   }
 
   function initFileUpload(token, model) {
@@ -256,8 +255,9 @@ $(document).ready(function() {
       'max_alternatives': 3
     };
     options.model = model.name;
+    options.serviceURI = wsUrl += '?model=' + model.name;
 
-    getSocket(options, function(socket) {
+    initSocket(options, function(socket) {
 
         function handleFileUploadEvent(evt) {
           console.log('Uploading file');
@@ -295,8 +295,8 @@ $(document).ready(function() {
       }, function(msg) {
         console.log('ws msg', msg);
         if (msg.results) {
-          showResult(msg, baseString);
-          showJSON(JSON.stringify(msg.results), baseJSON);
+          processString(msg, baseString);
+          showJSON(msg, baseJSON);
         }
       }, function(err) {
         console.log('err', err);
@@ -323,23 +323,34 @@ $(document).ready(function() {
       'max_alternatives': 3
     };
     options.model = model.name;
-    getSocket(options, function(socket) {
+    options.serviceURI = wsUrl += '?model=' + model.name;
+
+    initSocket(options, function(socket) {
+
+      var micSocket = socket;
 
       mic.onAudio = function(blob) {
-        socket.send(blob)
+        if (socket.readyState < 2) {
+          socket.send(blob)
+        }
       };
 
       callback(socket);
 
-      sockets[model.name] = socket;
-
-    }, function(msg) {
+    }, function(msg, socket) {
       console.log('ws msg', msg);
       if (msg.results) {
-        showResult(msg, baseString);
-        showJSON(JSON.stringify(msg.results), baseJSON);
+        baseString = processString(msg, baseString);
+        baseJSON = showJSON(msg, baseJSON);
       }
-    }, function(err) {
+      var running = JSON.parse(localStorage.getItem('running'));
+      var resultIndex = msg.result_index;
+      if (msg.results && msg.results[0].final && !running) {
+        stopMicrophone(socket, function(result) {
+          console.log('mic stopped: ', result);
+        });
+      }
+    }, function(err, socket) {
       console.log('err', err);
     });
 
@@ -351,13 +362,7 @@ $(document).ready(function() {
 
   function stopMicrophone(socket, callback) {
     socket.send(JSON.stringify({'action': 'stop'}));
-    callback(socket);
-  }
-
-  function setMicrophoneListener(modelObject, token, callback) {
-
-    // recordButton.unbind('click');
-
+    callback(true);
   }
 
   function getModelObject(models, modelName) {
@@ -380,27 +385,43 @@ $(document).ready(function() {
   function init() {
     // Get available speech recognition models
     // And display them in drop-down
+    var mic = new Microphone();
     var token = 'blah';
     getModels(token, function(models) {
 
       console.log('STT Models ', models);
+
+      // Save models to localstorage
+      localStorage.setItem('models', JSON.stringify(models));
+
       models.forEach(function(model) {
         $("select#dropdownMenu1").append( $("<option>")
           .val(model.name)
           .html(model.description)
           );
       });
+
       // Initialize UI with default model
       // TODO: need to wait to send start message
       var modelObject = getModelObject(models, 'en-US_BroadbandModel');
       var modelObject = {name: 'en-US_BroadbandModel'};
 
-      var running = false;
+      localStorage.setItem('running', false);
       var recordButton = $('#recordButton');
+
+      // Radio buttons
+      var shareSessionRadio = $("#shareSessionRadioGroup input[type='radio']");
+      shareSessionRadio.click(function(evt) {
+        var checkedValue = shareSessionRadio.filter(':checked').val();
+        localStorage.setItem('shareSession', checkedValue);
+        console.log('checked option', checkedValue);
+      });
 
       recordButton.click($.proxy(function(evt) {
 
-        var mic = new Microphone();
+        var running = JSON.parse(localStorage.getItem('running'));
+
+        localStorage.setItem('running', !running);
 
         console.log('click!');
 
@@ -411,6 +432,9 @@ $(document).ready(function() {
 
         if (!running) {
           console.log('not running, initMicrophone');
+          recordButton.css('background-color', '#d74108');
+          recordButton.find('img').attr('src', 'img/stop.svg');
+          console.log('starting mic');
           initMicrophone(token, modelObject, mic, function(result) {
             recordButton.css('background-color', '#d74108');
             recordButton.find('img').attr('src', 'img/stop.svg');
@@ -418,22 +442,25 @@ $(document).ready(function() {
             mic.record();
           });
         } else {
-          console.log('stopping mic');
           recordButton.removeAttr('style');
           recordButton.find('img').attr('src', 'img/microphone.svg');
           mic.stop();
-          sockets[modelObject.name].send(JSON.stringify({'action': 'stop'}));
         }
-
-        running = !running;
 
       }, this));
 
       // Re-initialize event listener with appropriate model when model changes
+      $("#dropdownMenu1").change(function(evt) {
+        var modelName = $("select#dropdownMenu1").val();
+        localStorage.setItem('currentModel', modelName);
+        var newModelObject = getModelObject(models, modelName);
+      });
+
+      // Re-initialize event listener with appropriate model when model changes
       $("select#dropdownMenu1").change(function(evt) {
         var modelName = $("select#dropdownMenu1").val();
+        localStorage.setItem('currentModel', modelName);
         var newModelObject = getModelObject(models, modelName);
-        setMicrophoneListener(mic, modelObject, token);
       });
 
     });
