@@ -154,15 +154,34 @@ $(document).ready(function() {
   // }
   //
 
-  function showMetaData(timestamps) {
+  function showTimestamps(timestamps) {
     timestamps.forEach(function(timestamp) {
       var word = timestamp[0],
         t0 = timestamp[1],
         t1 = timestamp[2];
       var timelength = t1 - t0;
       $('.table-header-row').append('<th>' + word + '</th>');
-      $('.time-length-row').append('<td>' + timelength.toString().slice(0, 3) + ' s</td>');
+      $('.time-length-row').append('<td>' + timelength.toString().substring(0, 3) + ' s</td>');
     });
+  }
+
+  function showWordConfidence(confidences) {
+    console.log('confidences', confidences);
+    confidences.forEach(function(confidence) {
+      var displayConfidence = confidence[1].toString().substring(0, 3);
+      $('.confidence-score-row').append('<td>' + displayConfidence + ' </td>');
+    });
+  }
+
+  function showMetaData(alternative) {
+    var timestamps = alternative.timestamps;
+    if (timestamps && timestamps.length > 0) {
+      showTimestamps(timestamps);
+    }
+    var confidences = alternative.word_confidence;;
+    if (confidences && confidences.length > 0) {
+      showWordConfidence(confidences);
+    }
   }
 
   function showAlternatives(alternatives) {
@@ -174,8 +193,8 @@ $(document).ready(function() {
     $hypotheses.on('click', "li", function () {
       console.log("showing metadata");
       var idx = + $(this).data('hypothesis-index');
-      var timestamps = alternatives[idx].timestamps;
-      showMetaData(timestamps);
+      var alternative = alternatives[idx];
+      showMetaData(alternative);
     });
   }
 
@@ -221,6 +240,7 @@ $(document).ready(function() {
         baseString += text;
         console.log('final res:', baseString);
         showResult(baseString, true);
+        showMetaData(alternatives[0]);
       } else {
         var tempString = baseString + text;
         console.log('interimResult res:', tempString);
@@ -231,7 +251,6 @@ $(document).ready(function() {
 
     if (alternatives) {
       showAlternatives(alternatives);
-      showMetaData(alternatives[0].timestamps);
     }
 
     return baseString;
