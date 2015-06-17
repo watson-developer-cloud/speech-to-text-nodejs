@@ -1,40 +1,62 @@
 {
-  "name": "SpeechToTextNodejsStarterApp",
-  "version": "0.1.5",
-  "description": "A sample nodejs app for Bluemix that use the speech-to-text service",
+  "name": "SpeechToTextBrowserStarterApp",
+  "version": "0.0.1",
+  "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
   "dependencies": {
     "body-parser": "~1.10.2",
     "connect": "^3.3.5",
-    "cookie": "~0.1.2",
     "errorhandler": "~1.2.4",
     "express": "~4.10.8",
     "harmon": "^1.3.1",
     "http-proxy": "^1.11.1",
-    "jade": "~1.8.2",
     "request": "~2.53.0",
-    "socket.io": "~1.3.4",
-    "transformer-proxy": "^0.3.1",
-    "watson-developer-cloud": "~0.9.3"
+    "transformer-proxy": "^0.3.1"
   },
   "engines": {
     "node": ">=0.10"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/watson-developer-cloud/speech-to-text-nodejs.git"
+    "url": "https://github.com/watson-developer-cloud/speech-to-text-browser.git"
   },
   "author": "IBM Corp.",
+  "browserify-shim": {
+    "jquery": "global:jQuery"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
   "contributors": [
     {
       "name": "German Attanasio Ruiz",
       "email": "germanatt@us.ibm.com"
+    },
+    {
+      "name": "Daniel Bolano",
+      "email": "dbolano@us.ibm.com"
+    },
+    {
+      "name": "Britany L. Ponvelle",
+      "email": "blponvelle@us.ibm.com"
+    },
+    {
+      "name": "Eric S. Bullington",
+      "email": "esbullin@us.ibm.com"
     }
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/watson-developer-cloud/speech-to-text-nodejs/issues"
+    "url": "https://github.com/watson-developer-cloud/speech-to-text-browser/issues"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "build": "browserify -o public/js/main.js src/index.js",
+    "watch": "watchify -d -o public/js/main.js src/index.js"
+  },
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "browserify-shim": "^3.8.9"
   }
 }
