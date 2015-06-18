@@ -23,11 +23,17 @@ var Microphone = require('./Microphone');
 // with model and token in URI, plus
 // start message
 exports.initSocket = function(options, onlistening, onmessage, onerror) {
-  var model = options.model || 'en-US_BroadbandModel';
+  function withDefault(val, defaultVal) {
+    return typeof val === 'undefined' ? defaultVal : val;
+  }
   var token = options.token;
+  var model = options.model || 'en-US_BroadbandModel';
   var message = options.message || {'action': 'start'};
+  var sessionPermissions = withDefault(options.sessionPermissions, JSON.parse(localStorage.getItem('sessionPermissions')));
+  var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';
   var url = options.serviceURI || 'wss://stream-s.watsonplatform.net/speech-to-text-beta/api/v1/recognize?watson-token='
     + token
+    + '&X-WDC-PL-OPT-OUT=' + sessionPermissionsQueryParam
     + '&model=' + model;
   console.log('URL model', model);
   var socket = new WebSocket(url);
