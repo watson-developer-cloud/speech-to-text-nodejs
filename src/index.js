@@ -22,166 +22,13 @@
 var utils = require('./utils');
 var initSocket = require('./socket').initSocket;
 var Microphone = require('./Microphone');
+var models = require('./models');
 var initViews = require('./views').initViews;
+var display = require('./views/display');
 
-function getModels(token, callback) {
-  // var modelUrl = 'https://stream-s.watsonplatform.net/speech-to-text-beta/api/v1/models';
-  var modelUrl = '/api/models';
-  var sttRequest = new XMLHttpRequest();
-  sttRequest.open("GET", modelUrl, true);
-  sttRequest.withCredentials = true;
-  sttRequest.setRequestHeader('Accept', 'application/json');
-  sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
-  sttRequest.onload = function(evt) {
-    // We wait until we've given this request a chance to load and (ideally) set the cookie
-    // But we get a net::ERR_CONNECTION_REFUSED, apparantly because no cookie is set
-    var response = JSON.parse(sttRequest.responseText);
-    callback(response.models);
-  };
-  sttRequest.send();
-}
+var micSocket;
 
 $(document).ready(function() {
-
-  // Only works on Chrome
-  if (!$('body').hasClass('chrome')) {
-    $('.unsupported-overlay').show();
-  }
-
-  // UI
-  var micButton = $('.micButton'),
-  micText = $('.micText'),
-  transcript = $('#text'),
-  errorMsg = $('.errorMsg');
-
-
-  function displayError(error) {
-    var message = error;
-    try {
-      var errorJson = JSON.parse(error);
-      message = JSON.stringify(errorJson, null, 2);
-    } catch (e) {
-      message = error;
-    }
-
-    errorMsg.text(message);
-    errorMsg.show();
-    transcript.hide();
-  }
-
-  //Sample audios
-  var audio1 = 'audio/sample1.wav',
-      audio2 = 'audio/sample2.wav';
-
-  function _error(xhr) {
-    $('.loading').hide();
-    displayError('Error processing the request, please try again.');
-  }
-
-
-  // function stopSounds() {
-  //   $('.sample2').get(0).pause();
-  //   $('.sample2').get(0).currentTime = 0;
-  //   $('.sample1').get(0).pause();
-  //   $('.sample1').get(0).currentTime = 0;
-  // }
-  //
-  // $('.audio1').click(function() {
-  //   $('.audio-staged audio').attr('src', audio1);
-  //   stopSounds();
-  //   $('.sample1').get(0).play();
-  // });
-  //
-  // $('.audio2').click(function() {
-  //   $('.audio-staged audio').attr('src', audio2);
-  //   stopSounds();
-  //   $('.sample2').get(0).play();
-  // });
-  //
-  // $('.send-api-audio1').click(function() {
-  //   transcriptAudio(audio1);
-  // });
-  //
-  // $('.send-api-audio2').click(function() {
-  //   transcriptAudio(audio2);
-  // });
-  //
-  // function showAudioResult(data){
-  //   $('.loading').hide();
-  //   transcript.empty();
-  //   $('<p></p>').appendTo(transcript);
-  //   showResult(data);
-  // }
-  //
-
-  function showTimestamps(timestamps) {
-    timestamps.forEach(function(timestamp) {
-      var word = timestamp[0],
-        t0 = timestamp[1],
-        t1 = timestamp[2];
-      var timelength = t1 - t0;
-      $('.table-header-row').append('<th>' + word + '</th>');
-      $('.time-length-row').append('<td>' + timelength.toString().substring(0, 3) + ' s</td>');
-    });
-  }
-
-  function showWordConfidence(confidences) {
-    console.log('confidences', confidences);
-    confidences.forEach(function(confidence) {
-      var displayConfidence = confidence[1].toString().substring(0, 3);
-      $('.confidence-score-row').append('<td>' + displayConfidence + ' </td>');
-    });
-  }
-
-  function showMetaData(alternative) {
-    var timestamps = alternative.timestamps;
-    if (timestamps && timestamps.length > 0) {
-      showTimestamps(timestamps);
-    }
-    var confidences = alternative.word_confidence;;
-    if (confidences && confidences.length > 0) {
-      showWordConfidence(confidences);
-    }
-  }
-
-  function showAlternatives(alternatives) {
-    var $hypotheses = $('.hypotheses ul');
-    $hypotheses.html('');
-    alternatives.forEach(function(alternative, idx) {
-      $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
-    });
-    $hypotheses.on('click', "li", function () {
-      console.log("showing metadata");
-      var idx = + $(this).data('hypothesis-index');
-      var alternative = alternatives[idx];
-      showMetaData(alternative);
-    });
-  }
-
-
-  function showJSON(msg, baseJSON) {
-    var json = JSON.stringify(msg);
-    baseJSON += json;
-    baseJSON += '\n';
-    $('#resultsJSON').val(baseJSON);
-    return baseJSON;
-  }
-
-  // TODO: Convert to closure approach
-  function showResult(baseString, isFinished) {
-
-    if (isFinished) {
-      var formattedString = baseString.slice(0, -1);
-      formattedString = formattedString.charAt(0).toUpperCase() + formattedString.substring(1);
-      formattedString = formattedString.trim() + '.';
-      console.log('formatted final res:', formattedString);
-      $('#resultsText').val(formattedString);
-    } else {
-      console.log('interimResult res:', baseString);
-      $('#resultsText').val(baseString);
-    }
-
-  }
 
 
   function processString(msg, baseString, callback) {
@@ -199,25 +46,21 @@ $(document).ready(function() {
       if (msg.results && msg.results[0] && msg.results[0].final) {
         baseString += text;
         console.log('final res:', baseString);
-        showResult(baseString, true);
-        showMetaData(alternatives[0]);
+        display.showResult(baseString, true);
+        display.showMetaData(alternatives[0]);
       } else {
         var tempString = baseString + text;
         console.log('interimResult res:', tempString);
-        showResult(tempString, false);
+        display.showResult(tempString, false);
       }
-
     }
-
     if (alternatives) {
-      showAlternatives(alternatives);
+      display.showAlternatives(alternatives);
     }
-
     return baseString;
-
   }
 
-  function initFileUpload(token, model) {
+  function initFileUpload(token, model, file, callback) {
 
     var baseString = '';
     var baseJSON = '';
@@ -235,51 +78,28 @@ $(document).ready(function() {
     };
     options.model = model.name;
 
-    initSocket(options, function(socket) {
+    function onOpen(socket) {
+      console.log('socket opened');
+    }
 
-        function handleFileUploadEvent(evt) {
-          console.log('Uploading file');
-          var file = evt.dataTransfer.files[0];
-          var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
-          utils.parseFile(blob, function(chunk) {
-            console.log('Handling chunk', chunk);
-            socket.send(chunk);
-          });
-        }
+    function onListening(socket) {
+      console.log('connection listening');
+      callback(socket);
+    }
 
-        console.log('setting target');
-
-        var target = $("#fileUploadTarget");
-        target.on('dragenter', function (e) {
-          console.log('dragenter');
-          e.stopPropagation();
-          e.preventDefault();
-        });
-
-        target.on('dragover', function (e) {
-          console.log('dragover');
-          e.stopPropagation();
-          e.preventDefault();
-        });
-
-        target.on('drop', function (e) {
-          console.log('File dropped');
-          e.preventDefault();
-          var evt = e.originalEvent;
-          // Handle dragged file event
-          handleFileUploadEvent(evt);
-        });
-
-      }, function(msg) {
-        console.log('ws msg', msg);
-        if (msg.results) {
-          processString(msg, baseString);
-          showJSON(msg, baseJSON);
-        }
-      }, function(err) {
-        console.log('err', err);
+    function onMessage(msg) {
+      console.log('ws msg', msg);
+      if (msg.results) {
+        baseString = processString(msg, baseString);
+        baseJSON = display.showJSON(msg, baseJSON);
       }
-    );
+    }
+
+    function onError(err) {
+      console.log('err', err);
+    }
+
+    initSocket(options, onOpen, onListening, onMessage, onError);
 
   }
 
@@ -299,40 +119,44 @@ $(document).ready(function() {
       'timestamps': true,
       'max_alternatives': 3
     };
-    options.model = model.name;
+    options.model = model;
 
-    initSocket(options, function(socket) {
+    function onOpen(socket) {
+      console.log('socket opened');
+      callback(socket);
+    }
 
-      var micSocket = socket;
+    function onListening(socket) {
+
+      micSocket = socket;
 
       mic.onAudio = function(blob) {
         if (socket.readyState < 2) {
           socket.send(blob)
         }
       };
+    }
 
-      callback(socket);
-
-    }, function(msg, socket) {
+    function onMessage(msg, socket) {
       console.log('ws msg', msg);
       if (msg.results) {
         baseString = processString(msg, baseString);
-        baseJSON = showJSON(msg, baseJSON);
+        baseJSON = display.showJSON(msg, baseJSON);
       }
-      var running = JSON.parse(localStorage.getItem('running'));
-      var resultIndex = msg.result_index;
-      if (msg.results && msg.results[0].final && !running) {
-        stopMicrophone(socket, function(result) {
-          console.log('mic stopped: ', result);
-        });
-      }
-    }, function(err, socket) {
-      console.log('err', err);
-    });
-
-    function onError(err) {
-      console.log('audio error: ', err);
+      // var running = JSON.parse(localStorage.getItem('running'));
+      // var resultIndex = msg.result_index;
+      // if (msg.results && msg.results.length > 0 && msg.results[0].final && !running) {
+      //   stopMicrophone(socket, function(result) {
+      //     console.log('mic stopped: ', result);
+      //   });
+      // }
     }
+
+    function onError(err, socket) {
+      console.log('err', err);
+    }
+
+    initSocket(options, onOpen, onListening, onMessage, onError);
 
   }
 
@@ -356,34 +180,86 @@ $(document).ready(function() {
   var tokenRequest = new XMLHttpRequest();
   tokenRequest.open("GET", url, true);
   tokenRequest.onload = function(evt) {
-    initViews();
+
     var token = tokenRequest.responseText;
     console.log('Token ', decodeURIComponent(token));
-    // Get available speech recognition models
-    // And display them in drop-down
+
     var mic = new Microphone();
-    getModels(token, function(models) {
+
+    var modelOptions = {
+      token: token
+      // Uncomment in case of server CORS failure
+      // url: '/api/models'
+    };
+
+    // Get available speech recognition models
+    // Set them in storage
+    // And display them in drop-down
+    models.getModels(modelOptions, function(models) {
 
       console.log('STT Models ', models);
 
       // Save models to localstorage
       localStorage.setItem('models', JSON.stringify(models));
 
-      models.forEach(function(model) {
-        $("select#dropdownMenu1").append( $("<option>")
-          .val(model.name)
-          .html(model.description)
-          );
+      // Set default current model
+      localStorage.setItem('currentModel', 'en-US_BroadbandModel');
+
+
+      // Send models and other
+      // view context to views
+      var viewContext = {
+        models: models
+      };
+
+      function handleFileUploadEvent(evt) {
+        console.log('handling file drop event');
+        // Init file upload with default model
+        var file = evt.dataTransfer.files[0];
+        initFileUpload(token, 'en-US_BroadbandModel', file, function(socket) {
+          console.log('Uploading file', file);
+          var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
+          utils.parseFile(blob, function(chunk) {
+            console.log('Handling chunk', chunk);
+            socket.send(chunk);
+          });
+        });
+      }
+
+      console.log('setting target');
+
+      var target = $("#fileUploadTarget");
+      target.on('dragenter', function (e) {
+        console.log('dragenter');
+        e.stopPropagation();
+        e.preventDefault();
       });
 
-      // Initialize UI with default model
-      // TODO: need to wait to send start message
-      var modelObject = getModelObject(models, 'en-US_BroadbandModel');
+      target.on('dragover', function (e) {
+        console.log('dragover');
+        e.stopPropagation();
+        e.preventDefault();
+      });
 
+      target.on('drop', function (e) {
+        console.log('File dropped');
+        e.preventDefault();
+        var evt = e.originalEvent;
+        // Handle dragged file event
+        handleFileUploadEvent(evt);
+      });
+
+      initViews(viewContext);
+
+
+      // Set microphone state to not running
       localStorage.setItem('running', false);
-      var recordButton = $('#recordButton');
 
+      var recordButton = $('#recordButton');
       recordButton.click($.proxy(function(evt) {
+
+        // Prevent default anchor behavior
+        evt.preventDefault();
 
         var running = JSON.parse(localStorage.getItem('running'));
 
@@ -391,43 +267,31 @@ $(document).ready(function() {
 
         console.log('click!');
 
-        evt.preventDefault();
-        // evt.stopPropagation();
+        var currentModel = localStorage.getItem('currentModel');
 
         console.log('running state', running);
 
         if (!running) {
-          console.log('not running, initMicrophone');
+          console.log('Not running, initMicrophone()');
           recordButton.css('background-color', '#d74108');
           recordButton.find('img').attr('src', 'img/stop.svg');
-          console.log('starting mic');
-          initMicrophone(token, modelObject, mic, function(result) {
+          initMicrophone(token, currentModel, mic, function(result) {
             recordButton.css('background-color', '#d74108');
             recordButton.find('img').attr('src', 'img/stop.svg');
             console.log('starting mic');
             mic.record();
           });
         } else {
+          console.log('Stopping microphone, sending stop action message');
           recordButton.removeAttr('style');
           recordButton.find('img').attr('src', 'img/microphone.svg');
+          // micSocket.send(JSON.stringify({'action': 'stop'}));
+          var emptyBuffer = new ArrayBuffer(0);
+          micSocket.send(emptyBuffer);
           mic.stop();
         }
 
       }, this));
-
-      // Re-initialize event listener with appropriate model when model changes
-      $("#dropdownMenu1").change(function(evt) {
-        var modelName = $("select#dropdownMenu1").val();
-        localStorage.setItem('currentModel', modelName);
-        var newModelObject = getModelObject(models, modelName);
-      });
-
-      // Re-initialize event listener with appropriate model when model changes
-      $("select#dropdownMenu1").change(function(evt) {
-        var modelName = $("select#dropdownMenu1").val();
-        localStorage.setItem('currentModel', modelName);
-        var newModelObject = getModelObject(models, modelName);
-      });
 
     });
   }
