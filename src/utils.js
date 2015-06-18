@@ -30,7 +30,7 @@ var exportDataBuffer = exports.exportDataBuffer = function(buffer, bufferSize) {
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
 exports.parseFile = function(file, callback) {
     var fileSize   = file.size;
-    var chunkSize  = 2048 * 16; // bytes
+    var chunkSize  = 2048 * 4; // bytes
     var offset     = 44;
     var self       = this; // we need a reference to the current object
     var block      = null;

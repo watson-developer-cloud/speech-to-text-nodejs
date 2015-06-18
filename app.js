@@ -23,13 +23,11 @@ var express = require('express'),
     request = require('request'),
     path = require('path'),
     // environmental variable points to demo's json config file
-    // config = require(process.env.WATSON_CONFIG_FILE),
     config = JSON.parse(process.env.WATSON_CONFIG),
     extend = require('util')._extend;
 
 // if bluemix credentials exists, then override local
-var token,
-    credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
+var credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
 
 console.log('Starting app with credentials: ', credentials);
 
@@ -46,11 +44,26 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, './public', 'index.html'));
 });
 
+// app.get('/api/models', function(req, res) {
+//   console.log('fetching models');
+//   request.get({'url': 
+//     'https://' 
+//     + credentials.hostname 
+//     + '/speech-to-text-beta/api/v1/models',
+//     'auth': {
+//       'user': credentials.username,
+//       'pass': credentials.password,
+//       'sendImmediately': true
+//     }
+//   }, function(err, response, body) {
+//     res.send(body);
+//   }
+//   );
+// });
 
 // Get token from Watson using your credentials
 app.get('/token', function(req, res) {
-  if (!token) {
-    console.log('fetching token', token);
+    console.log('fetching token');
     request.get({'url': 
       'https://' 
         + credentials.hostname 
@@ -58,17 +71,13 @@ app.get('/token', function(req, res) {
         + 'https://' + credentials.hostname + '/speech-to-text-beta/api',
       'auth': {
         'user': credentials.username,
-      'pass': credentials.password,
-      'sendImmediately': false
+        'pass': credentials.password,
+        'sendImmediately': true
       }
     }, function(err, response, body) {
-      token = body;
       res.send(body);
     }
     );
-  } else {
-    res.send(token);
-  }
 });
 
 // Configure temporary websockets proxy

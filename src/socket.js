@@ -47,12 +47,19 @@ exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) 
     var msg = JSON.parse(evt.data);
     console.log('evt', evt);
     if (msg.state === 'listening') {
-      console.log('LISTENING*************');
+      console.log('***********SOCKET LISTENING*************');
+      console.log('listening state: ', listening);
       if (!listening) {
         onlistening(socket);
         listening = true;
       } if (listening) {
         console.log('closing socket');
+        console.log('socket state: ', socket.readyState);
+        socket.close();
+        // var buf = new ArrayBuffer(2);
+        // var bufView = new Uint16Array(buf);
+        // bufView[0] = 0x88;
+        // socket.send(bufView)
         // socket.close();
       }
     }
