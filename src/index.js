@@ -22,47 +22,7 @@
 var utils = require('./utils');
 var initSocket = require('./socket').initSocket;
 var Microphone = require('./Microphone');
-
-var wsUrl = 'ws://127.0.0.1:8020/speech-to-text-beta/api/v1/recognize';
-
-// From alediaferia's SO response
-// http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
-function parseFile(file, callback) {
-    var fileSize   = file.size;
-    var chunkSize  = 2048 * 16; // bytes
-    var offset     = 44;
-    var self       = this; // we need a reference to the current object
-    var block      = null;
-    var count      = 0;
-    var foo = function(evt) {
-        if (offset >= fileSize) {
-            console.log("Done reading file");
-            return;
-        }
-        if (evt.target.error == null) {
-            var buffer = evt.target.result;
-            var len = buffer.byteLength;
-            offset += len;
-            var finalBlob = utils.exportDataBuffer(buffer, len);
-            setTimeout(function() {
-              callback(buffer); // callback for handling read chunk
-            }, count * 100);
-            count++;
-        } else {
-            console.log("Read error: " + evt.target.error);
-            return;
-        }
-        block(offset, chunkSize, file);
-    }
-    block = function(_offset, length, _file) {
-        var r = new FileReader();
-        var blob = _file.slice(_offset, length + _offset);
-        r.onload = foo;
-        r.readAsArrayBuffer(blob);
-    }
-    block(offset, chunkSize, file);
-}
-
+var initViews = require('./views').initViews;
 
 function getModels(token, callback) {
   // var modelUrl = 'https://stream-s.watsonplatform.net/speech-to-text-beta/api/v1/models';
@@ -274,7 +234,6 @@ $(document).ready(function() {
       'max_alternatives': 3
     };
     options.model = model.name;
-    options.serviceURI = wsUrl += '?model=' + model.name;
 
     initSocket(options, function(socket) {
 
@@ -282,7 +241,7 @@ $(document).ready(function() {
           console.log('Uploading file');
           var file = evt.dataTransfer.files[0];
           var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
-          parseFile(blob, function(chunk) {
+          utils.parseFile(blob, function(chunk) {
             console.log('Handling chunk', chunk);
             socket.send(chunk);
           });
@@ -324,7 +283,6 @@ $(document).ready(function() {
 
   }
 
-
   function initMicrophone(token, model, mic, callback) {
     // Test out websocket
     var baseString = '';
@@ -342,7 +300,6 @@ $(document).ready(function() {
       'max_alternatives': 3
     };
     options.model = model.name;
-    options.serviceURI = wsUrl += '?model=' + model.name;
 
     initSocket(options, function(socket) {
 
@@ -394,18 +351,17 @@ $(document).ready(function() {
     return result;
   }
 
-  // Make call to API to try and get cookie
-  // var url = '/token';
-  // var tokenRequest = new XMLHttpRequest();
-  // tokenRequest.open("GET", url, true);
-  // tokenRequest.onload = function(evt) {
-    // var token = tokenRequest.responseText;
-    // console.log('Token ', decodeURIComponent(token));
-  function init() {
+  // Make call to API to try and get token
+  var url = '/token';
+  var tokenRequest = new XMLHttpRequest();
+  tokenRequest.open("GET", url, true);
+  tokenRequest.onload = function(evt) {
+    initViews();
+    var token = tokenRequest.responseText;
+    console.log('Token ', decodeURIComponent(token));
     // Get available speech recognition models
     // And display them in drop-down
     var mic = new Microphone();
-    var token = 'blah';
     getModels(token, function(models) {
 
       console.log('STT Models ', models);
@@ -423,18 +379,9 @@ $(document).ready(function() {
       // Initialize UI with default model
       // TODO: need to wait to send start message
       var modelObject = getModelObject(models, 'en-US_BroadbandModel');
-      var modelObject = {name: 'en-US_BroadbandModel'};
 
       localStorage.setItem('running', false);
       var recordButton = $('#recordButton');
-
-      // Radio buttons
-      var shareSessionRadio = $("#shareSessionRadioGroup input[type='radio']");
-      shareSessionRadio.click(function(evt) {
-        var checkedValue = shareSessionRadio.filter(':checked').val();
-        localStorage.setItem('shareSession', checkedValue);
-        console.log('checked option', checkedValue);
-      });
 
       recordButton.click($.proxy(function(evt) {
 
@@ -484,7 +431,6 @@ $(document).ready(function() {
 
     });
   }
-  init();
-  // tokenRequest.send();
+  tokenRequest.send();
 
 });
