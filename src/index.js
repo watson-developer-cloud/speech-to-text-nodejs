@@ -216,7 +216,8 @@ $(document).ready(function() {
         console.log('handling file drop event');
         // Init file upload with default model
         var file = evt.dataTransfer.files[0];
-        initFileUpload(token, 'en-US_BroadbandModel', file, function(socket) {
+        var currentModel = localStorage.getItem('currentModel');
+        initFileUpload(token, currentModel, file, function(socket) {
           console.log('Uploading file', file);
           var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
           utils.parseFile(blob, function(chunk) {
