@@ -143,13 +143,6 @@ $(document).ready(function() {
         baseString = processString(msg, baseString);
         baseJSON = display.showJSON(msg, baseJSON);
       }
-      // var running = JSON.parse(localStorage.getItem('running'));
-      // var resultIndex = msg.result_index;
-      // if (msg.results && msg.results.length > 0 && msg.results[0].final && !running) {
-      //   stopMicrophone(socket, function(result) {
-      //     console.log('mic stopped: ', result);
-      //   });
-      // }
     }
 
     function onError(err, socket) {
@@ -159,12 +152,6 @@ $(document).ready(function() {
     initSocket(options, onOpen, onListening, onMessage, onError);
 
   }
-
-  // function stopMicrophone(socket, callback) {
-  //   socket.send(JSON.stringify({'action': 'stop'}));
-  //   callback(true);
-  // }
-
 
   // Make call to API to try and get token
   var url = '/token';
@@ -203,8 +190,6 @@ $(document).ready(function() {
         models: models
       };
 
-
-      // This stuff will be moved out to views
       function handleFileUploadEvent(evt) {
         console.log('handling file drop event');
         // Init file upload with default model
@@ -249,7 +234,6 @@ $(document).ready(function() {
       // Set microphone state to not running
       localStorage.setItem('running', false);
 
-      // This will be moved to views
       var recordButton = $('#recordButton');
       recordButton.click($.proxy(function(evt) {
 
@@ -293,3 +277,4 @@ $(document).ready(function() {
   tokenRequest.send();
 
 });
+
