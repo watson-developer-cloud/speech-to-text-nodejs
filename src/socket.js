@@ -47,19 +47,15 @@ exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) 
     var msg = JSON.parse(evt.data);
     console.log('evt', evt);
     if (msg.state === 'listening') {
-      console.log('***********SOCKET LISTENING*************');
-      console.log('listening state: ', listening);
       if (!listening) {
         onlistening(socket);
         listening = true;
-      } if (listening) {
+      } else {
         console.log('closing socket');
-        console.log('socket state: ', socket.readyState);
-        socket.close();
-        // var buf = new ArrayBuffer(2);
-        // var bufView = new Uint16Array(buf);
-        // bufView[0] = 0x88;
-        // socket.send(bufView)
+        // Cannot close socket since state is reported here as 'CLOSING' or 'CLOSED'
+        // Despite this, it's possible to send from this 'CLOSING' socket with no issue
+        // Could be a browser bug, still investigating
+        // Could also be a proxy/gateway issue
         // socket.close();
       }
     }
