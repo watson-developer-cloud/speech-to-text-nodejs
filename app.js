@@ -44,23 +44,6 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, './public', 'index.html'));
 });
 
-// app.get('/api/models', function(req, res) {
-//   console.log('fetching models');
-//   request.get({'url': 
-//     'https://' 
-//     + credentials.hostname 
-//     + '/speech-to-text-beta/api/v1/models',
-//     'auth': {
-//       'user': credentials.username,
-//       'pass': credentials.password,
-//       'sendImmediately': true
-//     }
-//   }, function(err, response, body) {
-//     res.send(body);
-//   }
-//   );
-// });
-
 // Get token from Watson using your credentials
 app.get('/token', function(req, res) {
     console.log('fetching token');
@@ -80,8 +63,6 @@ app.get('/token', function(req, res) {
     );
 });
 
-// Configure temporary websockets proxy
-require('./config/proxy')(credentials);
 
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
