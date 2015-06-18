@@ -22,7 +22,8 @@ var Microphone = require('./Microphone');
 // Mini WS callback API, so we can initialize
 // with model and token in URI, plus
 // start message
-exports.initSocket = function(options, onlistening, onmessage, onerror) {
+exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) {
+  var listening = false;
   function withDefault(val, defaultVal) {
     return typeof val === 'undefined' ? defaultVal : val;
   }
@@ -40,12 +41,20 @@ exports.initSocket = function(options, onlistening, onmessage, onerror) {
   socket.onopen = function(evt) {
     console.log('ws opened');
     socket.send(JSON.stringify(message));
+    onopen(socket);
   };
   socket.onmessage = function(evt) {
     var msg = JSON.parse(evt.data);
     console.log('evt', evt);
     if (msg.state === 'listening') {
-      onlistening(socket);
+      console.log('LISTENING*************');
+      if (!listening) {
+        onlistening(socket);
+        listening = true;
+      } if (listening) {
+        console.log('closing socket');
+        // socket.close();
+      }
     }
     onmessage(msg, socket);
   };
