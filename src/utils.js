@@ -3,7 +3,7 @@
  * Creates a Blob type: 'audio/l16' with the
  * chunk coming from the microphone.
  */
-exports.exportDataBuffer = function(buffer, bufferSize) {
+var exportDataBuffer = exports.exportDataBuffer = function(buffer, bufferSize) {
   var pcmEncodedBuffer = null,
     dataView = null,
     index = 0,
@@ -44,7 +44,7 @@ exports.parseFile = function(file, callback) {
             var buffer = evt.target.result;
             var len = buffer.byteLength;
             offset += len;
-            var finalBlob = utils.exportDataBuffer(buffer, len);
+            var finalBlob = exportDataBuffer(buffer, len);
             setTimeout(function() {
               callback(buffer); // callback for handling read chunk
             }, count * 100);
