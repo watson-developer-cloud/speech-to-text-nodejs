@@ -1,10 +1,15 @@
 
 exports.initSelectModel = function(ctx) {
 
+  function isDefault(model) {
+    return model === 'en-US_BroadbandModel';
+  }
+
   ctx.models.forEach(function(model) {
     $("select#dropdownMenu1").append( $("<option>")
       .val(model.name)
       .html(model.description)
+      .prop('selected', isDefault(model.name))
       );
   });
 
