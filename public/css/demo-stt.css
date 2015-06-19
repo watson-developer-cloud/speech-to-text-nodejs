@@ -12,6 +12,11 @@
   margin-left: 0px!important;
   margin-right: 0px!important;
 }
+
+.navbar {
+  cursor: pointer;
+}
+
 .navbar-text {
   overflow: hidden;
   white-space: nowrap;
@@ -76,4 +81,16 @@ input[type="radio"], input[type="checkbox"] {
 
 #dropdownMenu1 {
   margin-bottom: 2em;
+}
+
+.error-row {
+  padding-left: 1em;
+  padding-right: 1em;
+  background-color: #d74108;
+  color: white;
+  display: none;
+}
+
+.error-row a {
+  color: white;
 }
