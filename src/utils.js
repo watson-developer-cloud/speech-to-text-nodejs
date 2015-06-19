@@ -1,4 +1,7 @@
 
+// For non-view logic
+var $ = require('jquery');
+
 /**
  * Creates a Blob type: 'audio/l16' with the
  * chunk coming from the microphone.
@@ -28,16 +31,16 @@ var exportDataBuffer = exports.exportDataBuffer = function(buffer, bufferSize) {
 
 // From alediaferia's SO response
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
-exports.parseFile = function(file, callback) {
+exports.parseFile = function(file, ondata, onend) {
     var fileSize   = file.size;
     var chunkSize  = 2048 * 4; // bytes
     var offset     = 44;
     var self       = this; // we need a reference to the current object
     var block      = null;
-    var count      = 0;
     var foo = function(evt) {
         if (offset >= fileSize) {
             console.log("Done reading file");
+            onend();
             return;
         }
         if (evt.target.error == null) {
@@ -45,10 +48,7 @@ exports.parseFile = function(file, callback) {
             var len = buffer.byteLength;
             offset += len;
             var finalBlob = exportDataBuffer(buffer, len);
-            setTimeout(function() {
-              callback(buffer); // callback for handling read chunk
-            }, count * 100);
-            count++;
+            ondata(buffer); // callback for handling read chunk
         } else {
             console.log("Read error: " + evt.target.error);
             return;
@@ -65,3 +65,9 @@ exports.parseFile = function(file, callback) {
 }
 
 
+exports.initPubSub = function() {
+  var o         = $({});
+  $.subscribe   = o.on.bind(o);
+  $.unsubscribe = o.off.bind(o);
+  $.publish     = o.trigger.bind(o);
+}
