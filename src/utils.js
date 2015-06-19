@@ -29,15 +29,22 @@ var exportDataBuffer = exports.exportDataBuffer = function(buffer, bufferSize) {
   return new Blob([dataView], { type: 'audio/l16' });
 };
 
+var fileBlock = function(_offset, length, _file, readChunk) {
+  var r = new FileReader();
+  var blob = _file.slice(_offset, length + _offset);
+  r.onload = readChunk;
+  r.readAsArrayBuffer(blob);
+}
+
 // From alediaferia's SO response
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
-exports.parseFile = function(file, ondata, onend) {
+exports.parseFile = function(file, ondata, onend, onerror) {
     var fileSize   = file.size;
-    var chunkSize  = 2048 * 4; // bytes
-    var offset     = 44;
+    var chunkSize  = 2048; // bytes
+    var offset     = 0;
     var self       = this; // we need a reference to the current object
     var block      = null;
-    var foo = function(evt) {
+    var readChunk = function(evt) {
         if (offset >= fileSize) {
             console.log("Done reading file");
             onend();
@@ -47,23 +54,47 @@ exports.parseFile = function(file, ondata, onend) {
             var buffer = evt.target.result;
             var len = buffer.byteLength;
             offset += len;
-            var finalBlob = exportDataBuffer(buffer, len);
             ondata(buffer); // callback for handling read chunk
         } else {
-            console.log("Read error: " + evt.target.error);
+            var errorMessage = evt.target.error;
+            console.log("Read error: " + errorMessage);
+            onerror(errorMessage);
             return;
         }
-        block(offset, chunkSize, file);
+        block(offset, chunkSize, file, readChunk);
     }
-    block = function(_offset, length, _file) {
-        var r = new FileReader();
-        var blob = _file.slice(_offset, length + _offset);
-        r.onload = foo;
-        r.readAsArrayBuffer(blob);
-    }
-    block(offset, chunkSize, file);
+    block = fileBlock;
+    block(offset, chunkSize, file, readChunk);
 }
 
+exports.parseFileHeader = function(file, ondata, onend, onerror) {
+    var fileSize   = file.size;
+    var chunkSize  = 48; // bytes
+    var offset     = 0;
+    var self       = this; // we need a reference to the current object
+    var block      = null;
+    var readChunk = function(evt) {
+        if (offset >= fileSize) {
+            console.log("Done reading file");
+            onend();
+            return;
+        }
+        if (evt.target.error == null) {
+            var buffer = evt.target.result;
+            var len = buffer.byteLength;
+            offset += len;
+            ondata(buffer); // callback for handling read chunk
+        } else {
+            var errorMessage = evt.target.error;
+            console.log("Read error: " + errorMessage);
+            onerror(errorMessage);
+            return;
+        }
+        block(offset, chunkSize, file, readChunk);
+    }
+    block = fileBlock;
+    block(offset, chunkSize, file, readChunk);
+}
 
 exports.initPubSub = function() {
   var o         = $({});
