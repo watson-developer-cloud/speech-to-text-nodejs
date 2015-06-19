@@ -26,6 +26,9 @@ var showError = require('./views/showerror').showError;
 var initSocket = require('./socket').initSocket;
 var display = require('./views/display');
 var utils = require('./utils');
+var flashSVG = require('./views/effects').flashSVG;
+
+var BUFFERSIZE = 8192;
 
 // Temporary top-scope variable
 var micSocket;
@@ -145,7 +148,10 @@ $(document).ready(function() {
     var token = tokenRequest.responseText;
     console.log('Token ', decodeURIComponent(token));
 
-    var mic = new Microphone();
+    var micOptions = {
+      bufferSize: BUFFERSIZE
+    };
+    var mic = new Microphone(micOptions);
 
     var modelOptions = {
       token: token
@@ -188,7 +194,10 @@ $(document).ready(function() {
           console.log('reading file');
 
             var blob = new Blob([file]);
-            utils.parseFile(blob,
+            var parseOptions = {
+              file: blob
+            };
+            utils.parseFile(parseOptions,
               // On data chunk
                 function(chunk) {
                 console.log('Handling chunk', chunk);
