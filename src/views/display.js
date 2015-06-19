@@ -1,3 +1,4 @@
+var $ = require('jquery');
 
 var showTimestamps = function(timestamps) {
   timestamps.forEach(function(timestamp) {
@@ -18,7 +19,7 @@ var showWordConfidence = function(confidences) {
   });
 }
 
-exports.showMetaData = function(alternative) {
+var showMetaData = function(alternative) {
   var timestamps = alternative.timestamps;
   if (timestamps && timestamps.length > 0) {
     showTimestamps(timestamps);
@@ -29,7 +30,7 @@ exports.showMetaData = function(alternative) {
   }
 }
 
-exports.showAlternatives = function(alternatives) {
+var showAlternatives = function(alternatives) {
   var $hypotheses = $('.hypotheses ul');
   $hypotheses.html('');
   alternatives.forEach(function(alternative, idx) {
@@ -43,17 +44,8 @@ exports.showAlternatives = function(alternatives) {
   });
 }
 
-
-exports.showJSON = function(msg, baseJSON) {
-  var json = JSON.stringify(msg);
-  baseJSON += json;
-  baseJSON += '\n';
-  $('#resultsJSON').val(baseJSON);
-  return baseJSON;
-}
-
 // TODO: Convert to closure approach
-exports.showResult = function(baseString, isFinished) {
+var processString = function(baseString, isFinished) {
 
   if (isFinished) {
     var formattedString = baseString.slice(0, -1);
@@ -66,4 +58,47 @@ exports.showResult = function(baseString, isFinished) {
     $('#resultsText').val(baseString);
   }
 
+}
+
+exports.showJSON = function(msg, baseJSON) {
+  var json = JSON.stringify(msg);
+  baseJSON += json;
+  baseJSON += '\n';
+  $('#resultsJSON').val(baseJSON);
+  return baseJSON;
+}
+
+
+exports.showResult = function(msg, baseString, callback) {
+
+  var idx = +msg.result_index;
+
+  if (msg.results && msg.results.length > 0) {
+
+    var alternatives = msg.results[0].alternatives;
+    var text = msg.results[0].alternatives[0].transcript || '';
+
+    //Capitalize first word
+    // if final results, append a new paragraph
+    if (msg.results && msg.results[0] && msg.results[0].final) {
+      baseString += text;
+      console.log('final res:', baseString);
+      processString(baseString, true);
+      showMetaData(alternatives[0]);
+    } else {
+      var tempString = baseString + text;
+      console.log('interimResult res:', tempString);
+      processString(tempString, false);
+    }
+  }
+  if (alternatives) {
+    showAlternatives(alternatives);
+  }
+
+  var isNNN = /^((n)\3+)$/.test(baseString);
+  if (isNNN) {
+    return '<unintelligible: please check selected language and bandwidth>';
+  }
+
+  return baseString;
 }

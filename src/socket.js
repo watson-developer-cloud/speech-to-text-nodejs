@@ -28,7 +28,7 @@ exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) 
     return typeof val === 'undefined' ? defaultVal : val;
   }
   var token = options.token;
-  var model = options.model || 'en-US_BroadbandModel';
+  var model = options.model || localStorage.getItem('currentModel');
   var message = options.message || {'action': 'start'};
   var sessionPermissions = withDefault(options.sessionPermissions, JSON.parse(localStorage.getItem('sessionPermissions')));
   var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';

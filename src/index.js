@@ -30,36 +30,6 @@ var micSocket;
 
 $(document).ready(function() {
 
-
-  function processString(msg, baseString, callback) {
-    //if there are transcripts
-    var idx = +msg.result_index;
-    var running = JSON.parse(localStorage.getItem('running'));
-
-    if (msg.results && msg.results.length > 0) {
-
-      var alternatives = msg.results[0].alternatives;
-      var text = msg.results[0].alternatives[0].transcript || '';
-
-      //Capitalize first word
-      // if final results, append a new paragraph
-      if (msg.results && msg.results[0] && msg.results[0].final) {
-        baseString += text;
-        console.log('final res:', baseString);
-        display.showResult(baseString, true);
-        display.showMetaData(alternatives[0]);
-      } else {
-        var tempString = baseString + text;
-        console.log('interimResult res:', tempString);
-        display.showResult(tempString, false);
-      }
-    }
-    if (alternatives) {
-      display.showAlternatives(alternatives);
-    }
-    return baseString;
-  }
-
   function initFileUpload(token, model, file, callback) {
 
     var baseString = '';
@@ -90,7 +60,8 @@ $(document).ready(function() {
     function onMessage(msg) {
       console.log('ws msg', msg);
       if (msg.results) {
-        baseString = processString(msg, baseString);
+        // Convert to closure approach
+        baseString = display.showResult(msg, baseString);
         baseJSON = display.showJSON(msg, baseJSON);
       }
     }
@@ -140,7 +111,8 @@ $(document).ready(function() {
     function onMessage(msg, socket) {
       console.log('ws msg', msg);
       if (msg.results) {
-        baseString = processString(msg, baseString);
+        // Convert to closure approach
+        baseString = display.showResult(msg, baseString);
         baseJSON = display.showJSON(msg, baseJSON);
       }
     }
