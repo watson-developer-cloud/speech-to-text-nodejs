@@ -19,12 +19,12 @@
 
 // TODO: refactor this into multiple smaller modules
 
-var utils = require('./utils');
-var initSocket = require('./socket').initSocket;
 var Microphone = require('./Microphone');
 var models = require('./models');
 var initViews = require('./views').initViews;
+var initSocket = require('./socket').initSocket;
 var display = require('./views/display');
+var utils = require('./utils');
 
 var micSocket;
 
@@ -184,16 +184,16 @@ $(document).ready(function() {
       localStorage.setItem('currentModel', 'en-US_BroadbandModel');
 
 
+      // INITIALIZATION
       // Send models and other
       // view context to views
       var viewContext = {
         models: models
       };
+      initViews(viewContext);
+      utils.initPubSub();
 
-      function handleFileUploadEvent(evt) {
-        console.log('handling file drop event');
-        // Init file upload with default model
-        var file = evt.dataTransfer.files[0];
+      function handleSelectedFile(file) {
         var currentModel = localStorage.getItem('currentModel');
         initFileUpload(token, currentModel, file, function(socket) {
           console.log('Uploading file', file);
@@ -205,22 +205,29 @@ $(document).ready(function() {
         });
       }
 
+      function handleFileUploadEvent(evt) {
+        console.log('handling file drop event');
+        // Init file upload with default model
+        var file = evt.dataTransfer.files[0];
+        handleSelectedFile(file);
+      }
+
       console.log('setting target');
 
-      var target = $("#fileUploadTarget");
-      target.on('dragenter', function (e) {
+      var dragAndDropTarget = $(document);
+      dragAndDropTarget.on('dragenter', function (e) {
         console.log('dragenter');
         e.stopPropagation();
         e.preventDefault();
       });
 
-      target.on('dragover', function (e) {
+      dragAndDropTarget.on('dragover', function (e) {
         console.log('dragover');
         e.stopPropagation();
         e.preventDefault();
       });
 
-      target.on('drop', function (e) {
+      dragAndDropTarget.on('drop', function (e) {
         console.log('File dropped');
         e.preventDefault();
         var evt = e.originalEvent;
@@ -228,7 +235,18 @@ $(document).ready(function() {
         handleFileUploadEvent(evt);
       });
 
-      initViews(viewContext);
+      var fileUploadDialog = $("#fileUploadDialog");
+
+      fileUploadDialog.change(function(evt) {
+        var file = fileUploadDialog.get(0).files[0];
+        console.log('file upload!', file);
+        handleSelectedFile(file);
+      });
+
+      $("#fileUploadTarget").click(function(evt) {
+        fileUploadDialog
+          .trigger('click');
+      });
 
 
       // Set microphone state to not running
