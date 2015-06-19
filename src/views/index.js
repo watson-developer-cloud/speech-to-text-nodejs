@@ -11,4 +11,5 @@ exports.initViews = function(ctx) {
   initSessionPermissions();
   initShowTab();
   initAnimatePanel();
+  initShowTab();
 }

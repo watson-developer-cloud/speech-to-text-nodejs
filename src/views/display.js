@@ -68,7 +68,6 @@ exports.showJSON = function(msg, baseJSON) {
   return baseJSON;
 }
 
-
 exports.showResult = function(msg, baseString, callback) {
 
   var idx = +msg.result_index;
@@ -97,8 +96,7 @@ exports.showResult = function(msg, baseString, callback) {
 
   var isNNN = /^((n)\3+)$/.test(baseString);
   if (isNNN) {
-    return '<unintelligible: please check selected language and bandwidth>';
+    baseString = '<unintelligible: please check selected language and bandwidth>';
   }
-
   return baseString;
 }
