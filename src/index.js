@@ -20,12 +20,13 @@
 // TODO: refactor this into multiple smaller modules
 
 var Microphone = require('./Microphone');
-var models = require('./models');
+var models = require('./data/models.json').models;
 var initViews = require('./views').initViews;
 var initSocket = require('./socket').initSocket;
 var display = require('./views/display');
 var utils = require('./utils');
 
+// Temporary top-scope variable
 var micSocket;
 
 $(document).ready(function() {
@@ -138,131 +139,137 @@ $(document).ready(function() {
 
     var modelOptions = {
       token: token
-      // Uncomment in case of server CORS failure
-      // url: '/api/models'
+        // Uncomment in case of server CORS failure
+        // url: '/api/models'
     };
 
     // Get available speech recognition models
     // Set them in storage
     // And display them in drop-down
-    models.getModels(modelOptions, function(models) {
+    console.log('STT Models ', models);
 
-      console.log('STT Models ', models);
+    // Save models to localstorage
+    localStorage.setItem('models', JSON.stringify(models));
 
-      // Save models to localstorage
-      localStorage.setItem('models', JSON.stringify(models));
-
-      // Set default current model
-      localStorage.setItem('currentModel', 'en-US_BroadbandModel');
+    // Set default current model
+    localStorage.setItem('currentModel', 'en-US_BroadbandModel');
+    localStorage.setItem('sessionPermissions', 'true');
 
 
-      // INITIALIZATION
-      // Send models and other
-      // view context to views
-      var viewContext = {
-        models: models
-      };
-      initViews(viewContext);
-      utils.initPubSub();
+    // INITIALIZATION
+    // Send models and other
+    // view context to views
+    var viewContext = {
+      models: models
+    };
+    initViews(viewContext);
+    utils.initPubSub();
 
-      function handleSelectedFile(file) {
-        var currentModel = localStorage.getItem('currentModel');
-        initFileUpload(token, currentModel, file, function(socket) {
-          console.log('Uploading file', file);
-          var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
-          utils.parseFile(blob, function(chunk) {
+    function handleSelectedFile(file) {
+      var currentModel = localStorage.getItem('currentModel');
+      console.log('currentModel', currentModel);
+      initFileUpload(token, currentModel, file, function(socket) {
+        console.log('Uploading file', file);
+        var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
+        utils.parseFile(blob,
+          // On data chunk
+            function(chunk) {
             console.log('Handling chunk', chunk);
             socket.send(chunk);
-          });
+          },
+          // On load end
+          function() {
+            socket.send(JSON.stringify({'action': 'stop'}));
         });
-      }
-
-      function handleFileUploadEvent(evt) {
-        console.log('handling file drop event');
-        // Init file upload with default model
-        var file = evt.dataTransfer.files[0];
-        handleSelectedFile(file);
-      }
-
-      console.log('setting target');
-
-      var dragAndDropTarget = $(document);
-      dragAndDropTarget.on('dragenter', function (e) {
-        console.log('dragenter');
-        e.stopPropagation();
-        e.preventDefault();
       });
+    }
 
-      dragAndDropTarget.on('dragover', function (e) {
-        console.log('dragover');
-        e.stopPropagation();
-        e.preventDefault();
-      });
+    console.log('setting target');
 
-      dragAndDropTarget.on('drop', function (e) {
-        console.log('File dropped');
-        e.preventDefault();
-        var evt = e.originalEvent;
-        // Handle dragged file event
-        handleFileUploadEvent(evt);
-      });
+    var dragAndDropTarget = $(document);
+    dragAndDropTarget.on('dragenter', function (e) {
+      console.log('dragenter');
+      e.stopPropagation();
+      e.preventDefault();
+    });
 
-      var fileUploadDialog = $("#fileUploadDialog");
+    dragAndDropTarget.on('dragover', function (e) {
+      console.log('dragover');
+      e.stopPropagation();
+      e.preventDefault();
+    });
 
-      fileUploadDialog.change(function(evt) {
-        var file = fileUploadDialog.get(0).files[0];
-        console.log('file upload!', file);
-        handleSelectedFile(file);
-      });
+    dragAndDropTarget.on('drop', function (e) {
+      console.log('File dropped');
+      e.preventDefault();
+      var evt = e.originalEvent;
+      // Handle dragged file event
+      handleFileUploadEvent(evt);
+    });
 
-      $("#fileUploadTarget").click(function(evt) {
-        fileUploadDialog
-          .trigger('click');
-      });
+    function handleFileUploadEvent(evt) {
+      console.log('handling file drop event');
+      // Init file upload with default model
+      var file = evt.dataTransfer.files[0];
+      handleSelectedFile(file);
+    }
+
+    var fileUploadDialog = $("#fileUploadDialog");
+
+    fileUploadDialog.change(function(evt) {
+      var file = fileUploadDialog.get(0).files[0];
+      console.log('file upload!', file);
+      handleSelectedFile(file);
+    });
+
+    $("#fileUploadTarget").click(function(evt) {
+      fileUploadDialog
+      .trigger('click');
+    });
 
 
-      // Set microphone state to not running
-      localStorage.setItem('running', false);
+    // Set microphone state to not running
+    localStorage.setItem('running', false);
 
-      var recordButton = $('#recordButton');
-      recordButton.click($.proxy(function(evt) {
+    var recordButton = $('#recordButton');
+    recordButton.click($.proxy(function(evt) {
 
-        // Prevent default anchor behavior
-        evt.preventDefault();
+      // Prevent default anchor behavior
+      evt.preventDefault();
 
-        var running = JSON.parse(localStorage.getItem('running'));
+      var running = JSON.parse(localStorage.getItem('running'));
 
-        localStorage.setItem('running', !running);
+      localStorage.setItem('running', !running);
 
-        console.log('click!');
+      console.log('click!');
 
-        var currentModel = localStorage.getItem('currentModel');
+      var currentModel = localStorage.getItem('currentModel');
 
-        console.log('running state', running);
+      console.log('running state', running);
 
-        if (!running) {
-          console.log('Not running, initMicrophone()');
+      if (!running) {
+        console.log('Not running, initMicrophone()');
+        recordButton.css('background-color', '#d74108');
+        recordButton.find('img').attr('src', 'img/stop.svg');
+        initMicrophone(token, currentModel, mic, function(result) {
           recordButton.css('background-color', '#d74108');
           recordButton.find('img').attr('src', 'img/stop.svg');
-          initMicrophone(token, currentModel, mic, function(result) {
-            recordButton.css('background-color', '#d74108');
-            recordButton.find('img').attr('src', 'img/stop.svg');
-            console.log('starting mic');
-            mic.record();
-          });
-        } else {
-          console.log('Stopping microphone, sending stop action message');
-          recordButton.removeAttr('style');
-          recordButton.find('img').attr('src', 'img/microphone.svg');
-          // micSocket.send(JSON.stringify({'action': 'stop'}));
-          var emptyBuffer = new ArrayBuffer(0);
-          micSocket.send(emptyBuffer);
-          mic.stop();
-        }
+          console.log('starting mic');
+          mic.record();
+        });
+      } else {
+        console.log('Stopping microphone, sending stop action message');
+        recordButton.removeAttr('style');
+        recordButton.find('img').attr('src', 'img/microphone.svg');
+        micSocket.send(JSON.stringify({'action': 'stop'}));
+        // Can also send empty buffer to signal end
+        // var emptyBuffer = new ArrayBuffer(0);
+        // micSocket.send(emptyBuffer);
+        mic.stop();
+      }
 
-      }, this));
+    }, this));
 
-    });
   }
   tokenRequest.send();
 
