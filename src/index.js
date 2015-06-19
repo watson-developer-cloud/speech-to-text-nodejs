@@ -22,6 +22,7 @@
 var Microphone = require('./Microphone');
 var models = require('./data/models.json').models;
 var initViews = require('./views').initViews;
+var showError = require('./views/showerror').showError;
 var initSocket = require('./socket').initSocket;
 var display = require('./views/display');
 var utils = require('./utils');
@@ -31,7 +32,9 @@ var micSocket;
 
 $(document).ready(function() {
 
-  function initFileUpload(token, model, file, callback) {
+  function initFileUpload(token, model, file, contentType, callback) {
+
+    console.log('contentType', contentType);
 
     var baseString = '';
     var baseJSON = '';
@@ -40,14 +43,14 @@ $(document).ready(function() {
     options.token = token;
     options.message = {
       'action': 'start',
-      'content-type': 'audio/l16;rate=44100',
+      'content-type': contentType,
       'interim_results': true,
       'continuous': true,
       'word_confidence': true,
       'timestamps': true,
       'max_alternatives': 3
     };
-    options.model = model.name;
+    options.model = model;
 
     function onOpen(socket) {
       console.log('socket opened');
@@ -76,6 +79,13 @@ $(document).ready(function() {
   }
 
   function initMicrophone(token, model, mic, callback) {
+
+    var currentModel = localStorage.getItem('currentModel');
+    if (currentModel.indexOf('Narrowband') > -1) {
+      var err = new Error('Microphone cannot accomodate narrow band models, please select another');
+      callback(err, null);
+      return false;
+    }
     // Test out websocket
     var baseString = '';
     var baseJSON = '';
@@ -95,7 +105,7 @@ $(document).ready(function() {
 
     function onOpen(socket) {
       console.log('socket opened');
-      callback(socket);
+      callback(null, socket);
     }
 
     function onListening(socket) {
@@ -168,20 +178,28 @@ $(document).ready(function() {
     function handleSelectedFile(file) {
       var currentModel = localStorage.getItem('currentModel');
       console.log('currentModel', currentModel);
-      initFileUpload(token, currentModel, file, function(socket) {
-        console.log('Uploading file', file);
-        var blob = new Blob([file], {type: 'audio/l16;rate=44100'});
-        utils.parseFile(blob,
-          // On data chunk
-            function(chunk) {
-            console.log('Handling chunk', chunk);
-            socket.send(chunk);
-          },
-          // On load end
-          function() {
-            socket.send(JSON.stringify({'action': 'stop'}));
+      var blobToText = new Blob([file]).slice(0, 4);
+      var r = new FileReader();
+      r.readAsText(blobToText);
+      r.onload = function() {
+        var contentType = r.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
+        console.log('Uploading file', r.result);
+        initFileUpload(token, currentModel, file, contentType, function(socket) {
+          console.log('reading file');
+
+            var blob = new Blob([file]);
+            utils.parseFile(blob,
+              // On data chunk
+                function(chunk) {
+                console.log('Handling chunk', chunk);
+                socket.send(chunk);
+              },
+              // On load end
+              function() {
+                socket.send(JSON.stringify({'action': 'stop'}));
+            });
         });
-      });
+      };
     }
 
     console.log('setting target');
@@ -238,7 +256,6 @@ $(document).ready(function() {
       evt.preventDefault();
 
       var running = JSON.parse(localStorage.getItem('running'));
-
       localStorage.setItem('running', !running);
 
       console.log('click!');
@@ -249,13 +266,19 @@ $(document).ready(function() {
 
       if (!running) {
         console.log('Not running, initMicrophone()');
-        recordButton.css('background-color', '#d74108');
-        recordButton.find('img').attr('src', 'img/stop.svg');
-        initMicrophone(token, currentModel, mic, function(result) {
-          recordButton.css('background-color', '#d74108');
-          recordButton.find('img').attr('src', 'img/stop.svg');
-          console.log('starting mic');
-          mic.record();
+        initMicrophone(token, currentModel, mic, function(err, socket) {
+          if (err) {
+            var msg = err.message;
+            console.log('Error: ', msg);
+            showError(msg);
+            localStorage.setItem('running', false);
+          } else {
+            recordButton.css('background-color', '#d74108');
+            recordButton.find('img').attr('src', 'img/stop.svg');
+            console.log('starting mic');
+            mic.record();
+            localStorage.setItem('running', true);
+          }
         });
       } else {
         console.log('Stopping microphone, sending stop action message');
@@ -266,10 +289,11 @@ $(document).ready(function() {
         // var emptyBuffer = new ArrayBuffer(0);
         // micSocket.send(emptyBuffer);
         mic.stop();
+        localStorage.setItem('running', false);
       }
 
-    }, this));
 
+    }, this));
   }
   tokenRequest.send();
 
