@@ -1,13 +1,13 @@
 /* css_browser_selector styles */
 .win * {
-	font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 .win .navbar-brand {
-	font-family: Arial;
-	font-weight: bold;
+  font-family: Arial;
+  font-weight: bold;
 }
 .win .thin-branding {
-	font-family: Arial;
+  font-family: Arial;
 }
 .win pre,
 .win code,
@@ -17,9 +17,9 @@
 .win code *,
 .win kbd *,
 .win samp * {
-	font-family: Menlo, "Menlo", Monaco, Consolas, "Courier New", monospace;
+  font-family: Menlo, "Menlo", Monaco, Consolas, "Courier New", monospace;
 }
 
 .win .fixed-nav {
-    font-family: Arial;
+  font-family: Arial;
 }
