@@ -18,7 +18,7 @@ var playSample = function(token, imageTag, iconName, url, callback) {
   xhr.responseType = 'blob';
   xhr.onload = function(e) {
     var blob = xhr.response;
-    var currentModel = localStorage.getItem('currentModel');
+    var currentModel = 'en-US_BroadbandModel';
     var reader = new FileReader();
     var blobToText = new Blob([blob]).slice(0, 4);
     console.log('TOKEN', token);
