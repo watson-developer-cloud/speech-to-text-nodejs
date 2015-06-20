@@ -27,6 +27,7 @@ var initSocket = require('./socket').initSocket;
 var display = require('./views/display');
 var utils = require('./utils');
 var flashSVG = require('./views/effects').flashSVG;
+var pkg = require('../package');
 
 var BUFFERSIZE = 8192;
 
@@ -34,6 +35,13 @@ var BUFFERSIZE = 8192;
 var micSocket;
 
 $(document).ready(function() {
+
+  // Temporary app data
+  $('#appSettings')
+    .html(
+      '<p>Version: ' + pkg.version + '</p>'
+      + '<p>Buffer Size: ' + BUFFERSIZE + '</p>'
+    );
 
   function initFileUpload(token, model, file, contentType, callback) {
 
