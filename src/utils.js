@@ -11,7 +11,7 @@ var fileBlock = function(_offset, length, _file, readChunk) {
 
 // Based on alediaferia's SO response
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
-exports.parseFile = function(options, ondata, onend, onerror) {
+exports.onFileProgress = function(options, ondata, onerror, onend) {
   var file       = options.file;
   var fileSize   = file.size;
   var chunkSize  = options.bufferSize || 8192;
@@ -38,6 +38,17 @@ exports.parseFile = function(options, ondata, onend, onerror) {
   fileBlock(offset, chunkSize, file, readChunk);
 }
 
+exports.getToken = function(callback) {
+  // Make call to API to try and get token
+  var url = '/token';
+  var tokenRequest = new XMLHttpRequest();
+  tokenRequest.open("GET", url, true);
+  tokenRequest.onload = function(evt) {
+    var token = tokenRequest.responseText;
+    callback(token);
+  };
+  tokenRequest.send();
+}
 
 exports.initPubSub = function() {
   var o         = $({});

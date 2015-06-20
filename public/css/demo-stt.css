@@ -94,3 +94,10 @@ input[type="radio"], input[type="checkbox"] {
 .error-row a {
   color: white;
 }
+
+#progressIndicator {
+  visibility: hidden;
+}
+
+progress::-moz-progress-bar { background: #5596E6; }
+progress::-webkit-progress-bar { background: #5596E6; }

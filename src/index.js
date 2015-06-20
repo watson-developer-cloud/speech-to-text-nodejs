@@ -24,9 +24,10 @@ var models = require('./data/models.json').models;
 var initViews = require('./views').initViews;
 var showError = require('./views/showerror').showError;
 var initSocket = require('./socket').initSocket;
+var handleFileUpload = require('./fileupload').handleFileUpload;
 var display = require('./views/display');
 var utils = require('./utils');
-var flashSVG = require('./views/effects').flashSVG;
+var effects = require('./views/effects');
 var pkg = require('../package');
 
 var BUFFERSIZE = 8192;
@@ -43,53 +44,8 @@ $(document).ready(function() {
       + '<p>Buffer Size: ' + BUFFERSIZE + '</p>'
     );
 
-  function initFileUpload(token, model, file, contentType, callback) {
 
-    console.log('contentType', contentType);
-
-    var baseString = '';
-    var baseJSON = '';
-
-    var options = {};
-    options.token = token;
-    options.message = {
-      'action': 'start',
-      'content-type': contentType,
-      'interim_results': true,
-      'continuous': true,
-      'word_confidence': true,
-      'timestamps': true,
-      'max_alternatives': 3
-    };
-    options.model = model;
-
-    function onOpen(socket) {
-      console.log('socket opened');
-    }
-
-    function onListening(socket) {
-      console.log('connection listening');
-      callback(socket);
-    }
-
-    function onMessage(msg) {
-      console.log('ws msg', msg);
-      if (msg.results) {
-        // Convert to closure approach
-        baseString = display.showResult(msg, baseString);
-        baseJSON = display.showJSON(msg, baseJSON);
-      }
-    }
-
-    function onError(err) {
-      console.log('err', err);
-    }
-
-    initSocket(options, onOpen, onListening, onMessage, onError);
-
-  }
-
-  function initMicrophone(token, model, mic, callback) {
+  function handleMicrophone(token, model, mic, callback) {
 
     var currentModel = localStorage.getItem('currentModel');
     if (currentModel.indexOf('Narrowband') > -1) {
@@ -131,7 +87,7 @@ $(document).ready(function() {
     }
 
     function onMessage(msg, socket) {
-      console.log('ws msg', msg);
+      console.log('Mic socket msg: ', msg);
       if (msg.results) {
         // Convert to closure approach
         baseString = display.showResult(msg, baseString);
@@ -139,11 +95,15 @@ $(document).ready(function() {
       }
     }
 
-    function onError(err, socket) {
-      console.log('err', err);
+    function onError(r, socket) {
+      console.log('Mic socket err: ', err);
     }
 
-    initSocket(options, onOpen, onListening, onMessage, onError);
+    function onClose(evt) {
+      console.log('Mic socket close: ', evt);
+    }
+
+    initSocket(options, onOpen, onListening, onMessage, onError, onClose);
 
   }
 
@@ -152,6 +112,10 @@ $(document).ready(function() {
   var tokenRequest = new XMLHttpRequest();
   tokenRequest.open("GET", url, true);
   tokenRequest.onload = function(evt) {
+
+    window.onbeforeunload = function(e) {
+      localStorage.clear();
+    };
 
     var token = tokenRequest.responseText;
     console.log('Token ', decodeURIComponent(token));
@@ -184,38 +148,57 @@ $(document).ready(function() {
     // Send models and other
     // view context to views
     var viewContext = {
-      models: models
+      models: models,
+      token: token
     };
     initViews(viewContext);
     utils.initPubSub();
 
+
     function handleSelectedFile(file) {
+
+      // Visual effects
+      var uploadImageTag = $('#fileUploadTarget > img');
+      var timer = setInterval(effects.toggleImage, 750, uploadImageTag, 'upload');
+
+      // Get current model
       var currentModel = localStorage.getItem('currentModel');
       console.log('currentModel', currentModel);
+
+      // Read first 4 bytes to determine header
       var blobToText = new Blob([file]).slice(0, 4);
       var r = new FileReader();
       r.readAsText(blobToText);
       r.onload = function() {
         var contentType = r.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
         console.log('Uploading file', r.result);
-        initFileUpload(token, currentModel, file, contentType, function(socket) {
+        handleFileUpload(token, currentModel, file, contentType, function(socket) {
           console.log('reading file');
 
             var blob = new Blob([file]);
             var parseOptions = {
               file: blob
             };
-            utils.parseFile(parseOptions,
+            utils.onFileProgress(parseOptions,
               // On data chunk
                 function(chunk) {
                 console.log('Handling chunk', chunk);
                 socket.send(chunk);
               },
+              // On file read error
+              function(evt) {
+                console.log('Error reading file: ', evt.message);
+                showError(evt.message);
+              },
               // On load end
               function() {
                 socket.send(JSON.stringify({'action': 'stop'}));
             });
-        });
+        }, 
+          function(evt) {
+            effects.stopToggleImage(timer, uploadImageTag, 'upload');
+          }
+        );
       };
     }
 
@@ -282,8 +265,8 @@ $(document).ready(function() {
       console.log('running state', running);
 
       if (!running) {
-        console.log('Not running, initMicrophone()');
-        initMicrophone(token, currentModel, mic, function(err, socket) {
+        console.log('Not running, handleMicrophone()');
+        handleMicrophone(token, currentModel, mic, function(err, socket) {
           if (err) {
             var msg = err.message;
             console.log('Error: ', msg);

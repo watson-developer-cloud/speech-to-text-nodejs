@@ -18,15 +18,19 @@
 
 var utils = require('./utils');
 var Microphone = require('./Microphone');
+var showerror = require('./views/showerror');
+var showError = showerror.showError;
+var hideError = showerror.hideError;
 
 // Mini WS callback API, so we can initialize
 // with model and token in URI, plus
 // start message
-exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) {
+var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose) {
   var listening = false;
   function withDefault(val, defaultVal) {
     return typeof val === 'undefined' ? defaultVal : val;
   }
+  var socket;
   var token = options.token;
   var model = options.model || localStorage.getItem('currentModel');
   var message = options.message || {'action': 'start'};
@@ -37,7 +41,12 @@ exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) 
     + '&X-WDC-PL-OPT-OUT=' + sessionPermissionsQueryParam
     + '&model=' + model;
   console.log('URL model', model);
-  var socket = new WebSocket(url);
+  try {
+    socket = new WebSocket(url);
+  } catch(err) {
+    console.log('websocketerr', err);
+    showError(err.message);
+  }
   socket.onopen = function(evt) {
     console.log('ws opened');
     socket.send(JSON.stringify(message));
@@ -49,6 +58,7 @@ exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) 
     if (msg.state === 'listening') {
       if (!listening) {
         onlistening(socket);
+        hideError();
         listening = true;
       } else {
         console.log('closing socket');
@@ -56,14 +66,36 @@ exports.initSocket = function(options, onopen, onlistening, onmessage, onerror) 
         // Despite this, it's possible to send from this 'CLOSING' socket with no issue
         // Could be a browser bug, still investigating
         // Could also be a proxy/gateway issue
-        // socket.close();
+        socket.close();
       }
     }
     onmessage(msg, socket);
   };
+
   socket.onerror = function(evt) {
-    var err = evt.data;
-    onerror(err, socket);
+    console.log('WS onerror: ', evt);
+    showError('Application error ' + evt.code + ': please refresh your browser and try again');
+    onerror(evt);
   };
+
+  socket.onclose = function(evt) {
+    console.log('WS onclose: ', evt);
+    if (evt.code === 1006) {
+      // Authentication error, try to reconnect
+      console.log('Connect attempt token: ', token);
+      utils.getToken(function(token) {
+        console.log('got token', token);
+        options.token = token;
+        initSocket(options, onopen, onlistening, onmessage, onerror);
+        return false;
+      });
+    }
+    if (evt.code > 1000) {
+      showError('Server error ' + evt.code + ': please refresh your browser and try again');
+    }
+    // Made it through, normal close
+    onclose(evt);
+  };
+
 }
 
