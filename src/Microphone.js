@@ -26,7 +26,7 @@ function Microphone(_options) {
 
   // we record in mono because the speech recognition service
   // does not support stereo.
-  this.bufferSize = options.bufferSize || 2048;
+  this.bufferSize = options.bufferSize || 8192;
   this.inputChannels = options.inputChannels || 1;
   this.outputChannels = options.outputChannels || 1;
   this.recording = false;
