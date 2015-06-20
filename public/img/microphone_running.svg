@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+<g>
+	<g>
+		<path fill="#E71D32" d="M100.7,126.6c14.8,0,26.8-12.1,26.8-26.8V92v-3.9v-7.8v-3.9v-7.8c0-14.8-12.1-26.8-26.8-26.8
+			S73.8,54,73.8,68.8v7.8v3.9v7.8V92v7.8C73.8,114.6,85.9,126.6,100.7,126.6z M89,92.1H77.4v-3.9H89c1.9,0,3.9-1.6,3.9-3.9
+			c0-1.9-1.6-3.9-3.9-3.9H77.4v-3.9H89c1.9,0,3.9-1.6,3.9-3.9c0-1.9-1.6-3.9-3.9-3.9H77.4c0-12.8,10.5-22.9,22.9-22.9
+			c12.4,0,22.9,10.5,22.9,22.9h-11.6c-1.9,0-3.9,1.6-3.9,3.9c0,1.9,1.6,3.9,3.9,3.9h11.6v3.9h-11.6c-1.9,0-3.9,1.6-3.9,3.9
+			c0,1.9,1.6,3.9,3.9,3.9h11.6V92h-11.6c-1.9,0-3.9,1.6-3.9,3.9c0,1.9,1.6,3.9,3.9,3.9h11.6c0,12.8-10.5,22.9-22.9,22.9
+			c-12.4,0-22.9-10.5-22.9-22.9H89c1.9,0,3.9-1.6,3.9-3.9C92.9,94,91.3,92.1,89,92.1z"/>
+		<path fill="#E71D32" d="M137.1,99.8h-3.9c0,17.9-14.7,32.6-32.6,32.6S68,117.7,68,99.8h-3.9c0,19.4,15.1,35.3,34.6,36.5v17.1H85.1
+			v3.9h13.6h3.9h13.6v-3.9h-13.6v-17.5C121.6,135.1,137.1,119.2,137.1,99.8z"/>
+	</g>
+	<path fill="#E71D32" d="M99.9,196.9c-53.6,0-97.1-43.5-97.1-97.1S46.3,2.8,99.9,2.8S197,46.2,197,99.8S153.5,196.9,99.9,196.9z
+		 M99.9,10.1c-49.3,0-89.3,40.4-89.3,89.7s40,89.7,89.7,89.7c49.3,0,89.7-40,89.7-89.7S149.2,10.1,99.9,10.1z">
+		 <animate xmlns="http://www.w3.org/2000/svg" from="black" to="red" dur="1s" repeatCount="indefinite" attributeType="XML" attributeName="fill" animation-direction="alternate" style="     animation-direction: alternate; "/>
+		 <animate xmlns="http://www.w3.org/2000/svg" from="red" to="#939393" dur="1s" repeatCount="indefinite" attributeType="XML" attributeName="fill" animation-direction="alternate" style="     animation-direction: alternate; "/>
+	</path>
+</g>
+</svg>
