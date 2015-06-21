@@ -23,6 +23,7 @@ var Microphone = require('./Microphone');
 var models = require('./data/models.json').models;
 var initViews = require('./views').initViews;
 var showError = require('./views/showerror').showError;
+var hideError = require('./views/showerror').hideError;
 var initSocket = require('./socket').initSocket;
 var handleFileUpload = require('./fileupload').handleFileUpload;
 var display = require('./views/display');
@@ -31,9 +32,6 @@ var effects = require('./views/effects');
 var pkg = require('../package');
 
 var BUFFERSIZE = 8192;
-
-// Temporary top-scope variable
-var micSocket;
 
 $(document).ready(function() {
 
@@ -44,6 +42,8 @@ $(document).ready(function() {
       + '<p>Buffer Size: ' + BUFFERSIZE + '</p>'
     );
 
+  // Temporary top-scope variable
+  var micSocket;
 
   function handleMicrophone(token, model, mic, callback) {
 
@@ -157,6 +157,16 @@ $(document).ready(function() {
 
     function handleSelectedFile(file) {
 
+      var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+
+      if (currentlyDisplaying) {
+        showError('Currently displaying another file, please wait until complete');
+        return;
+      }
+
+      localStorage.getItem('currentlyDisplaying', true);
+      hideError();
+
       // Visual effects
       var uploadImageTag = $('#fileUploadTarget > img');
       var timer = setInterval(effects.toggleImage, 750, uploadImageTag, 'upload');
@@ -197,6 +207,7 @@ $(document).ready(function() {
         }, 
           function(evt) {
             effects.stopToggleImage(timer, uploadImageTag, 'upload');
+            localStorage.setItem('currentlyDisplaying', false);
           }
         );
       };

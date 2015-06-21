@@ -101,3 +101,11 @@ input[type="radio"], input[type="checkbox"] {
 
 progress::-moz-progress-bar { background: #5596E6; }
 progress::-webkit-progress-bar { background: #5596E6; }
+
+select.custom-select {
+  /* overflow: hidden; */
+  height: 3.5em;
+  border: 0;
+  background-color: white;
+  outline: 2px solid #c7c7c7;
+}

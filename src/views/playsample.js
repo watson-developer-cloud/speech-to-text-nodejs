@@ -11,6 +11,15 @@ var effects = require('./effects');
 
 var playSample = function(token, imageTag, iconName, url, callback) {
 
+  var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+
+  if (currentlyDisplaying) {
+    showError('Currently displaying another file, please wait until complete');
+    return;
+  }
+
+  localStorage.getItem('currentlyDisplaying', true);
+
   var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
   var xhr = new XMLHttpRequest();
@@ -51,6 +60,7 @@ var playSample = function(token, imageTag, iconName, url, callback) {
       // On connection end
         function(evt) {
           effects.stopToggleImage(timer, imageTag, iconName);
+          localStorage.getItem('currentlyDisplaying', false);
         }
       );
     };
