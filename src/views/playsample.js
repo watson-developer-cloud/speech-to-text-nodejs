@@ -18,7 +18,9 @@ var playSample = function(token, imageTag, iconName, url, callback) {
     return;
   }
 
-  localStorage.getItem('currentlyDisplaying', true);
+  $.publish('clearscreen');
+
+  localStorage.setItem('currentlyDisplaying', true);
 
   var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 

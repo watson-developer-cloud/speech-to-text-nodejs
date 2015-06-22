@@ -35,6 +35,8 @@ var BUFFERSIZE = 8192;
 
 $(document).ready(function() {
 
+
+
   // Temporary app data
   $('#appSettings')
     .html(
@@ -53,6 +55,9 @@ $(document).ready(function() {
       callback(err, null);
       return false;
     }
+
+    $.publish('clearscreen');
+
     // Test out websocket
     var baseString = '';
     var baseJSON = '';
@@ -167,6 +172,12 @@ $(document).ready(function() {
     initViews(viewContext);
     utils.initPubSub();
 
+    $.subscribe('clearscreen', function() {
+      $('#resultsText').text('');
+      $('#resultsJSON').text('');
+      $('.hypotheses > ul').empty();
+      $('#metadataTableBody').empty();
+    });
 
     function handleSelectedFile(file) {
 
@@ -176,6 +187,8 @@ $(document).ready(function() {
         showError('Transcription underway, please click stop or wait until finished to upload another file');
         return;
       }
+
+      $.publish('clearscreen');
 
       localStorage.setItem('currentlyDisplaying', true);
       hideError();
