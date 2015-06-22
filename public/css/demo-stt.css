@@ -109,3 +109,11 @@ select.custom-select {
   background-color: white;
   outline: 2px solid #c7c7c7;
 }
+
+#metadataTable th {
+  padding: 0.5em !important;
+}
+
+#metadataTableBody td {
+  padding: 0 !important;
+}
