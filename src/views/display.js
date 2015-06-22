@@ -1,32 +1,39 @@
 var $ = require('jquery');
 
-var showTimestamps = function(timestamps) {
-  timestamps.forEach(function(timestamp) {
-    var word = timestamp[0],
-      t0 = timestamp[1],
-      t1 = timestamp[2];
-    var timelength = t1 - t0;
-    $('.table-header-row').append('<th>' + word + '</th>');
-    $('.time-length-row').append('<td>' + timelength.toString().substring(0, 3) + ' s</td>');
-  });
-}
-
-var showWordConfidence = function(confidences) {
-  console.log('confidences', confidences);
-  confidences.forEach(function(confidence) {
-    var displayConfidence = confidence[1].toString().substring(0, 3);
-    $('.confidence-score-row').append('<td>' + displayConfidence + ' </td>');
-  });
+var showTimestamp = function(timestamps, confidences) {
+  var word = timestamps[0],
+      t0 = timestamps[1],
+      t1 = timestamps[2];
+  var timelength = t1 - t0;
+  // Show confidence if defined, else 'n/a'
+  var displayConfidence = confidences ? confidences[1].toString().substring(0, 3) : 'n/a';
+  $('#metadataTable > tbody:last-child').append(
+      '<tr>'
+      + '<td>' + word + '</td>'
+      + '<td>' + t0 + '</td>'
+      + '<td>' + displayConfidence + '</td>'
+      + '</tr>'
+      );
 }
 
 var showMetaData = function(alternative) {
-  var timestamps = alternative.timestamps;
-  if (timestamps && timestamps.length > 0) {
-    showTimestamps(timestamps);
-  }
-  var confidences = alternative.word_confidence;;
-  if (confidences && confidences.length > 0) {
-    showWordConfidence(confidences);
+  $('#metadataTable > tbody').html();
+  var confidenceNestedArray = alternative.word_confidence;;
+  var timestampNestedArray = alternative.timestamps;
+  if (confidenceNestedArray && confidenceNestedArray.length > 0) {
+    for (var i = 0; i < confidenceNestedArray.length; i++) {
+      var timestamps = timestampNestedArray[i];
+      var confidences = confidenceNestedArray[i];
+      showTimestamp(timestamps, confidences);
+    }
+    return;
+  } else {
+    if (timestampNestedArray && timestampNestedArray.length > 0) {
+      console.log('SHOWING TIMESTAMPS');
+      timestampNestedArray.forEach(function(timestamp) {
+        showTimestamp(timestamp);
+      });
+    }
   }
 }
 
@@ -77,13 +84,13 @@ exports.showResult = function(msg, baseString, callback) {
     var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
 
+    showMetaData(alternatives[0]);
     //Capitalize first word
     // if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
       baseString += text;
       console.log('final res:', baseString);
       processString(baseString, true);
-      showMetaData(alternatives[0]);
     } else {
       var tempString = baseString + text;
       console.log('interimResult res:', tempString);
