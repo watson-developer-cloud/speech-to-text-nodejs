@@ -30,13 +30,14 @@ var playSample = function(token, imageTag, iconName, url, callback) {
     var currentModel = 'en-US_BroadbandModel';
     var reader = new FileReader();
     var blobToText = new Blob([blob]).slice(0, 4);
-    console.log('TOKEN', token);
-    console.log('URL', url);
-    console.log('BLOB', blob);
     reader.readAsText(blobToText);
     reader.onload = function() {
       var contentType = reader.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
       console.log('Uploading file', reader.result);
+      var mediaSourceURL = URL.createObjectURL(blob);
+      var audio = $('.audio').get(0);
+      $('.audio').show().attr('src', mediaSourceURL);
+      audio.play();
       handleFileUpload(token, currentModel, blob, contentType, function(socket) {
         var parseOptions = {
           file: blob
@@ -56,12 +57,12 @@ var playSample = function(token, imageTag, iconName, url, callback) {
           function() {
             socket.send(JSON.stringify({'action': 'stop'}));
           });
-      }, 
-      // On connection end
-        function(evt) {
-          effects.stopToggleImage(timer, imageTag, iconName);
-          localStorage.getItem('currentlyDisplaying', false);
-        }
+          }, 
+          // On connection end
+          function(evt) {
+            effects.stopToggleImage(timer, imageTag, iconName);
+            localStorage.getItem('currentlyDisplaying', false);
+          }
       );
     };
   };

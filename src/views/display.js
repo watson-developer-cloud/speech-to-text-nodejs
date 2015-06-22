@@ -17,7 +17,7 @@ var showTimestamp = function(timestamps, confidences) {
 }
 
 var showMetaData = function(alternative) {
-  $('#metadataTable > tbody').html();
+  $('#metadataTable > tbody').empty();
   var confidenceNestedArray = alternative.word_confidence;;
   var timestampNestedArray = alternative.timestamps;
   if (confidenceNestedArray && confidenceNestedArray.length > 0) {
@@ -39,15 +39,16 @@ var showMetaData = function(alternative) {
 
 var showAlternatives = function(alternatives) {
   var $hypotheses = $('.hypotheses ul');
-  $hypotheses.html('');
   alternatives.forEach(function(alternative, idx) {
     $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
   });
-  $hypotheses.on('click', "li", function () {
-    console.log("showing metadata");
-    var idx = + $(this).data('hypothesis-index');
-    var alternative = alternatives[idx];
-    showMetaData(alternative);
+  $hypotheses.on('click', "li", function (alternatives) {
+    return function() {
+      console.log("showing metadata");
+      var idx = + $(this).data('hypothesis-index');
+      var alternative = alternatives[idx];
+      showMetaData(alternative);
+    }
   });
 }
 

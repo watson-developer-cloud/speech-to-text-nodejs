@@ -113,6 +113,19 @@ $(document).ready(function() {
   tokenRequest.open("GET", url, true);
   tokenRequest.onload = function(evt) {
 
+
+    var testFunction = (function() {
+      var count = 5;
+      return function(callback) {
+        count--;
+        return count;
+      }
+    })();
+
+    testFunction();
+    testFunction();
+    console.log('Result for t()', testFunction());
+
     window.onbeforeunload = function(e) {
       localStorage.clear();
     };
@@ -164,7 +177,7 @@ $(document).ready(function() {
         return;
       }
 
-      localStorage.getItem('currentlyDisplaying', true);
+      localStorage.setItem('currentlyDisplaying', true);
       hideError();
 
       // Visual effects
@@ -173,12 +186,16 @@ $(document).ready(function() {
       var uploadText = $('#fileUploadTarget > span');
       uploadText.text('Stop Transcribing');
 
-      // Clear flashing if socket upload is stopped
-      $.subscribe('stopsocket', function(data) {
+      function restoreUploadTab() {
+        localStorage.setItem('currentlyDisplaying', false);
         clearInterval(timer);
         effects.restoreImage(uploadImageTag, 'upload');
-        localStorage.getItem('currentlyDisplaying', false);
         uploadText.text('Select File');
+      }
+
+      // Clear flashing if socket upload is stopped
+      $.subscribe('stopsocket', function(data) {
+        restoreUploadTab();
       });
 
 
@@ -191,7 +208,16 @@ $(document).ready(function() {
       var r = new FileReader();
       r.readAsText(blobToText);
       r.onload = function() {
-        var contentType = r.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
+        var contentType;
+        if (r.result === 'fLaC') {
+         contentType = 'audio/flac';
+        } else if (r.result === 'RIFF') {
+         contentType = 'audio/wav';
+        } else {
+          restoreUploadTab();
+          showError('Only WAV or FLAC files can be transcribed, please try another file format');
+          return;
+        }
         console.log('Uploading file', r.result);
         handleFileUpload(token, currentModel, file, contentType, function(socket) {
           console.log('reading file');

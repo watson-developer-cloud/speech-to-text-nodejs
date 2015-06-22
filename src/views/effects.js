@@ -21,9 +21,9 @@ exports.stopFlashSVG = function(timer) {
 
 exports.toggleImage = function(el, name) {
   if(el.attr('src') === 'img/' + name + '.svg') {
-    el.attr("src", 'img/' + name + '-red.svg');
+    el.attr("src", 'img/stop-red.svg');
   } else {
-    el.attr('src', 'img/' + name + '.svg');
+    el.attr('src', 'img/stop.svg');
   }
 }
 
