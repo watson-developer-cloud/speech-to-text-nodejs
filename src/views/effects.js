@@ -27,7 +27,7 @@ exports.toggleImage = function(el, name) {
   }
 }
 
-var restoreImage = function(el, name) {
+var restoreImage = exports.restoreImage = function(el, name) {
   el.attr('src', 'img/' + name + '.svg');
 }
 

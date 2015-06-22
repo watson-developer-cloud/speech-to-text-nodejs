@@ -158,9 +158,9 @@ $(document).ready(function() {
     function handleSelectedFile(file) {
 
       var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
-
+      
       if (currentlyDisplaying) {
-        showError('Currently displaying another file, please wait until complete');
+        showError('Transcription underway, please click stop or wait until finished to upload another file');
         return;
       }
 
@@ -169,7 +169,18 @@ $(document).ready(function() {
 
       // Visual effects
       var uploadImageTag = $('#fileUploadTarget > img');
-      var timer = setInterval(effects.toggleImage, 750, uploadImageTag, 'upload');
+      var timer = setInterval(effects.toggleImage, 750, uploadImageTag, 'stop');
+      var uploadText = $('#fileUploadTarget > span');
+      uploadText.text('Stop Transcribing');
+
+      // Clear flashing if socket upload is stopped
+      $.subscribe('stopsocket', function(data) {
+        clearInterval(timer);
+        effects.restoreImage(uploadImageTag, 'upload');
+        localStorage.getItem('currentlyDisplaying', false);
+        uploadText.text('Select File');
+      });
+
 
       // Get current model
       var currentModel = localStorage.getItem('currentModel');
@@ -207,6 +218,7 @@ $(document).ready(function() {
         }, 
           function(evt) {
             effects.stopToggleImage(timer, uploadImageTag, 'upload');
+            uploadText.text('Select File');
             localStorage.setItem('currentlyDisplaying', false);
           }
         );
@@ -252,6 +264,12 @@ $(document).ready(function() {
     });
 
     $("#fileUploadTarget").click(function(evt) {
+      var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+      if (currentlyDisplaying) {
+        $.publish('stopsocket');
+        return;
+      }
+
       fileUploadDialog
       .trigger('click');
     });
