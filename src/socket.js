@@ -25,12 +25,14 @@ var hideError = showerror.hideError;
 // Mini WS callback API, so we can initialize
 // with model and token in URI, plus
 // start message
+//
+
 var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose, retryCountDown) {
   var listening = false;
   function withDefault(val, defaultVal) {
     return typeof val === 'undefined' ? defaultVal : val;
   }
-  var socket;
+  var socket, count;
   var token = options.token;
   var model = options.model || localStorage.getItem('currentModel');
   var message = options.message || {'action': 'start'};
@@ -87,14 +89,15 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     console.log('WS onclose: ', evt);
     if (evt.code === 1006) {
       // Authentication error, try to reconnect
-      setTimeout(function() {
-        utils.getToken(function(token) {
-          console.log('got token', token);
-          options.token = token;
-          initSocket(options, onopen, onlistening, onmessage, onerror);
+      count = utils.getToken(function(token, err) {
+        if (err) {
+          showError(err.message);
           return false;
-        });
-      }, 0);
+        }
+        console.log('got token', token);
+        options.token = token;
+        initSocket(options, onopen, onlistening, onmessage, onerror);
+      });
     }
     if (evt.code > 1000) {
       showError('Server error ' + evt.code + ': please refresh your browser and try again');

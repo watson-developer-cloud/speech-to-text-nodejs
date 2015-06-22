@@ -38,17 +38,25 @@ exports.onFileProgress = function(options, ondata, onerror, onend) {
   fileBlock(offset, chunkSize, file, readChunk);
 }
 
-exports.getToken = function(callback) {
+exports.getToken = (function() {
   // Make call to API to try and get token
-  var url = '/token';
-  var tokenRequest = new XMLHttpRequest();
-  tokenRequest.open("GET", url, true);
-  tokenRequest.onload = function(evt) {
-    var token = tokenRequest.responseText;
-    callback(token);
-  };
-  tokenRequest.send();
-}
+  var hasBeenRunTimes = 2;
+  return function(callback) {
+    hasBeenRunTimes--;
+    if (hasBeenRunTimes === 0) {
+      var err = new Error('Cannot reach server');
+      callback(null, err);
+    }
+    var url = '/token';
+    var tokenRequest = new XMLHttpRequest();
+    tokenRequest.open("GET", url, true);
+    tokenRequest.onload = function(evt) {
+      var token = tokenRequest.responseText;
+      callback(token);
+    };
+    tokenRequest.send();
+  }
+})();
 
 exports.initPubSub = function() {
   var o         = $({});
