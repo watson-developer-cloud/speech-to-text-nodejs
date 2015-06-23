@@ -56,19 +56,18 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   };
   socket.onmessage = function(evt) {
     var msg = JSON.parse(evt.data);
-    console.log('evt', evt);
     if (msg.state === 'listening') {
       // Early cut off, without notification
-      $.subscribe('stopsocket', function(data) {
-        console.log('Closing socket...');
-        socket.close();
-      });
       if (!listening) {
+        $.subscribe('socketstop', function(data) {
+          console.log('MICROPHONE: Sending stop listen message.');
+          socket.send(JSON.stringify({action:'stop'}));
+        });
         onlistening(socket);
         hideError();
         listening = true;
       } else {
-        console.log('closing socket');
+        console.log('MICROPHONE: Closing socket.');
         socket.close();
       }
     }
@@ -90,7 +89,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
           showError(err.message);
           return false;
         }
-        console.log('got token', token);
+        console.log('Fetching additional token...');
         options.token = token;
         initSocket(options, onopen, onlistening, onmessage, onerror);
       });

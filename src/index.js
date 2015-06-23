@@ -34,6 +34,7 @@ var pkg = require('../package');
 
 var BUFFERSIZE = 8192;
 
+
 $(document).ready(function() {
 
   // Temporary app data
@@ -42,74 +43,6 @@ $(document).ready(function() {
       '<p>Version: ' + pkg.version + '</p>'
       + '<p>Buffer Size: ' + BUFFERSIZE + '</p>'
     );
-
-  // Temporary top-scope variable
-  var micSocket;
-
-  function handleMicrophone(token, model, mic, callback) {
-
-    var currentModel = localStorage.getItem('currentModel');
-    if (currentModel.indexOf('Narrowband') > -1) {
-      var err = new Error('Microphone cannot accomodate narrow band models, please select another');
-      callback(err, null);
-      return false;
-    }
-
-    $.publish('clearscreen');
-
-    // Test out websocket
-    var baseString = '';
-    var baseJSON = '';
-
-    var options = {};
-    options.token = token;
-    options.message = {
-      'action': 'start',
-      'content-type': 'audio/l16;rate=16000',
-      'interim_results': true,
-      'continuous': true,
-      'word_confidence': true,
-      'timestamps': true,
-      'max_alternatives': 3
-    };
-    options.model = model;
-
-    function onOpen(socket) {
-      console.log('socket opened');
-      callback(null, socket);
-    }
-
-    function onListening(socket) {
-
-      micSocket = socket;
-
-      mic.onAudio = function(blob) {
-        if (socket.readyState < 2) {
-          socket.send(blob)
-        }
-      };
-    }
-
-    function onMessage(msg, socket) {
-      console.log('Mic socket msg: ', msg);
-      if (msg.results) {
-        // Convert to closure approach
-        baseString = display.showResult(msg, baseString);
-        baseJSON = display.showJSON(msg, baseJSON);
-      }
-    }
-
-    function onError(r, socket) {
-      console.log('Mic socket err: ', err);
-    }
-
-    function onClose(evt) {
-      console.log('Mic socket close: ', evt);
-    }
-
-    initSocket(options, onOpen, onListening, onMessage, onError, onClose);
-
-  }
 
   // Make call to API to try and get token
   var url = '/token';
@@ -126,11 +59,6 @@ $(document).ready(function() {
       console.error('No authorization token available');
       console.error('Attempting to reconnect...');
     }
-
-    var micOptions = {
-      bufferSize: BUFFERSIZE
-    };
-    var mic = new Microphone(micOptions);
 
     var modelOptions = {
       token: token
@@ -156,7 +84,8 @@ $(document).ready(function() {
     // view context to views
     var viewContext = {
       models: models,
-      token: token
+      token: token,
+      bufferSize: BUFFERSIZE
     };
     initViews(viewContext);
     utils.initPubSub();
@@ -182,7 +111,7 @@ $(document).ready(function() {
       var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
       console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
       if (currentlyDisplaying) {
-        $.publish('stopsocket');
+        $.publish('socketstop');
         localStorage.setItem('currentlyDisplaying', false);
         return;
       }
@@ -195,54 +124,6 @@ $(document).ready(function() {
     });
 
 
-    // Set microphone state to not running
-    localStorage.setItem('running', false);
-
-    var recordButton = $('#recordButton');
-    recordButton.click($.proxy(function(evt) {
-
-      // Prevent default anchor behavior
-      evt.preventDefault();
-
-      var running = JSON.parse(localStorage.getItem('running'));
-      localStorage.setItem('running', !running);
-
-      console.log('click!');
-
-      var currentModel = localStorage.getItem('currentModel');
-
-      console.log('running state', running);
-
-      if (!running) {
-        console.log('Not running, handleMicrophone()');
-        handleMicrophone(token, currentModel, mic, function(err, socket) {
-          if (err) {
-            var msg = err.message;
-            console.log('Error: ', msg);
-            showError(msg);
-            localStorage.setItem('running', false);
-          } else {
-            recordButton.css('background-color', '#d74108');
-            recordButton.find('img').attr('src', 'img/stop.svg');
-            console.log('starting mic');
-            mic.record();
-            localStorage.setItem('running', true);
-          }
-        });
-      } else {
-        console.log('Stopping microphone, sending stop action message');
-        recordButton.removeAttr('style');
-        recordButton.find('img').attr('src', 'img/microphone.svg');
-        micSocket.send(JSON.stringify({'action': 'stop'}));
-        // Can also send empty buffer to signal end
-        // var emptyBuffer = new ArrayBuffer(0);
-        // micSocket.send(emptyBuffer);
-        mic.stop();
-        localStorage.setItem('running', false);
-      }
-
-
-    }, this));
   }
   tokenRequest.send();
 

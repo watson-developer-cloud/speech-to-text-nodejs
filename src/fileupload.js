@@ -9,8 +9,6 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
 
     console.log('setting image');
     // $('#progressIndicator').css('visibility', 'visible');
-
-    localStorage.setItem('currentlyDisplaying', true);
     hideError();
 
     $.subscribe('progress', function(evt, data) {

@@ -35,7 +35,7 @@ exports.handleSelectedFile = function(token, file) {
   }
 
   // Clear flashing if socket upload is stopped
-  $.subscribe('stopsocket', function(data) {
+  $.subscribe('socketstop', function(data) {
     restoreUploadTab();
   });
 
