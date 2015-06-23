@@ -37,8 +37,9 @@ var showMetaData = function(alternative) {
   }
 }
 
-var showAlternatives = function(alternatives) {
+var showAlternatives = function(alternatives, isFinal) {
   var $hypotheses = $('.hypotheses ul');
+  $hypotheses.empty();
   alternatives.forEach(function(alternative, idx) {
     $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
   });
@@ -91,16 +92,19 @@ exports.showResult = function(msg, baseString, callback) {
       displayFinalString = displayFinalString.replace(/%HESITATION\s/g, '');
       displayFinalString = displayFinalString.replace(/^((n)\3+)$/g, '');
       processString(displayFinalString, true);
+      showAlternatives(alternatives, true);
     } else {
       var tempString = baseString + text;
       tempString = tempString.replace(/%HESITATION\s/g, '');
       tempString = tempString.replace(/^((n)\3+)$/g, '');
       processString(tempString, false);
+      showAlternatives(alternatives, false);
     }
   }
-  if (alternatives) {
-    showAlternatives(alternatives);
-  }
+
+  // if (alternatives) {
+  //   showAlternatives(alternatives);
+  // }
 
   return baseString;
 

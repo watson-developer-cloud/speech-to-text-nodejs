@@ -9,67 +9,81 @@ var showError = require('./showerror').showError;
 var effects = require('./effects');
 
 
-var playSample = function(token, imageTag, iconName, url, callback) {
+var playSample = (function() {
 
-  var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+  var running = false;
 
-  if (currentlyDisplaying) {
-    showError('Currently displaying another file, please wait until complete');
-    return;
-  }
+  return function(token, imageTag, iconName, url, callback) {
 
-  $.publish('clearscreen');
+    var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
-  localStorage.setItem('currentlyDisplaying', true);
+    if (currentlyDisplaying && running) {
+      console.log('HARD SOCKET STOP');
+      $.publish('hardsocketstop');
+      localStorage.setItem('currentlyDisplaying', false);
+      running = false;
+      return;
+    }
 
-  var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
+    if (currentlyDisplaying) {
+      showError('Currently another file is playing, please stop the file or wait until it finishes');
+      return;
+    }
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.responseType = 'blob';
-  xhr.onload = function(e) {
-    var blob = xhr.response;
-    var currentModel = 'en-US_BroadbandModel';
-    var reader = new FileReader();
-    var blobToText = new Blob([blob]).slice(0, 4);
-    reader.readAsText(blobToText);
-    reader.onload = function() {
-      var contentType = reader.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
-      console.log('Uploading file', reader.result);
-      var mediaSourceURL = URL.createObjectURL(blob);
-      var audio = new Audio();
-      audio.src = mediaSourceURL;
-      audio.play();
-      handleFileUpload(token, currentModel, blob, contentType, function(socket) {
-        var parseOptions = {
-          file: blob
-        };
-        onFileProgress(parseOptions,
-          // On data chunk
-          function(chunk) {
-            console.log('Handling chunk', chunk);
-            socket.send(chunk);
-          },
-          // On file read error
-          function(evt) {
-            console.log('Error reading file: ', evt.message);
-            showError(evt.message);
-          },
-          // On load end
-          function() {
-            socket.send(JSON.stringify({'action': 'stop'}));
-          });
-          }, 
-          // On connection end
+    $.publish('clearscreen');
+
+    localStorage.setItem('currentlyDisplaying', true);
+    running = true;
+
+    var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'blob';
+    xhr.onload = function(e) {
+      var blob = xhr.response;
+      var currentModel = 'en-US_BroadbandModel';
+      var reader = new FileReader();
+      var blobToText = new Blob([blob]).slice(0, 4);
+      reader.readAsText(blobToText);
+      reader.onload = function() {
+        var contentType = reader.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
+        console.log('Uploading file', reader.result);
+        var mediaSourceURL = URL.createObjectURL(blob);
+        var audio = new Audio();
+        audio.src = mediaSourceURL;
+        audio.play();
+        handleFileUpload(token, currentModel, blob, contentType, function(socket) {
+          var parseOptions = {
+            file: blob
+          };
+          onFileProgress(parseOptions,
+            // On data chunk
+            function(chunk) {
+              console.log('Handling chunk', chunk);
+              socket.send(chunk);
+            },
+            // On file read error
+            function(evt) {
+              console.log('Error reading file: ', evt.message);
+              showError(evt.message);
+            },
+            // On load end
+            function() {
+              socket.send(JSON.stringify({'action': 'stop'}));
+            });
+        }, 
+        // On connection end
           function(evt) {
             effects.stopToggleImage(timer, imageTag, iconName);
             localStorage.getItem('currentlyDisplaying', false);
           }
-      );
+        );
+      };
     };
+    xhr.send();
   };
-  xhr.send();
-};
+})();
 
 
 exports.initPlaySample = function(ctx) {

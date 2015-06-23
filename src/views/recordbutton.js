@@ -3,6 +3,7 @@
 
 var Microphone = require('../Microphone');
 var handleMicrophone = require('../handlemicrophone').handleMicrophone;
+var showError = require('./showerror').showError;
 
 exports.initRecordButton = function(ctx) {
 
@@ -22,6 +23,12 @@ exports.initRecordButton = function(ctx) {
       evt.preventDefault();
 
       var currentModel = localStorage.getItem('currentModel');
+      var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+
+      if (currentlyDisplaying) {
+        showError('Currently another file is playing, please stop the file or wait until it finishes');
+        return;
+      }
 
       console.log('running state', running);
 
@@ -45,7 +52,7 @@ exports.initRecordButton = function(ctx) {
         console.log('Stopping microphone, sending stop action message');
         recordButton.removeAttr('style');
         recordButton.find('img').attr('src', 'img/microphone.svg');
-        $.publish('socketstop');
+        $.publish('hardsocketstop');
         mic.stop();
         running = false;
       }

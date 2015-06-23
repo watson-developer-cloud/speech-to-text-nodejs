@@ -8,95 +8,111 @@ var effects = require('./effects');
 var utils = require('../utils');
 
 // Need to remove the view logic here and move this out to the handlefileupload controller
-var handleSelectedFile = exports.handleSelectedFile = function(token, file) {
+var handleSelectedFile = exports.handleSelectedFile = (function() {
 
-  var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+    var running = false;
 
-  if (currentlyDisplaying) {
-    showError('Transcription underway, please click stop or wait until finished to upload another file');
-    return;
-  }
+    return function(token, file) {
 
-  $.publish('clearscreen');
+    var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
-  localStorage.setItem('currentlyDisplaying', true);
-
-  // Visual effects
-  var uploadImageTag = $('#fileUploadTarget > img');
-  var timer = setInterval(effects.toggleImage, 750, uploadImageTag, 'stop');
-  var uploadText = $('#fileUploadTarget > span');
-  uploadText.text('Stop Transcribing');
-
-  function restoreUploadTab() {
-    localStorage.setItem('currentlyDisplaying', false);
-    clearInterval(timer);
-    effects.restoreImage(uploadImageTag, 'upload');
-    uploadText.text('Select File');
-  }
-
-  // Clear flashing if socket upload is stopped
-  $.subscribe('socketstop', function(data) {
-    restoreUploadTab();
-  });
-
-
-  // Get current model
-  var currentModel = localStorage.getItem('currentModel');
-  console.log('currentModel', currentModel);
-
-  // Read first 4 bytes to determine header
-  var blobToText = new Blob([file]).slice(0, 4);
-  var r = new FileReader();
-  r.readAsText(blobToText);
-  r.onload = function() {
-    var contentType;
-    if (r.result === 'fLaC') {
-      contentType = 'audio/flac';
-      showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
-    } else if (r.result === 'RIFF') {
-      contentType = 'audio/wav';
-      var audio = new Audio();
-      var wavBlob = new Blob([file], {type: 'audio/wav'});
-      var wavURL = URL.createObjectURL(wavBlob);
-      audio.src = wavURL;
-      audio.play();
-    } else {
-      restoreUploadTab();
-      showError('Only WAV or FLAC files can be transcribed, please try another file format');
+    if (currentlyDisplaying && running) {
+      console.log('HARD SOCKET STOP');
+      $.publish('hardsocketstop');
+      localStorage.setItem('currentlyDisplaying', false);
+      running = false;
       return;
     }
-    console.log('Uploading file', r.result);
-    handleFileUpload(token, currentModel, file, contentType, function(socket) {
-      console.log('reading file');
+    if (currentlyDisplaying) {
+      showError('Currently another file is playing, please stop the file or wait until it finishes');
+      return;
+    }
 
-      var blob = new Blob([file]);
-      var parseOptions = {
-        file: blob
-      };
-      utils.onFileProgress(parseOptions,
-        // On data chunk
-        function(chunk) {
-          console.log('Handling chunk', chunk);
-          socket.send(chunk);
-        },
-        // On file read error
-        function(evt) {
-          console.log('Error reading file: ', evt.message);
-          showError('Error: ' + evt.message);
-        },
-        // On load end
-        function() {
-          socket.send(JSON.stringify({'action': 'stop'}));
+    $.publish('clearscreen');
+
+    localStorage.setItem('currentlyDisplaying', true);
+    running = true;
+
+    // Visual effects
+    var uploadImageTag = $('#fileUploadTarget > img');
+    var timer = setInterval(effects.toggleImage, 750, uploadImageTag, 'stop');
+    var uploadText = $('#fileUploadTarget > span');
+    uploadText.text('Stop Transcribing');
+
+    function restoreUploadTab() {
+      localStorage.setItem('currentlyDisplaying', false);
+      clearInterval(timer);
+      effects.restoreImage(uploadImageTag, 'upload');
+      uploadText.text('Select File');
+    }
+
+    // Clear flashing if socket upload is stopped
+    $.subscribe('hardsocketstop', function(data) {
+      restoreUploadTab();
+    });
+
+
+    // Get current model
+    var currentModel = localStorage.getItem('currentModel');
+    console.log('currentModel', currentModel);
+
+    // Read first 4 bytes to determine header
+    var blobToText = new Blob([file]).slice(0, 4);
+    var r = new FileReader();
+    r.readAsText(blobToText);
+    r.onload = function() {
+      var contentType;
+      if (r.result === 'fLaC') {
+        contentType = 'audio/flac';
+        showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
+      } else if (r.result === 'RIFF') {
+        contentType = 'audio/wav';
+        var audio = new Audio();
+        var wavBlob = new Blob([file], {type: 'audio/wav'});
+        var wavURL = URL.createObjectURL(wavBlob);
+        audio.src = wavURL;
+        audio.play();
+        $.subscribe('hardsocketstop', function() {
+          audio.pause();
         });
-    }, 
-      function(evt) {
-        effects.stopToggleImage(timer, uploadImageTag, 'upload');
-        uploadText.text('Select File');
-        localStorage.setItem('currentlyDisplaying', false);
+      } else {
+        restoreUploadTab();
+        showError('Only WAV or FLAC files can be transcribed, please try another file format');
+        return;
       }
-    );
-  };
-}
+      console.log('Uploading file', r.result);
+      handleFileUpload(token, currentModel, file, contentType, function(socket) {
+        console.log('reading file');
+
+        var blob = new Blob([file]);
+        var parseOptions = {
+          file: blob
+        };
+        utils.onFileProgress(parseOptions,
+          // On data chunk
+          function(chunk) {
+            console.log('Handling chunk', chunk);
+            socket.send(chunk);
+          },
+          // On file read error
+          function(evt) {
+            console.log('Error reading file: ', evt.message);
+            showError('Error: ' + evt.message);
+          },
+          // On load end
+          function() {
+            socket.send(JSON.stringify({'action': 'stop'}));
+          });
+      }, 
+        function(evt) {
+          effects.stopToggleImage(timer, uploadImageTag, 'upload');
+          uploadText.text('Select File');
+          localStorage.setItem('currentlyDisplaying', false);
+        }
+      );
+    };
+  }
+})();
 
 
 exports.initFileUpload = function(ctx) {
@@ -113,7 +129,7 @@ exports.initFileUpload = function(ctx) {
     var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
     console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
     if (currentlyDisplaying) {
-      $.publish('socketstop');
+      $.publish('hardsocketstop');
       localStorage.setItem('currentlyDisplaying', false);
       return;
     }

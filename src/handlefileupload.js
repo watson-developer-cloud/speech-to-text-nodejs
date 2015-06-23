@@ -6,8 +6,9 @@ var initSocket = require('./socket').initSocket;
 
 exports.handleFileUpload = function(token, model, file, contentType, callback, onend) {
 
+    // Set currentlyDisplaying to prevent other sockets from opening
+    localStorage.setItem('currentlyDisplaying', true);
 
-    console.log('setting image');
     // $('#progressIndicator').css('visibility', 'visible');
 
     $.subscribe('progress', function(evt, data) {

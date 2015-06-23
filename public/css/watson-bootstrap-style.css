@@ -5616,9 +5616,10 @@ table.table,
   padding: 1em;
 }
 .table-scroll {
-  overflow:auto;  
+  overflow-y:scroll;  
 /*  margin-top:20px;*/
-  max-width: 1120px;
+  height: 400px;
+  max-height: 400px;
 }
 .hypothesis-scroll {
   overflow:auto;  
