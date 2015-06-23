@@ -47,7 +47,7 @@
 
         <div class="col-lg-10 col-md-12 col-sm-12">
           <h1>Speech to Text</h1>
-          <p>TThe IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Japanese, and Spanish speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service can be accessed via a WebSocket or REST interface.</p>
+          <p>The IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Japanese, and Spanish speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service can be accessed via a WebSocket or REST interface.</p>
           <p><img src="img/link.svg" class="glyph"><strong>Resources:</strong></br>
           <div class="resources">
             <a href="http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/#!/speech-to-text">API Overview</a>
@@ -73,7 +73,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
           <h2>Transcribe Audio</h2> 
           <div class="col-lg-8 col-md-12 col-sm-12">
-            <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only with <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a> and <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>), upload pre-recorded audio (WAV or FLAC file formats), drag and drop recorded audio onto the page, or use the audio samples provided. The returned text includes metadata that provides the timestamps for start and end times of individual words, confidence scores behind those words, and alternative hypotheses for phrases.</p>
+            <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only with <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a> and <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>), upload pre-recorded audio (WAV containing uncompressed audio or FLAC file formats), drag and drop recorded audio onto the page, or use the audio samples provided. The returned text includes metadata that provides the timestamps for start and end times of individual words, confidence scores behind those words, and alternative hypotheses for phrases.</p>
           </div><!-- .col-lg-8 --> 
           <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="opt-box">
@@ -215,9 +215,10 @@
                   <table id="metadataTable">
                     <thead>
                       <tr class="table-header-row">
-                        <th>Word:</th>
-                        <th>Word start time:</th>
-                        <th>Confidence Interval (if final):</th>
+                        <th>WORD</th>
+                        <th>START TIME(sec)</th>
+                        <th>END TIME(sec)</th>
+                        <th>CONFIDENCE</th>
                       </tr>
                     </thead>
                     <tbody id="metadataTableBody">
