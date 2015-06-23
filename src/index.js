@@ -304,13 +304,18 @@ $(document).ready(function() {
 
     $("#fileUploadTarget").click(function(evt) {
       var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+      console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
       if (currentlyDisplaying) {
         $.publish('stopsocket');
+        localStorage.setItem('currentlyDisplaying', false);
         return;
       }
 
+      fileUploadDialog.val(null);
+
       fileUploadDialog
       .trigger('click');
+
     });
 
 
