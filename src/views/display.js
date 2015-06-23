@@ -11,6 +11,7 @@ var showTimestamp = function(timestamps, confidences) {
       '<tr>'
       + '<td>' + word + '</td>'
       + '<td>' + t0 + '</td>'
+      + '<td>' + t1 + '</td>'
       + '<td>' + displayConfidence + '</td>'
       + '</tr>'
       );
@@ -90,11 +91,14 @@ exports.showResult = function(msg, baseString, callback) {
     // if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
       baseString += text;
-      console.log('final res:', baseString);
-      processString(baseString, true);
+      var displayFinalString = baseString;
+      displayFinalString = displayFinalString.replace(/%HESITATION\s/g, '');
+      displayFinalString = displayFinalString.replace(/^((n)\3+)$/g, '');
+      processString(displayFinalString, true);
     } else {
       var tempString = baseString + text;
-      console.log('interimResult res:', tempString);
+      tempString = tempString.replace(/%HESITATION\s/g, '');
+      tempString = tempString.replace(/^((n)\3+)$/g, '');
       processString(tempString, false);
     }
   }
@@ -102,9 +106,6 @@ exports.showResult = function(msg, baseString, callback) {
     showAlternatives(alternatives);
   }
 
-  var isNNN = /^((n)\3+)$/.test(baseString);
-  if (isNNN) {
-    baseString = '<unintelligible: please check selected language and bandwidth>';
-  }
   return baseString;
-}
+
+};
