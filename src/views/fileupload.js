@@ -2,7 +2,7 @@
 'use strict';
 
 var showError = require('./showerror').showError;
-var hideError = require('./showerror').hideError;
+var showNotice = require('./showerror').showNotice;
 var handleFileUpload = require('../handlefileUpload').handleFileUpload;
 var effects = require('./effects');
 var utils = require('../utils');
@@ -20,7 +20,6 @@ var handleSelectedFile = exports.handleSelectedFile = function(token, file) {
   $.publish('clearscreen');
 
   localStorage.setItem('currentlyDisplaying', true);
-  hideError();
 
   // Visual effects
   var uploadImageTag = $('#fileUploadTarget > img');
@@ -53,8 +52,14 @@ var handleSelectedFile = exports.handleSelectedFile = function(token, file) {
     var contentType;
     if (r.result === 'fLaC') {
       contentType = 'audio/flac';
+      showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
     } else if (r.result === 'RIFF') {
       contentType = 'audio/wav';
+      var audio = new Audio();
+      var wavBlob = new Blob([file], {type: 'audio/wav'});
+      var wavURL = URL.createObjectURL(wavBlob);
+      audio.src = wavURL;
+      audio.play();
     } else {
       restoreUploadTab();
       showError('Only WAV or FLAC files can be transcribed, please try another file format');
@@ -77,7 +82,7 @@ var handleSelectedFile = exports.handleSelectedFile = function(token, file) {
         // On file read error
         function(evt) {
           console.log('Error reading file: ', evt.message);
-          showError(evt.message);
+          showError('Error: ' + evt.message);
         },
         // On load end
         function() {

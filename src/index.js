@@ -77,6 +77,8 @@ $(document).ready(function() {
     $.subscribe('clearscreen', function() {
       $('#resultsText').text('');
       $('#resultsJSON').text('');
+      $('.error-row').hide();
+      $('.notification-row').hide();
       $('.hypotheses > ul').empty();
       $('#metadataTableBody').empty();
     });

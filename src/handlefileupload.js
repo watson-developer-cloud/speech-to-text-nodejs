@@ -9,13 +9,10 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
 
     console.log('setting image');
     // $('#progressIndicator').css('visibility', 'visible');
-    hideError();
 
     $.subscribe('progress', function(evt, data) {
       console.log('progress: ', data);
     });
-
-    var micIcon = $('#microphoneIcon');
 
     console.log('contentType', contentType);
 

@@ -92,13 +92,25 @@ input[type="radio"], input[type="checkbox"] {
 .error-row {
   padding-left: 1em;
   padding-right: 1em;
+  display: none;
   background-color: #d74108;
   color: white;
-  display: none;
 }
 
 .error-row a {
   color: white;
+}
+
+.notification-row {
+  padding-left: 1em;
+  padding-right: 1em;
+  display: none;
+  border-bottom: 2px solid #ececec;
+  background-color: #d74108;
+  color: black;
+}
+.notification-row a {
+  color: black;
 }
 
 #progressIndicator {

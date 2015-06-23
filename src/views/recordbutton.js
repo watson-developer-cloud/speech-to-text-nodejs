@@ -29,8 +29,8 @@ exports.initRecordButton = function(ctx) {
         console.log('Not running, handleMicrophone()');
         handleMicrophone(token, currentModel, mic, function(err, socket) {
           if (err) {
-            var msg = err.message;
-            console.log('Error: ', msg);
+            var msg = 'Error: ' + err.message;
+            console.log(msg);
             showError(msg);
             running = false;
           } else {

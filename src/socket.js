@@ -47,7 +47,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     socket = new WebSocket(url);
   } catch(err) {
     console.log('websocketerr', err);
-    showError(err.message);
+    showError('Error: ' + err.message);
   }
   socket.onopen = function(evt) {
     listening = false;
@@ -65,7 +65,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       // Early cut off, without notification
       if (!listening) {
         onlistening(socket);
-        hideError();
         listening = true;
       } else {
         console.log('MICROPHONE: Closing socket.');
@@ -88,7 +87,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       // Authentication error, try to reconnect
       utils.getToken(function(token, err) {
         if (err) {
-          showError(err.message);
+          showError('Error: ' + err.message);
           return false;
         }
         console.log('Fetching additional token...');
