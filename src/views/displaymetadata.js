@@ -30,7 +30,6 @@ var showMetaData = function(alternative) {
     return;
   } else {
     if (timestampNestedArray && timestampNestedArray.length > 0) {
-      console.log('SHOWING TIMESTAMPS');
       timestampNestedArray.forEach(function(timestamp) {
         showTimestamp(timestamp);
       });
@@ -45,7 +44,6 @@ var showAlternatives = function(alternatives) {
   });
   $hypotheses.on('click', "li", function (alternatives) {
     return function() {
-      console.log("showing metadata");
       var idx = + $(this).data('hypothesis-index');
       var alternative = alternatives[idx];
       showMetaData(alternative);
@@ -60,10 +58,8 @@ var processString = function(baseString, isFinished) {
     var formattedString = baseString.slice(0, -1);
     formattedString = formattedString.charAt(0).toUpperCase() + formattedString.substring(1);
     formattedString = formattedString.trim() + '.';
-    console.log('formatted final res:', formattedString);
     $('#resultsText').val(formattedString);
   } else {
-    console.log('interimResult res:', baseString);
     $('#resultsText').val(baseString);
   }
 
