@@ -51,6 +51,10 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   }
   socket.onopen = function(evt) {
     listening = false;
+    $.subscribe('socketstop', function(data) {
+      console.log('MICROPHONE: Sending stop listen message.');
+      socket.send(JSON.stringify({action:'stop'}));
+    });
     console.log('ws opened');
     socket.send(JSON.stringify(message));
     onopen(socket);
@@ -60,10 +64,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     if (msg.state === 'listening') {
       // Early cut off, without notification
       if (!listening) {
-        $.subscribe('socketstop', function(data) {
-          console.log('MICROPHONE: Sending stop listen message.');
-          socket.send(JSON.stringify({action:'stop'}));
-        });
         onlistening(socket);
         hideError();
         listening = true;
@@ -83,6 +83,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
 
   socket.onclose = function(evt) {
     console.log('WS onclose: ', evt);
+    $.unsubscribe('socketstop');
     if (evt.code === 1006) {
       // Authentication error, try to reconnect
       utils.getToken(function(token, err) {
