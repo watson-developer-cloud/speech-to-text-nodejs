@@ -28,7 +28,7 @@ var hideError = showerror.hideError;
 //
 
 var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose, retryCountDown) {
-  var listening = false;
+  var listening;
   function withDefault(val, defaultVal) {
     return typeof val === 'undefined' ? defaultVal : val;
   }
@@ -50,6 +50,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     showError(err.message);
   }
   socket.onopen = function(evt) {
+    listening = false;
     console.log('ws opened');
     socket.send(JSON.stringify(message));
     onopen(socket);
