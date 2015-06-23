@@ -44,6 +44,12 @@
   }
 }
 
+@media screen and (max-width : 500px) {
+  .service-icon {
+    display: none;
+  }
+}
+
 input[type="radio"], input[type="checkbox"] {
   margin: 1em 1em 1em 0;
   margin-top: 1px \9;
@@ -116,4 +122,12 @@ select.custom-select {
 
 #metadataTableBody td {
   padding: 0 !important;
+}
+
+.alt-hypothesis hr {
+  margin-bottom: 0 !important;
+}
+
+progress {
+  display: none
 }
