@@ -6,6 +6,7 @@ var initShowTab = require('./showtab').initShowTab;
 var initDragDrop = require('./dragdrop').initDragDrop;
 var initPlaySample = require('./playsample').initPlaySample;
 var initRecordButton = require('./recordbutton').initRecordButton;
+var initFileUpload = require('./fileupload').initFileUpload;
 
 
 exports.initViews = function(ctx) {
@@ -14,6 +15,7 @@ exports.initViews = function(ctx) {
   initPlaySample(ctx);
   initDragDrop(ctx);
   initRecordButton(ctx);
+  initFileUpload(ctx);
   initSessionPermissions();
   initShowTab();
   initAnimatePanel();

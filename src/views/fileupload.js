@@ -3,11 +3,12 @@
 
 var showError = require('./showerror').showError;
 var hideError = require('./showerror').hideError;
-var handleFileUpload = require('../fileupload').handleFileUpload;
+var handleFileUpload = require('../handlefileUpload').handleFileUpload;
 var effects = require('./effects');
 var utils = require('../utils');
 
-exports.handleSelectedFile = function(token, file) {
+// Need to remove the view logic here and move this out to the handlefileupload controller
+var handleSelectedFile = exports.handleSelectedFile = function(token, file) {
 
   var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
@@ -92,3 +93,31 @@ exports.handleSelectedFile = function(token, file) {
   };
 }
 
+
+exports.initFileUpload = function(ctx) {
+
+  var fileUploadDialog = $("#fileUploadDialog");
+
+  fileUploadDialog.change(function(evt) {
+    var file = fileUploadDialog.get(0).files[0];
+    console.log('file upload!', file);
+    handleSelectedFile(ctx.token, file);
+  });
+
+  $("#fileUploadTarget").click(function(evt) {
+    var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+    console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
+    if (currentlyDisplaying) {
+      $.publish('socketstop');
+      localStorage.setItem('currentlyDisplaying', false);
+      return;
+    }
+
+    fileUploadDialog.val(null);
+
+    fileUploadDialog
+    .trigger('click');
+
+  });
+
+}

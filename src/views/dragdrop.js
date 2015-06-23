@@ -1,7 +1,7 @@
 
 'use strict';
 
-var handleSelectedFile = require('./handlefile').handleSelectedFile;
+var handleSelectedFile = require('./fileupload').handleSelectedFile;
 
 exports.initDragDrop = function(ctx) {
 

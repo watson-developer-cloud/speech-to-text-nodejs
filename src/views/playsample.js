@@ -3,7 +3,7 @@
 
 var utils = require('../utils');
 var onFileProgress = utils.onFileProgress;
-var handleFileUpload = require('../fileupload').handleFileUpload;
+var handleFileUpload = require('../handlefileupload').handleFileUpload;
 var initSocket = require('../socket').initSocket;
 var showError = require('./showerror').showError;
 var effects = require('./effects');
