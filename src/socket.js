@@ -58,7 +58,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     var msg = JSON.parse(evt.data);
     console.log('evt', evt);
     if (msg.state === 'listening') {
-      $.subscribe('socketstop', function(data) {
+      $.subscribe('stopsocket', function(data) {
         console.log('Closing socket...');
         socket.send(JSON.stringify({'action': 'stop'}));
         socket.close();
