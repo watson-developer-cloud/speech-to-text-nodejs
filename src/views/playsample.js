@@ -37,8 +37,8 @@ var playSample = function(token, imageTag, iconName, url, callback) {
       var contentType = reader.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
       console.log('Uploading file', reader.result);
       var mediaSourceURL = URL.createObjectURL(blob);
-      var audio = $('.audio').get(0);
-      $('.audio').show().attr('src', mediaSourceURL);
+      var audio = new Audio();
+      audio.src = mediaSourceURL;
       audio.play();
       handleFileUpload(token, currentModel, blob, contentType, function(socket) {
         var parseOptions = {
