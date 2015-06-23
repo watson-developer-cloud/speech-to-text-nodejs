@@ -58,9 +58,9 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     var msg = JSON.parse(evt.data);
     console.log('evt', evt);
     if (msg.state === 'listening') {
+      // Early cut off, without notification
       $.subscribe('stopsocket', function(data) {
         console.log('Closing socket...');
-        socket.send(JSON.stringify({'action': 'stop'}));
         socket.close();
       });
       if (!listening) {
@@ -69,10 +69,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
         listening = true;
       } else {
         console.log('closing socket');
-        // Cannot close socket since state is reported here as 'CLOSING' or 'CLOSED'
-        // Despite this, it's possible to send from this 'CLOSING' socket with no issue
-        // Could be a browser bug, still investigating
-        // Could also be a proxy/gateway issue
         socket.close();
       }
     }
