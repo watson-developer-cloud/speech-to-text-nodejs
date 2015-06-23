@@ -2,13 +2,11 @@
 'use strict';
 
 var initSocket = require('./socket').initSocket;
-var display = require('./views/display');
+var display = require('./views/displaymetadata');
 
 exports.handleMicrophone = function(token, model, mic, callback) {
 
-  var currentModel = localStorage.getItem('currentModel');
-
-  if (currentModel.indexOf('Narrowband') > -1) {
+  if (model.indexOf('Narrowband') > -1) {
     var err = new Error('Microphone cannot accomodate narrow band models, please select another');
     callback(err, null);
     return false;
@@ -34,7 +32,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   options.model = model;
 
   function onOpen(socket) {
-    console.log('socket opened');
+    console.log('Mic socket: opened');
     callback(null, socket);
   }
 

@@ -1,6 +1,6 @@
 
 var effects = require('./views/effects');
-var display = require('./views/display');
+var display = require('./views/displaymetadata');
 var hideError = require('./views/showerror').hideError;
 var initSocket = require('./socket').initSocket;
 
