@@ -32,7 +32,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   function withDefault(val, defaultVal) {
     return typeof val === 'undefined' ? defaultVal : val;
   }
-  var socket, count;
+  var socket;
   var token = options.token;
   var model = options.model || localStorage.getItem('currentModel');
   var message = options.message || {'action': 'start'};
@@ -84,7 +84,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     console.log('WS onclose: ', evt);
     if (evt.code === 1006) {
       // Authentication error, try to reconnect
-      count = utils.getToken(function(token, err) {
+      utils.getToken(function(token, err) {
         if (err) {
           showError(err.message);
           return false;
