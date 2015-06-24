@@ -2,7 +2,7 @@
 'use strict';
 
 exports.showError = function(msg) {
-  console.log('Showing error: ', msg);
+  console.log('Error: ', msg);
   var errorAlert = $('.error-row');
   errorAlert.hide();
   errorAlert.css('background-color', '#d74108');
@@ -18,7 +18,7 @@ exports.showError = function(msg) {
 }
 
 exports.showNotice = function(msg) {
-  console.log('Showing error: ', msg);
+  console.log('Notice: ', msg);
   var noticeAlert = $('.notification-row');
   noticeAlert.hide();
   noticeAlert.css('border', '2px solid #ececec');

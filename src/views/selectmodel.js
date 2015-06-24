@@ -1,4 +1,6 @@
 
+var initPlaySample = require('./playsample').initPlaySample;
+
 exports.initSelectModel = function(ctx) {
 
   function isDefault(model) {
@@ -14,9 +16,12 @@ exports.initSelectModel = function(ctx) {
   });
 
   $("select#dropdownMenu1").change(function(evt) {
-    $.publish('clearscreen');
+    console.log('Change view');
     var modelName = $("select#dropdownMenu1").val();
     localStorage.setItem('currentModel', modelName);
+    ctx.currentModel = modelName;
+    initPlaySample(ctx);
+    $.publish('clearscreen');
   });
 
 }

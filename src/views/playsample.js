@@ -14,13 +14,14 @@ var LOOKUP_TABLE = {
   'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav'],
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav'],
   'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav'],
-  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-JA_JP-wide2.wav'],
-  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow1.wav', 'sample-JA_JP-narrow2.wav']
+  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav'],
+  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav']
 };
 
 var playSample = (function() {
 
   var running = false;
+  localStorage.setItem('currentlyDisplaying', false);
 
   return function(token, imageTag, iconName, url, callback) {
 
@@ -28,17 +29,19 @@ var playSample = (function() {
 
     var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
+    console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
+
     // This error handling needs to be expanded to accomodate
     // the two different play samples files
-    // if (currentlyDisplaying && running) {
-    //   console.log('HARD SOCKET STOP');
-    //   $.publish('hardsocketstop');
-    //   localStorage.setItem('currentlyDisplaying', false);
-    //   running = false;
-    //   return;
-    // }
-
     if (currentlyDisplaying) {
+      console.log('HARD SOCKET STOP');
+      $.publish('hardsocketstop');
+      localStorage.setItem('currentlyDisplaying', false);
+      running = false;
+      return;
+    }
+
+    if (currentlyDisplaying && running) {
       showError('Currently another file is playing, please stop the file or wait until it finishes');
       return;
     }
@@ -64,6 +67,10 @@ var playSample = (function() {
         var audio = new Audio();
         audio.src = mediaSourceURL;
         audio.play();
+        $.subscribe('hardsocketstop', function() {
+          audio.pause();
+          audio.currentTime = 0;
+        });
         handleFileUpload(token, currentModel, blob, contentType, function(socket) {
           var parseOptions = {
             file: blob
@@ -98,36 +105,30 @@ var playSample = (function() {
 
 exports.initPlaySample = function(ctx) {
 
-  var currentModel = localStorage.getItem('currentModel') || 'en-US_BroadbandModel';
-
-  console.log('current model', currentModel);
-
   (function() {
+    var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][0];
     var el = $('.play-sample-1');
+    el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function(evt) {
-      currentModel = localStorage.getItem('currentModel') || currentModel;
-      var fileName = 'audio/' + LOOKUP_TABLE[currentModel][0];
       playSample(ctx.token, imageTag, iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
     });
-  })(ctx, LOOKUP_TABLE, currentModel);
+  })(ctx, LOOKUP_TABLE);
 
   (function() {
-    var fileName = 'audio/' + LOOKUP_TABLE[currentModel][1];
+    var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][1];
     var el = $('.play-sample-2');
+    el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function(evt) {
-      currentModel = localStorage.getItem('currentModel') || currentModel;
-      var fileName = 'audio/' + LOOKUP_TABLE[currentModel][1];
       playSample(ctx.token, imageTag, iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
     });
-  })(ctx, LOOKUP_TABLE, currentModel);
+  })(ctx, LOOKUP_TABLE);
 
 };
-

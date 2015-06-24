@@ -11,22 +11,16 @@ var utils = require('../utils');
 var handleSelectedFile = exports.handleSelectedFile = (function() {
 
     var running = false;
+    localStorage.setItem('currentlyDisplaying', false);
 
     return function(token, file) {
 
     var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
-    if (currentlyDisplaying && running) {
-      console.log('HARD SOCKET STOP');
-      $.publish('hardsocketstop');
-      localStorage.setItem('currentlyDisplaying', false);
-      running = false;
-      return;
-    }
-    if (currentlyDisplaying) {
-      showError('Currently another file is playing, please stop the file or wait until it finishes');
-      return;
-    }
+    // if (currentlyDisplaying) {
+    //   showError('Currently another file is playing, please stop the file or wait until it finishes');
+    //   return;
+    // }
 
     $.publish('clearscreen');
 
@@ -40,7 +34,6 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     uploadText.text('Stop Transcribing');
 
     function restoreUploadTab() {
-      localStorage.setItem('currentlyDisplaying', false);
       clearInterval(timer);
       effects.restoreImage(uploadImageTag, 'upload');
       uploadText.text('Select File');
@@ -74,6 +67,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         audio.play();
         $.subscribe('hardsocketstop', function() {
           audio.pause();
+          audio.currentTime = 0;
         });
       } else {
         restoreUploadTab();
@@ -117,14 +111,15 @@ exports.initFileUpload = function(ctx) {
 
   fileUploadDialog.change(function(evt) {
     var file = fileUploadDialog.get(0).files[0];
-    console.log('file upload!', file);
     handleSelectedFile(ctx.token, file);
   });
 
   $("#fileUploadTarget").click(function(evt) {
+
     var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
-    console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
+
     if (currentlyDisplaying) {
+      console.log('HARD SOCKET STOP');
       $.publish('hardsocketstop');
       localStorage.setItem('currentlyDisplaying', false);
       return;
