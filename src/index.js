@@ -48,6 +48,7 @@ $(document).ready(function() {
     }
 
     var viewContext = {
+      currentModel: 'en-US_BroadbandModel',
       models: models,
       token: token,
       bufferSize: BUFFERSIZE
@@ -77,4 +78,3 @@ $(document).ready(function() {
   });
 
 });
-
