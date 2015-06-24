@@ -52,7 +52,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     listening = false;
     $.subscribe('hardsocketstop', function(data) {
       console.log('MICROPHONE: close.');
-      socket.close();
+      socket.send(JSON.stringify({action:'stop'}));
     });
     socket.send(JSON.stringify(message));
     onopen(socket);
@@ -112,4 +112,3 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   };
 
 }
-
