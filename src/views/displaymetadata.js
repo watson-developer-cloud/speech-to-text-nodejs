@@ -46,7 +46,9 @@ var showAlternatives = function(alternatives, isFinal) {
     return function() {
       var idx = + $(this).data('hypothesis-index');
       var alternative = alternatives[idx];
-      showMetaData(alternative);
+      if (isFinal) {
+        showMetaData(alternative);
+      }
     }
   });
 }
@@ -82,20 +84,20 @@ exports.showResult = function(msg, baseString, callback) {
     var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
 
-    showMetaData(alternatives[0]);
     //Capitalize first word
     // if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
       baseString += text;
       var displayFinalString = baseString;
       displayFinalString = displayFinalString.replace(/%HESITATION\s/g, '');
-      displayFinalString = displayFinalString.replace(/^((n)\3+)$/g, '');
+      displayFinalString = displayFinalString.replace(/(.)\1{2,}/g, '');
       processString(displayFinalString, true);
+      showMetaData(alternatives[0]);
       showAlternatives(alternatives, true);
     } else {
       var tempString = baseString + text;
       tempString = tempString.replace(/%HESITATION\s/g, '');
-      tempString = tempString.replace(/^((n)\3+)$/g, '');
+      tempString = tempString.replace(/(.)\1{2,}/g, '');
       processString(tempString, false);
       showAlternatives(alternatives, false);
     }
