@@ -9,6 +9,15 @@ var showError = require('./showerror').showError;
 var effects = require('./effects');
 
 
+var LOOKUP_TABLE = {
+  'en-US_BroadbandModel': ['sample1.wav', 'sample2.wav'],
+  'en-US_NarrowbandModel': ['sample1.wav', 'sample2.wav'],
+  'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav'],
+  'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav'],
+  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-JA_JP-wide2.wav'],
+  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow1.wav', 'sample-JA_JP-narrow2.wav']
+};
+
 var playSample = (function() {
 
   var running = false;
@@ -42,7 +51,7 @@ var playSample = (function() {
     xhr.responseType = 'blob';
     xhr.onload = function(e) {
       var blob = xhr.response;
-      var currentModel = 'en-US_BroadbandModel';
+      var currentModel = localStorage.getItem('currentModel') || 'en-US_BroadbandModel';
       var reader = new FileReader();
       var blobToText = new Blob([blob]).slice(0, 4);
       reader.readAsText(blobToText);
@@ -88,31 +97,36 @@ var playSample = (function() {
 
 exports.initPlaySample = function(ctx) {
 
+  var currentModel = localStorage.getItem('currentModel') || 'en-US_BroadbandModel';
+
+  console.log('current model', currentModel);
+
   (function() {
     var el = $('.play-sample-1');
     var iconName = 'play';
     var imageTag = el.find('img');
-    var fileName = 'audio/sample1.wav';
     el.click( function(evt) {
-      console.log('CLICK!');
+      currentModel = localStorage.getItem('currentModel') || currentModel;
+      var fileName = 'audio/' + LOOKUP_TABLE[currentModel][0];
       playSample(ctx.token, imageTag, iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
     });
-  })(ctx);
+  })(ctx, LOOKUP_TABLE, currentModel);
 
   (function() {
+    var fileName = 'audio/' + LOOKUP_TABLE[currentModel][1];
     var el = $('.play-sample-2');
     var iconName = 'play';
     var imageTag = el.find('img');
-    var fileName = 'audio/sample2.wav';
     el.click( function(evt) {
-      console.log('CLICK!');
+      currentModel = localStorage.getItem('currentModel') || currentModel;
+      var fileName = 'audio/' + LOOKUP_TABLE[currentModel][1];
       playSample(ctx.token, imageTag, iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
     });
-  })(ctx);
+  })(ctx, LOOKUP_TABLE, currentModel);
 
 };
 
