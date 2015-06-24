@@ -78,7 +78,9 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .hypotheses ul li:before {
-  content: " | ";
+  content: " \A ";
+ white-space:pre;
+
 }
 
 .hypotheses ul li:first-child:before {

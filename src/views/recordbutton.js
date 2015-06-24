@@ -30,8 +30,6 @@ exports.initRecordButton = function(ctx) {
         return;
       }
 
-      $.publish('clearscreen');
-
       if (!running) {
         console.log('Not running, handleMicrophone()');
         handleMicrophone(token, currentModel, mic, function(err, socket) {
