@@ -61,6 +61,11 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   };
   socket.onmessage = function(evt) {
     var msg = JSON.parse(evt.data);
+    if (msg.error) {
+      showError(msg.error);
+      $.publish('hardsocketstop');
+      return;
+    }
     if (msg.state === 'listening') {
       // Early cut off, without notification
       if (!listening) {
@@ -77,6 +82,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   socket.onerror = function(evt) {
     console.log('WS onerror: ', evt);
     showError('Application error ' + evt.code + ': please refresh your browser and try again');
+    $.publish('clearscreen');
     onerror(evt);
   };
 

@@ -7,7 +7,7 @@ var display = require('./views/displaymetadata');
 exports.handleMicrophone = function(token, model, mic, callback) {
 
   if (model.indexOf('Narrowband') > -1) {
-    var err = new Error('Microphone cannot accomodate narrow band models, please select another');
+    var err = new Error('Microphone transcription cannot accomodate narrowband models, please select another');
     callback(err, null);
     return false;
   }

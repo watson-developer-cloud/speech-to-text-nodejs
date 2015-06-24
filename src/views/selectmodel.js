@@ -14,6 +14,7 @@ exports.initSelectModel = function(ctx) {
   });
 
   $("select#dropdownMenu1").change(function(evt) {
+    $.publish('clearscreen');
     var modelName = $("select#dropdownMenu1").val();
     localStorage.setItem('currentModel', modelName);
   });
