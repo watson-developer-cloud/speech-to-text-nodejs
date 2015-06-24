@@ -46,8 +46,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   try {
     socket = new WebSocket(url);
   } catch(err) {
-    console.log('websocketerr', err);
-    showError('Error: ' + err.message);
+    console.error('WS connection error: ', err);
   }
   socket.onopen = function(evt) {
     listening = false;
@@ -55,7 +54,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       console.log('MICROPHONE: close.');
       socket.close();
     });
-    console.log('ws opened');
     socket.send(JSON.stringify(message));
     onopen(socket);
   };
