@@ -101,6 +101,7 @@ input[type="radio"], input[type="checkbox"] {
 
 .error-row a {
   color: white;
+  margin-bottom: 0.2em;
 }
 
 .notification-row {
@@ -113,6 +114,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 .notification-row a {
   color: black;
+  margin-bottom: 0.2em;
 }
 
 #progressIndicator {
