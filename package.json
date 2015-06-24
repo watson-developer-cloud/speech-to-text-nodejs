@@ -1,6 +1,6 @@
 {
   "name": "SpeechToTextBrowserStarterApp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
   "dependencies": {
     "body-parser": "~1.10.2",
