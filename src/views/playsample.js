@@ -24,22 +24,24 @@ var playSample = (function() {
 
   return function(token, imageTag, iconName, url, callback) {
 
+    $.publish('clearscreen');
+
     var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
-    if (currentlyDisplaying && running) {
-      console.log('HARD SOCKET STOP');
-      $.publish('hardsocketstop');
-      localStorage.setItem('currentlyDisplaying', false);
-      running = false;
-      return;
-    }
+    // This error handling needs to be expanded to accomodate
+    // the two different play samples files
+    // if (currentlyDisplaying && running) {
+    //   console.log('HARD SOCKET STOP');
+    //   $.publish('hardsocketstop');
+    //   localStorage.setItem('currentlyDisplaying', false);
+    //   running = false;
+    //   return;
+    // }
 
     if (currentlyDisplaying) {
       showError('Currently another file is playing, please stop the file or wait until it finishes');
       return;
     }
-
-    $.publish('clearscreen');
 
     localStorage.setItem('currentlyDisplaying', true);
     running = true;
