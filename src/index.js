@@ -36,16 +36,12 @@ $(document).ready(function() {
 
 
   // Make call to API to try and get token
-  var url = '/token';
-  var tokenRequest = new XMLHttpRequest();
-  tokenRequest.open("GET", url, true);
-  tokenRequest.onload = function(evt) {
+  utils.getToken(function(token) {
 
     window.onbeforeunload = function(e) {
       localStorage.clear();
     };
 
-    var token = tokenRequest.responseText;
     if (!token) {
       console.error('No authorization token available');
       console.error('Attempting to reconnect...');
@@ -60,11 +56,6 @@ $(document).ready(function() {
     initViews(viewContext);
 
     utils.initPubSub();
-
-    // Get available speech recognition models
-    // Set them in storage
-    // And display them in drop-down
-    console.log('STT Models ', models);
 
     // Save models to localstorage
     localStorage.setItem('models', JSON.stringify(models));
@@ -85,9 +76,7 @@ $(document).ready(function() {
 
     console.log('setting target');
 
-  }
-
-  tokenRequest.send();
+  });
 
 });
 
