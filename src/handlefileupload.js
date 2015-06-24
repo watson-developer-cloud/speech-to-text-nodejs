@@ -43,7 +43,6 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     }
 
     function onMessage(msg) {
-      console.log('Socket msg: ', msg);
       if (msg.results) {
         // Convert to closure approach
         baseString = display.showResult(msg, baseString);
