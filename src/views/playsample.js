@@ -69,7 +69,6 @@ var playSample = (function() {
           onFileProgress(parseOptions,
             // On data chunk
             function(chunk) {
-              console.log('Handling chunk', chunk);
               socket.send(chunk);
             },
             // On file read error

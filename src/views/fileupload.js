@@ -80,10 +80,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         showError('Only WAV or FLAC files can be transcribed, please try another file format');
         return;
       }
-      console.log('Uploading file', r.result);
       handleFileUpload(token, currentModel, file, contentType, function(socket) {
-        console.log('reading file');
-
         var blob = new Blob([file]);
         var parseOptions = {
           file: blob
@@ -91,7 +88,6 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         utils.onFileProgress(parseOptions,
           // On data chunk
           function(chunk) {
-            console.log('Handling chunk', chunk);
             socket.send(chunk);
           },
           // On file read error
