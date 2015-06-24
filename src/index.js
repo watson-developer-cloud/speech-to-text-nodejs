@@ -74,8 +74,6 @@ $(document).ready(function() {
       $('#metadataTableBody').empty();
     });
 
-    console.log('setting target');
-
   });
 
 });
