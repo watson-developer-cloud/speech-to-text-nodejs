@@ -18,7 +18,6 @@ var showTimestamp = function(timestamps, confidences) {
 }
 
 var showMetaData = function(alternative) {
-  $('#metadataTable > tbody').empty();
   var confidenceNestedArray = alternative.word_confidence;;
   var timestampNestedArray = alternative.timestamps;
   if (confidenceNestedArray && confidenceNestedArray.length > 0) {
