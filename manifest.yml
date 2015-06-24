@@ -4,4 +4,4 @@ applications:
   name: speech-to-text-early-alpha
   command: node app.js
   path: .
-  memory: 256M
+  memory: 1024M
