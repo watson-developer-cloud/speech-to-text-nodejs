@@ -35,8 +35,10 @@ var playSample = (function() {
     // the two different play samples files
     if (currentlyDisplaying) {
       console.log('HARD SOCKET STOP');
-      $.publish('hardsocketstop');
+      $.publish('socketstop');
       localStorage.setItem('currentlyDisplaying', false);
+      effects.stopToggleImage(timer, imageTag, iconName);
+      effects.restoreImage(imageTag, iconName);
       running = false;
       return;
     }
@@ -71,6 +73,10 @@ var playSample = (function() {
           audio.pause();
           audio.currentTime = 0;
         });
+        $.subscribe('socketstop', function() {
+          audio.pause();
+          audio.currentTime = 0;
+        });
         handleFileUpload(token, currentModel, blob, contentType, function(socket) {
           var parseOptions = {
             file: blob
@@ -83,7 +89,7 @@ var playSample = (function() {
             // On file read error
             function(evt) {
               console.log('Error reading file: ', evt.message);
-              showError(evt.message);
+              // showError(evt.message);
             },
             // On load end
             function() {
@@ -93,6 +99,7 @@ var playSample = (function() {
         // On connection end
           function(evt) {
             effects.stopToggleImage(timer, imageTag, iconName);
+            effects.restoreImage(imageTag, iconName);
             localStorage.getItem('currentlyDisplaying', false);
           }
         );
