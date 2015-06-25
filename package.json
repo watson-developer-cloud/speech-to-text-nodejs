@@ -1,6 +1,6 @@
 {
   "name": "SpeechToTextBrowserStarterApp",
-  "version": "0.0.9",
+  "version": "0.2.0",
   "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
   "dependencies": {
     "body-parser": "~1.10.2",
@@ -53,7 +53,7 @@
   "scripts": {
     "start": "node app.js",
     "build": "browserify -o public/js/main.js src/index.js",
-    "watch": "watchify -d -o public/js/main.js src/index.js"
+    "watch": "watchify -v -d -o public/js/main.js src/index.js"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
