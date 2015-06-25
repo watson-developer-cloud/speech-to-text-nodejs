@@ -103,7 +103,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       tokenGenerator.getToken(function(token, err) {
         if (err) {
           $.publish('hardsocketstop');
-          showError('Error fetching additional authorization token: ' + err.message);
           return false;
         }
         console.log('Fetching additional token...');
