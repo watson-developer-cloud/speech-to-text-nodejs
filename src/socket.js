@@ -51,8 +51,12 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   socket.onopen = function(evt) {
     listening = false;
     $.subscribe('hardsocketstop', function(data) {
-      console.log('MICROPHONE: close.');
+      console.log('MICROPHONE: send stop action.');
       socket.send(JSON.stringify({action:'stop'}));
+    });
+    $.subscribe('socketstop', function(data) {
+      console.log('MICROPHONE: close.');
+      socket.close();
     });
     socket.send(JSON.stringify(message));
     onopen(socket);
@@ -89,16 +93,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     $.unsubscribe('hardsocketstop');
     if (evt.code === 1006) {
       // Authentication error, try to reconnect
-      utils.getToken(function(token, err) {
-        if (err) {
-          showError('Error fetching additional authorization token: ' + err.message);
-          return false;
-        }
-        console.log('Fetching additional token...');
-        options.token = token;
-        initSocket(options, onopen, onlistening, onmessage, onerror);
-      });
-      return false;
+      console.error('Authentication error ' + evt.code + ': please refresh your browser and try again');
     }
     if (evt.code === 1011) {
       console.error('Server error ' + evt.code + ': please refresh your browser and try again');
