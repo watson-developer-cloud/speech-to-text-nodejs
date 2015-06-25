@@ -91,7 +91,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       // Authentication error, try to reconnect
       utils.getToken(function(token, err) {
         if (err) {
-          showError('Error fetching additional token: ' + err.message);
+          showError('Error fetching additional authorization token: ' + err.message);
           return false;
         }
         console.log('Fetching additional token...');
@@ -105,7 +105,9 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       return false;
     }
     if (evt.code > 1000) {
-      showError('Server error ' + evt.code + ': please refresh your browser and try again');
+      console.error('Server error ' + evt.code + ': please refresh your browser and try again');
+      // showError('Server error ' + evt.code + ': please refresh your browser and try again');
+      return false;
     }
     // Made it through, normal close
     onclose(evt);
