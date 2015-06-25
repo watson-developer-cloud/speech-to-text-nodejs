@@ -38,9 +38,11 @@ var showMetaData = function(alternative) {
 
 var showAlternatives = function(alternatives, isFinal) {
   var $hypotheses = $('.hypotheses ul');
-  $hypotheses.empty();
+  $hypotheses.append($('</br>'));
   alternatives.forEach(function(alternative, idx) {
-    $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
+    if (alternative.transcript) {
+      $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
+    }
   });
   $hypotheses.on('click', "li", function (alternatives) {
     return function() {
@@ -93,19 +95,15 @@ exports.showResult = function(msg, baseString, callback) {
       displayFinalString = displayFinalString.replace(/(.)\1{2,}/g, '');
       processString(displayFinalString, true);
       showMetaData(alternatives[0]);
-      showAlternatives(alternatives, true);
+      // Only show alternatives if we're final
+      // showAlternatives(alternatives);
     } else {
       var tempString = baseString + text;
       tempString = tempString.replace(/%HESITATION\s/g, '');
       tempString = tempString.replace(/(.)\1{2,}/g, '');
       processString(tempString, false);
-      showAlternatives(alternatives, false);
     }
   }
-
-  // if (alternatives) {
-  //   showAlternatives(alternatives);
-  // }
 
   return baseString;
 
