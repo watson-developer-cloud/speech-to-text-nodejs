@@ -25,7 +25,9 @@ var hideError = showerror.hideError;
 // Mini WS callback API, so we can initialize
 // with model and token in URI, plus
 // start message
-//
+
+// Initialize closure, which holds maximum getToken call count
+var tokenGenerator = utils.createTokenGenerator();
 
 var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose, retryCountDown) {
   var listening;
@@ -51,7 +53,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   socket.onopen = function(evt) {
     listening = false;
     $.subscribe('hardsocketstop', function(data) {
-      console.log('MICROPHONE: send stop action.');
+      console.log('MICROPHONE: close.');
       socket.send(JSON.stringify({action:'stop'}));
     });
     $.subscribe('socketstop', function(data) {
@@ -90,10 +92,25 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
 
   socket.onclose = function(evt) {
     console.log('WS onclose: ', evt);
-    $.unsubscribe('hardsocketstop');
     if (evt.code === 1006) {
       // Authentication error, try to reconnect
-      console.error('Authentication error ' + evt.code + ': please refresh your browser and try again');
+      console.log('generator count', tokenGenerator.getCount());
+      if (tokenGenerator.getCount() > 1) {
+        $.publish('hardsocketstop');
+        showError('Error fetching additional authorization token, no authorization tokens are currently available');
+        throw new Error("No authorization token is currently available");
+      }
+      tokenGenerator.getToken(function(token, err) {
+        if (err) {
+          $.publish('hardsocketstop');
+          showError('Error fetching additional authorization token: ' + err.message);
+          return false;
+        }
+        console.log('Fetching additional token...');
+        options.token = token;
+        initSocket(options, onopen, onlistening, onmessage, onerror);
+      });
+      return false;
     }
     if (evt.code === 1011) {
       console.error('Server error ' + evt.code + ': please refresh your browser and try again');
@@ -105,6 +122,8 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       return false;
     }
     // Made it through, normal close
+    $.unsubscribe('hardsocketstop');
+    $.unsubscribe('socketstop');
     onclose(evt);
   };
 

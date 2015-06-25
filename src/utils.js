@@ -38,12 +38,36 @@ exports.onFileProgress = function(options, ondata, onerror, onend) {
   fileBlock(offset, chunkSize, file, readChunk);
 }
 
+exports.createTokenGenerator = function() {
+  // Make call to API to try and get token
+  var hasBeenRunTimes = 0;
+  return {
+    getToken: function(callback) {
+    ++hasBeenRunTimes;
+    if (hasBeenRunTimes > 5) {
+      var err = new Error('Cannot reach server');
+      callback(null, err);
+      return;
+    }
+    var url = '/token';
+    var tokenRequest = new XMLHttpRequest();
+    tokenRequest.open("GET", url, true);
+    tokenRequest.onload = function(evt) {
+      var token = tokenRequest.responseText;
+      callback(token);
+    };
+    tokenRequest.send();
+    },
+    getCount: function() { return hasBeenRunTimes; }
+  }
+};
+
 exports.getToken = (function() {
   // Make call to API to try and get token
-  var hasBeenRunTimes = 2;
+  var hasBeenRunTimes = 0;
   return function(callback) {
-    hasBeenRunTimes--;
-    if (hasBeenRunTimes === 0) {
+    hasBeenRunTimes++
+    if (hasBeenRunTimes > 5) {
       var err = new Error('Cannot reach server');
       callback(null, err);
       return;
