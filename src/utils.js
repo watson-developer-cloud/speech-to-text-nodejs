@@ -46,6 +46,7 @@ exports.getToken = (function() {
     if (hasBeenRunTimes === 0) {
       var err = new Error('Cannot reach server');
       callback(null, err);
+      return;
     }
     var url = '/token';
     var tokenRequest = new XMLHttpRequest();
