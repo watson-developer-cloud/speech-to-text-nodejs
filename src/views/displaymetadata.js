@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery');
 
 var showTimestamp = function(timestamps, confidences) {
@@ -16,6 +18,7 @@ var showTimestamp = function(timestamps, confidences) {
       + '</tr>'
       );
 }
+
 
 var showMetaData = function(alternative) {
   var confidenceNestedArray = alternative.word_confidence;;
@@ -36,24 +39,54 @@ var showMetaData = function(alternative) {
   }
 }
 
-var showAlternatives = function(alternatives, isFinal) {
-  var $hypotheses = $('.hypotheses ul');
-  $hypotheses.append($('</br>'));
-  alternatives.forEach(function(alternative, idx) {
-    if (alternative.transcript) {
-      $hypotheses.append('<li data-hypothesis-index=' + idx + ' >' + alternative.transcript + '</li>');
-    }
-  });
-  $hypotheses.on('click', "li", function (alternatives) {
-    return function() {
-      var idx = + $(this).data('hypothesis-index');
-      var alternative = alternatives[idx];
-      if (isFinal) {
-        showMetaData(alternative);
+var Alternatives = function(){
+
+  var stringOne = '',
+    stringTwo = '',
+    stringThree = '';
+
+  this.clearString = function() {
+    stringOne = '';
+    stringTwo = '';
+    stringThree = '';
+  };
+
+  this.showAlternatives = function(alternatives, isFinal, testing) {
+    var $hypotheses = $('.hypotheses ul');
+    $hypotheses.empty();
+    // $hypotheses.append($('</br>'));
+    alternatives.forEach(function(alternative, idx) {
+      var $alternative;
+      if (alternative.transcript) {
+        console.log('ALTERNATIVES INDEX', idx);
+        switch (idx) {
+          case 0:
+            stringOne = stringOne + alternative.transcript;
+            $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringOne + '</li>');
+            $alternative.css('color', '#d74108');
+            console.log('stringOne', stringOne);
+            // $alternative.addClass('list-red');
+            break;
+          case 1:
+            stringTwo = stringTwo + alternative.transcript;
+            $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringTwo + '</li>');
+            $alternative.css('color', '#5596E6');
+            console.log('stringTwo', stringTwo);
+            // $alternative.addClass('list-blue');
+            break;
+          case 2:
+            stringThree = stringThree + alternative.transcript;
+            $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringThree + '</li>');
+            console.log('stringThree', stringThree);
+            break;
+        }
+        $hypotheses.append($alternative);
       }
-    }
-  });
+    });
+  };
 }
+
+var alternativePrototype = new Alternatives();
 
 // TODO: Convert to closure approach
 var processString = function(baseString, isFinished) {
@@ -96,7 +129,7 @@ exports.showResult = function(msg, baseString, callback) {
       processString(displayFinalString, true);
       showMetaData(alternatives[0]);
       // Only show alternatives if we're final
-      // showAlternatives(alternatives);
+      alternativePrototype.showAlternatives(alternatives);
     } else {
       var tempString = baseString + text;
       tempString = tempString.replace(/%HESITATION\s/g, '');
@@ -108,3 +141,9 @@ exports.showResult = function(msg, baseString, callback) {
   return baseString;
 
 };
+
+$.subscribe('clearscreen', function() {
+  var $hypotheses = $('.hypotheses ul');
+  $hypotheses.empty();
+  alternativePrototype.clearString();
+});
