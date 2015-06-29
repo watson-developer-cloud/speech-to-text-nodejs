@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var scrolled = false;
 
 var showTimestamp = function(timestamps, confidences) {
   var word = timestamps[0],
@@ -59,6 +60,8 @@ var Alternatives = function(){
       var $alternative;
       if (alternative.transcript) {
         console.log('ALTERNATIVES INDEX', idx);
+        var transcript = alternative.transcript.replace(/%HESITATION\s/g, '');
+        transcript = transcript.replace(/(.)\1{2,}/g, '');
         switch (idx) {
           case 0:
             stringOne = stringOne + alternative.transcript;
@@ -110,6 +113,20 @@ exports.showJSON = function(msg, baseJSON) {
   return baseJSON;
 }
 
+function updateScroll(){
+    if(!scrolled){
+        var element = $('.table-scroll').get(0);
+        element.scrollTop = element.scrollHeight;
+    }
+}
+
+var initScroll = function() {
+  $('.table-scroll').on('scroll', function(){
+      scrolled=true;
+  });
+}
+
+
 exports.showResult = function(msg, baseString, callback) {
 
   var idx = +msg.result_index;
@@ -138,12 +155,15 @@ exports.showResult = function(msg, baseString, callback) {
     }
   }
 
+  updateScroll();
+
   return baseString;
 
 };
 
 $.subscribe('clearscreen', function() {
   var $hypotheses = $('.hypotheses ul');
+  scroll = false;
   $hypotheses.empty();
   alternativePrototype.clearString();
 });
