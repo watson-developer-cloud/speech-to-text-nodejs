@@ -68,6 +68,9 @@ input[type="radio"], input[type="checkbox"] {
   float: left;
 }
 
+.dropdown {
+  width: 105% !important;
+}
 
 #dropdownMenu1 {
   margin-bottom: 2em;
