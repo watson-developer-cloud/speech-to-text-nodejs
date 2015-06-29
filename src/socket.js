@@ -97,7 +97,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       console.log('generator count', tokenGenerator.getCount());
       if (tokenGenerator.getCount() > 1) {
         $.publish('hardsocketstop');
-        showError('Error fetching additional authorization token, no authorization tokens are currently available');
         throw new Error("No authorization token is currently available");
       }
       tokenGenerator.getToken(function(token, err) {
