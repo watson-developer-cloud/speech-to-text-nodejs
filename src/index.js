@@ -19,8 +19,9 @@
 
 var Microphone = require('./Microphone');
 var models = require('./data/models.json').models;
-var initViews = require('./views').initViews;
 var utils = require('./utils');
+utils.initPubSub();
+var initViews = require('./views').initViews;
 var pkg = require('../package');
 
 window.BUFFERSIZE = 8192;
@@ -55,8 +56,6 @@ $(document).ready(function() {
     };
 
     initViews(viewContext);
-
-    utils.initPubSub();
 
     // Save models to localstorage
     localStorage.setItem('models', JSON.stringify(models));
