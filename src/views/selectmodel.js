@@ -8,18 +8,28 @@ exports.initSelectModel = function(ctx) {
   }
 
   ctx.models.forEach(function(model) {
-    $("select#dropdownMenu1").append( $("<option>")
-      .val(model.name)
-      .html(model.description)
-      .prop('selected', isDefault(model.name))
-      );
+    $("#dropdownMenuList").append(
+      $("<li>")
+        .attr('role', 'presentation')
+        .append(
+          $('<a>').attr('role', 'menu-item')
+            .attr('href', '/')
+            .attr('data-model', model.name)
+            .append(model.description)
+          )
+      )
   });
 
-  $("select#dropdownMenu1").change(function(evt) {
-    console.log('Change view');
-    var modelName = $("select#dropdownMenu1").val();
-    localStorage.setItem('currentModel', modelName);
-    ctx.currentModel = modelName;
+  $("#dropdownMenuList").click(function(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    console.log('Change view', $(evt.target).text());
+    var newModelDescription = $(evt.target).text();
+    var newModel = $(evt.target).data('model');
+    $('#dropdownMenuDefault').empty().text(newModelDescription);
+    $('#dropdownMenu1').dropdown('toggle');
+    localStorage.setItem('currentModel', newModel);
+    ctx.currentModel = newModel;
     initPlaySample(ctx);
     $.publish('clearscreen');
   });
