@@ -64,15 +64,15 @@ var Alternatives = function(){
         transcript = transcript.replace(/(.)\1{2,}/g, '');
         switch (idx) {
           case 0:
-            stringOne = stringOne + alternative.transcript;
+            stringOne = stringOne + transcript;
             $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringOne + '</li>');
             break;
           case 1:
-            stringTwo = stringTwo + alternative.transcript;
+            stringTwo = stringTwo + transcript;
             $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringTwo + '</li>');
             break;
           case 2:
-            stringThree = stringThree + alternative.transcript;
+            stringThree = stringThree + transcript;
             $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringThree + '</li>');
             break;
         }
