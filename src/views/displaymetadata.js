@@ -53,7 +53,7 @@ var Alternatives = function(){
   };
 
   this.showAlternatives = function(alternatives, isFinal, testing) {
-    var $hypotheses = $('.hypotheses ul');
+    var $hypotheses = $('.hypotheses ol');
     $hypotheses.empty();
     // $hypotheses.append($('</br>'));
     alternatives.forEach(function(alternative, idx) {
@@ -66,21 +66,14 @@ var Alternatives = function(){
           case 0:
             stringOne = stringOne + alternative.transcript;
             $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringOne + '</li>');
-            $alternative.css('color', '#d74108');
-            console.log('stringOne', stringOne);
-            // $alternative.addClass('list-red');
             break;
           case 1:
             stringTwo = stringTwo + alternative.transcript;
             $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringTwo + '</li>');
-            $alternative.css('color', '#5596E6');
-            console.log('stringTwo', stringTwo);
-            // $alternative.addClass('list-blue');
             break;
           case 2:
             stringThree = stringThree + alternative.transcript;
             $alternative = $('<li data-hypothesis-index=' + idx + ' >' + stringThree + '</li>');
-            console.log('stringThree', stringThree);
             break;
         }
         $hypotheses.append($alternative);
@@ -163,7 +156,7 @@ exports.showResult = function(msg, baseString, callback) {
 
 $.subscribe('clearscreen', function() {
   var $hypotheses = $('.hypotheses ul');
-  scroll = false;
+  scrolled = false;
   $hypotheses.empty();
   alternativePrototype.clearString();
 });

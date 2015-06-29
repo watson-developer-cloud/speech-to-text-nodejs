@@ -68,24 +68,6 @@ input[type="radio"], input[type="checkbox"] {
   float: left;
 }
 
-.hypotheses ul {
-  padding: 20px !important;
-}
-
-.hypotheses ul li {
-  list-style-type: none;
-  display: inline;
-}
-
-.hypotheses ul li:before {
-  content: " \A ";
- white-space:pre;
-
-}
-
-.hypotheses ul li:first-child:before {
-  content: none;
-}
 
 #dropdownMenu1 {
   margin-bottom: 2em;
@@ -144,3 +126,43 @@ progress {
 .nav-label {
   color: white;
 }
+
+/* numbered bullets solution from: */
+/* http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/ */
+ol {
+    counter-reset:li;
+    margin-left:0;
+    padding-left:0;
+    margin-top: 1em;
+}
+ol > li {
+    position:relative;
+    margin: 0 0 6px 2em; /* Make room for numbers */
+    padding: 4px 8px 4px 12px; /* Add some spacing around the content */
+    list-style:none;
+    vertical-align: middle;
+}
+
+ol > li:before {
+    content:counter(li); /* Use the counter as content */
+    counter-increment:li; /* Increment the counter by 1 */
+    /* Position and style the number */
+    position:absolute;
+    left: -2em;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    width: 2em;
+    margin-right: 8px;
+    padding: 4px;
+    color: #fff;
+    background: #325c80;
+    border-radius: 50%;
+    /* top: 1em; */
+    /* font-weight:bold; */
+    text-align:center;
+}
+
+li ol,
+li ul {margin-top:6px;}
+ol ol li:last-child {margin-bottom:0;}
