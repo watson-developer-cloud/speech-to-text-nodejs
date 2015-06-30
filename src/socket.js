@@ -29,7 +29,7 @@ var hideError = showerror.hideError;
 // Initialize closure, which holds maximum getToken call count
 var tokenGenerator = utils.createTokenGenerator();
 
-var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose, retryCountDown) {
+var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose) {
   var listening;
   function withDefault(val, defaultVal) {
     return typeof val === 'undefined' ? defaultVal : val;
@@ -106,7 +106,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
         }
         console.log('Fetching additional token...');
         options.token = token;
-        initSocket(options, onopen, onlistening, onmessage, onerror);
+        initSocket(options, onopen, onlistening, onmessage, onerror, onclose);
       });
       return false;
     }
