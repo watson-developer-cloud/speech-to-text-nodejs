@@ -22,7 +22,7 @@ var models = require('./data/models.json').models;
 var utils = require('./utils');
 utils.initPubSub();
 var initViews = require('./views').initViews;
-var pkg = require('../package');
+var pkg = require('../package.json');
 
 window.BUFFERSIZE = 8192;
 
