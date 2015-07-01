@@ -3,7 +3,7 @@
 
 var showError = require('./showerror').showError;
 var showNotice = require('./showerror').showNotice;
-var handleFileUpload = require('../handlefileUpload').handleFileUpload;
+var handleFileUpload = require('../handlefileupload').handleFileUpload;
 var effects = require('./effects');
 var utils = require('../utils');
 
