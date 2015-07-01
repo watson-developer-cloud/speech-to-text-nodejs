@@ -57,6 +57,7 @@
   },
   "devDependencies": {
     "browserify": "^10.2.4",
-    "browserify-shim": "^3.8.9"
+    "browserify-shim": "^3.8.9",
+    "watchify": "^3.2.3"
   }
 }
