@@ -35,7 +35,7 @@ var config = {
 };
 
 // if bluemix credentials exists, then override local
-var credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
+var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
 
 // Setup static public directory
 app.use(express.static(path.join(__dirname , './public')));
@@ -44,11 +44,6 @@ app.use(express.static(path.join(__dirname , './public')));
 if (!process.env.VCAP_SERVICES) {
   app.use(errorhandler());
 }
-
-// serve home page
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, './public', 'index.html'));
-});
 
 // Get token from Watson using your credentials
 app.get('/token', function(req, res) {
