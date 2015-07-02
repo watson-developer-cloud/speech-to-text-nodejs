@@ -4,6 +4,7 @@
 var Microphone = require('../Microphone');
 var handleMicrophone = require('../handlemicrophone').handleMicrophone;
 var showError = require('./showerror').showError;
+var showNotice = require('./showerror').showNotice;
 
 exports.initRecordButton = function(ctx) {
 
@@ -29,6 +30,14 @@ exports.initRecordButton = function(ctx) {
         showError('Currently another file is playing, please stop the file or wait until it finishes');
         return;
       }
+
+      $.subscribe('stopmic', function(data) {
+        mic.stop();
+        showNotice('Only 45 seconds or less of recorded audio are currently permitted in the demonstration');
+        recordButton.removeAttr('style');
+        recordButton.find('img').attr('src', 'images/microphone.svg');
+        running = false;
+      });
 
       if (!running) {
         console.log('Not running, handleMicrophone()');
