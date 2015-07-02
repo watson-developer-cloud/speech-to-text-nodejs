@@ -6,6 +6,9 @@ var display = require('./views/displaymetadata');
 
 exports.handleMicrophone = function(token, model, mic, callback) {
 
+  var startTime,
+      allowedMicTime = 45;
+
   if (model.indexOf('Narrowband') > -1) {
     var err = new Error('Microphone transcription cannot accomodate narrowband models, please select another');
     callback(err, null);
@@ -32,6 +35,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   options.model = model;
 
   function onOpen(socket) {
+    startTime = new Date();
     console.log('Mic socket: opened');
     callback(null, socket);
   }
@@ -39,6 +43,13 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   function onListening(socket) {
 
     mic.onAudio = function(blob) {
+      var now = new Date();
+      if ((now - startTime) > allowedMicTime * 1000) {
+        $.publish('stopmic');
+        $.publish('socketstop');
+        return;
+      }
+
       if (socket.readyState < 2) {
         socket.send(blob)
       }
