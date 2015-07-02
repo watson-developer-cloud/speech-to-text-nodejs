@@ -2523,7 +2523,7 @@ input[type="button"].btn-block {
   width: 1em;
   height: 1em;
   float: right;
-  background: url('../img/drop-down-arrow.svg') no-repeat;
+  background: url('../images/drop-down-arrow.svg') no-repeat;
 }
 .clear {
     clear: both;
@@ -5626,7 +5626,7 @@ table.table,
   width: 1120px;
 }
 .micButton {
-  background: url('../img/microphone.svg') no-repeat;
+  background: url('../images/microphone.svg') no-repeat;
   width: 64px;
   height: 64px;
   margin: 0px auto;
@@ -5662,13 +5662,13 @@ table.table,
   width: 1em;
   height: 1em;
   float: right;
-  background: url('../img/drop-down-arrow.svg') no-repeat;
+  background: url('../images/drop-down-arrow.svg') no-repeat;
 }
 .caret-up {
   width: 1em;
   height: 1em;
   float: right;
-  background: url('../img/drop-up-arrow.svg') no-repeat;
+  background: url('../images/drop-up-arrow.svg') no-repeat;
 }
 /* Media Queiries*/
 

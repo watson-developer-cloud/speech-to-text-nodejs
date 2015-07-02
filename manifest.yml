@@ -1,7 +1,12 @@
 ---
+declared-services:
+  speech-to-text-service-standard:
+    label: speech_to_text
+    plan: standard
 applications:
-- 
-  name: speech-to-text-early-alpha
+- name: speech-to-text-nodejs
   command: node app.js
   path: .
-  memory: 1024M
+  memory: 256m
+  services:
+  - speech-to-text-service-standard

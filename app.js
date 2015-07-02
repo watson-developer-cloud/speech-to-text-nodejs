@@ -23,13 +23,19 @@ var express = require('express'),
     request = require('request'),
     path = require('path'),
     // environmental variable points to demo's json config file
-    config = JSON.parse(process.env.WATSON_CONFIG),
     extend = require('util')._extend;
+
+// For local development, put username and password in config
+// or store in your environment
+var config = {
+  version: 'v1',
+  url: 'https://stream.watsonplatform.net/speech-to-text/api',
+  username: '<username>',
+  password: '<password>'
+};
 
 // if bluemix credentials exists, then override local
 var credentials = extend(config, bluemix.getServiceCreds('text_to_speech'));
-
-console.log('Starting app with credentials: ', credentials);
 
 // Setup static public directory
 app.use(express.static(path.join(__dirname , './public')));
@@ -46,23 +52,18 @@ app.get('/', function(req, res) {
 
 // Get token from Watson using your credentials
 app.get('/token', function(req, res) {
-    console.log('fetching token');
-    request.get({'url': 
-      'https://' 
-        + credentials.hostname 
-        + '/authorization/api/v1/token?url=' 
-        + 'https://' + credentials.hostname + '/speech-to-text-beta/api',
-      'auth': {
-        'user': credentials.username,
-        'pass': credentials.password,
-        'sendImmediately': true
-      }
-    }, function(err, response, body) {
-      res.send(body);
+  request.get({
+    url: 'https://stream.watsonplatform.net/authorization/api/v1/token?url=' +
+      'https://stream.watsonplatform.net/speech-to-text/api',
+    auth: {
+      user: credentials.username,
+      pass: credentials.password,
+      sendImmediately: true
     }
-    );
+  }, function(err, response, body) {
+    res.status(response.statusCode).send(body);
+  });
 });
-
 
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
