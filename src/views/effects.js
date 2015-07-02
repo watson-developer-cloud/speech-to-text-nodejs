@@ -20,19 +20,18 @@ exports.stopFlashSVG = function(timer) {
 }
 
 exports.toggleImage = function(el, name) {
-  if(el.attr('src') === 'img/' + name + '.svg') {
-    el.attr("src", 'img/stop-red.svg');
+  if(el.attr('src') === 'images/' + name + '.svg') {
+    el.attr("src", 'images/stop-red.svg');
   } else {
-    el.attr('src', 'img/stop.svg');
+    el.attr('src', 'images/stop.svg');
   }
 }
 
 var restoreImage = exports.restoreImage = function(el, name) {
-  el.attr('src', 'img/' + name + '.svg');
+  el.attr('src', 'images/' + name + '.svg');
 }
 
 exports.stopToggleImage = function(timer, el, name) {
   clearInterval(timer);
   restoreImage(el, name);
 }
-
