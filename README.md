@@ -20,11 +20,11 @@ Give it a try! Click the button below to fork into IBM DevOps Services and deplo
   ```none
   applications:
   - services:
-    - speech-to-text-service
+    - speech-to-text-service-standard
     name: <application-name>
     command: node app.js
     path: .
-    memory: 128M
+    memory: 512M
   ```
   The name you use will determinate your application url initially, e.g. `<application-name>.mybluemix.net`.
 
@@ -36,7 +36,7 @@ Give it a try! Click the button below to fork into IBM DevOps Services and deplo
 
 5. Create the Speech to Text service in Bluemix.
   ```sh
-  $ cf create-service speech_to_text free speech-to-text-service
+  $ cf create-service speech_to_text standard speech-to-text-service-standard
   ```
 
 6. Push it live!
@@ -50,7 +50,7 @@ See the full [Getting Started][getting_started] documentation for more details, 
 
   The application uses [Node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/) so you will have to download and install them as part of the steps below.
 
-1. Copy the credentials from your `speech-to-text-service` service in Bluemix to `app.js`, you can see the credentials using:
+1. Copy the credentials from your `speech-to-text-service-standard` service in Bluemix to `app.js`, you can see the credentials using:
 
     ```sh
     $ cf env <application-name>
@@ -67,8 +67,8 @@ See the full [Getting Started][getting_started] documentation for more details, 
             "username": "<username>"
           },
         "label": "speech-to-text",
-        "name": "speech-to-text-service",
-        "plan": "free"
+        "name": "speech-to-text-service-standard",
+        "plan": "standard"
      }]
     }
     }
