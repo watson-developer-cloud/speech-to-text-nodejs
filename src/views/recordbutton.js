@@ -31,14 +31,6 @@ exports.initRecordButton = function(ctx) {
         return;
       }
 
-      $.subscribe('stopmic', function(data) {
-        mic.stop();
-        showNotice('Only 45 seconds or less of recorded audio are currently permitted in the demonstration');
-        recordButton.removeAttr('style');
-        recordButton.find('img').attr('src', 'images/microphone.svg');
-        running = false;
-      });
-
       if (!running) {
         console.log('Not running, handleMicrophone()');
         handleMicrophone(token, currentModel, mic, function(err, socket) {

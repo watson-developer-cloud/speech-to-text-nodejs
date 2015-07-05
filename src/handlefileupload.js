@@ -20,6 +20,12 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     var baseString = '';
     var baseJSON = '';
 
+    $.subscribe('showjson', function(data) {
+      var $resultsJSON = $('#resultsJSON')
+      $resultsJSON.empty();
+      $resultsJSON.append(baseJSON);
+    });
+
     var options = {};
     options.token = token;
     options.message = {
