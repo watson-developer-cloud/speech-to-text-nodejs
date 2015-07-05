@@ -20,7 +20,7 @@ var express = require('express'),
     app = express(),
     errorhandler = require('errorhandler'),
     bluemix = require('./config/bluemix'),
-    request = require('request'),
+    watson = require('watson-developer-cloud'),
     path = require('path'),
     // environmental variable points to demo's json config file
     extend = require('util')._extend;
@@ -36,30 +36,27 @@ var config = {
 
 // if bluemix credentials exists, then override local
 var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
+var authorization = watson.authorization(credentials);
 
 // Setup static public directory
 app.use(express.static(path.join(__dirname , './public')));
+
+// Get token from Watson using your credentials
+app.get('/token', function(req, res) {
+  authorization.getToken({url: credentials.url}, function(err, token) {
+    if (err) {
+      console.log('error:', err);
+      res.status(err.code);
+    }
+
+    res.send(token);
+  });
+});
 
 // Add error handling in dev
 if (!process.env.VCAP_SERVICES) {
   app.use(errorhandler());
 }
-
-// Get token from Watson using your credentials
-app.get('/token', function(req, res) {
-  request.get({
-    url: 'https://stream.watsonplatform.net/authorization/api/v1/token?url=' +
-      'https://stream.watsonplatform.net/speech-to-text/api',
-    auth: {
-      user: credentials.username,
-      pass: credentials.password,
-      sendImmediately: true
-    }
-  }, function(err, response, body) {
-    res.status(response.statusCode).send(body);
-  });
-});
-
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
 console.log('listening at:', port);
