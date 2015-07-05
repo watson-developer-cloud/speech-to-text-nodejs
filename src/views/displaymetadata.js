@@ -99,10 +99,17 @@ var processString = function(baseString, isFinished) {
 }
 
 exports.showJSON = function(msg, baseJSON) {
-  var json = JSON.stringify(msg, null, 2);
-  baseJSON += json;
-  baseJSON += '\n';
-  $('#resultsJSON').val(baseJSON);
+  
+   var json = JSON.stringify(msg, null, 2);
+    baseJSON += json;
+    baseJSON += '\n';                                                          
+
+  if ($('.nav-tabs .active').text() == "JSON") {
+      $('#resultsJSON').append(baseJSON);
+      baseJSON = "";
+      console.log("updating json");
+  }
+  
   return baseJSON;
 }
 

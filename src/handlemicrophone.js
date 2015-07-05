@@ -21,6 +21,11 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   var baseString = '';
   var baseJSON = '';
 
+  $.subscribe('showjson', function(data) {
+    $('#resultsJSON').empty();
+    $('#resultsJSON').append(baseJSON);
+  });
+
   var options = {};
   options.token = token;
   options.message = {
