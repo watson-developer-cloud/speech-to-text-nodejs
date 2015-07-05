@@ -7,6 +7,7 @@
     "connect": "~3.3.5",
     "errorhandler": "~1.2.4",
     "express": "~4.10.8",
+    "express-rate-limit": "^1.0.2",
     "harmon": "~1.3.1",
     "http-proxy": "~1.11.1",
     "transformer-proxy": "~0.3.1",

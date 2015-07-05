@@ -16,14 +16,24 @@
 
 'use strict';
 
-var express = require('express'),
-    app = express(),
+var express      = require('express'),
+    app          = express(),
     errorhandler = require('errorhandler'),
-    bluemix = require('./config/bluemix'),
-    watson = require('watson-developer-cloud'),
-    path = require('path'),
+    bluemix      = require('./config/bluemix'),
+    watson       = require('watson-developer-cloud'),
+    path         = require('path'),
     // environmental variable points to demo's json config file
-    extend = require('util')._extend;
+    extend       = require('util')._extend,
+    RateLimit    = require('express-rate-limit');
+
+app.enable('trust proxy');
+
+var rateLimit = RateLimit({
+  windowMs: 60 * 1000,
+  delayMs: 1,
+  max: 10,
+  global: false
+});
 
 // For local development, put username and password in config
 // or store in your environment
@@ -42,7 +52,7 @@ var authorization = watson.authorization(credentials);
 app.use(express.static(path.join(__dirname , './public')));
 
 // Get token from Watson using your credentials
-app.get('/token', function(req, res) {
+app.get('/token',rateLimit, function(req, res) {
   authorization.getToken({url: credentials.url}, function(err, token) {
     if (err) {
       console.log('error:', err);
