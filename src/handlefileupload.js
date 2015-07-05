@@ -21,8 +21,9 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     var baseJSON = '';
 
     $.subscribe('showjson', function(data) {
-      $('#resultsJSON').empty();
-      $('#resultsJSON').append(baseJSON);
+      var $resultsJSON = $('#resultsJSON')
+      $resultsJSON.empty();
+      $resultsJSON.append(baseJSON);
     });
 
     var options = {};
