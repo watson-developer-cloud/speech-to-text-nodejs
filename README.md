@@ -1,6 +1,6 @@
 # Speech to Text Browser Application
 
-  The [Speech to Text][service_url] service uses IBM's speech recognition capabilities to convert English speech into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service is accessed via a WebSocket interface; a REST HTTP interface is also available;
+  The [Speech to Text][service_url] service uses IBM's speech recognition capabilities to convert speech in multiple languages into text. The transcription of incoming audio is continuously sent back to the client with minimal delay, and it is corrected as more speech is heard. The service is accessed via a WebSocket interface; a REST HTTP interface is also available;
 
 Node.js is also used to provide the browser client's authentication token.
 
