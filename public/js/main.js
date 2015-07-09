@@ -1,69 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports={
-  "name": "SpeechToTextBrowserStarterApp",
-  "version": "0.2.1",
-  "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
-  "dependencies": {
-    "body-parser": "~1.10.2",
-    "connect": "^3.3.5",
-    "errorhandler": "~1.2.4",
-    "express": "~4.10.8",
-    "harmon": "^1.3.1",
-    "http-proxy": "^1.11.1",
-    "request": "~2.53.0",
-    "transformer-proxy": "^0.3.1"
-  },
-  "engines": {
-    "node": ">=0.10"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/watson-developer-cloud/speech-to-text-browser.git"
-  },
-  "author": "IBM Corp.",
-  "browserify-shim": {
-    "jquery": "global:jQuery"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "contributors": [
-    {
-      "name": "German Attanasio Ruiz",
-      "email": "germanatt@us.ibm.com"
-    },
-    {
-      "name": "Daniel Bolano",
-      "email": "dbolano@us.ibm.com"
-    },
-    {
-      "name": "Britany L. Ponvelle",
-      "email": "blponvelle@us.ibm.com"
-    },
-    {
-      "name": "Eric S. Bullington",
-      "email": "esbullin@us.ibm.com"
-    }
-  ],
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/watson-developer-cloud/speech-to-text-browser/issues"
-  },
-  "scripts": {
-    "start": "node app.js",
-    "build": "browserify -o public/js/main.js src/index.js",
-    "watch": "watchify -v -d -o public/js/main.js src/index.js"
-  },
-  "devDependencies": {
-    "browserify": "^10.2.4",
-    "browserify-shim": "^3.8.9",
-    "watchify": "^3.2.3"
-  }
-}
-
-},{}],2:[function(require,module,exports){
 /**
  * Copyright 2014 IBM Corp. All Rights Reserved.
  *
@@ -322,7 +257,7 @@ Microphone.prototype.onAudio =  function() {};
 module.exports = Microphone;
 
 
-},{"./utils":8}],3:[function(require,module,exports){
+},{"./utils":7}],2:[function(require,module,exports){
 module.exports={
    "models": [
       {
@@ -370,7 +305,7 @@ module.exports={
    ]
 }
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 
 var effects = require('./views/effects');
 var display = require('./views/displaymetadata');
@@ -444,7 +379,7 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     initSocket(options, onOpen, onListening, onMessage, onError, onClose);
 
   }
-},{"./socket":7,"./views/displaymetadata":10,"./views/effects":12,"./views/showerror":19}],5:[function(require,module,exports){
+},{"./socket":6,"./views/displaymetadata":9,"./views/effects":11,"./views/showerror":18}],4:[function(require,module,exports){
 
 'use strict';
 
@@ -518,7 +453,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   initSocket(options, onOpen, onListening, onMessage, onError, onClose);
 
 }
-},{"./socket":7,"./views/displaymetadata":10}],6:[function(require,module,exports){
+},{"./socket":6,"./views/displaymetadata":9}],5:[function(require,module,exports){
 /**
  * Copyright 2014 IBM Corp. All Rights Reserved.
  *
@@ -543,19 +478,10 @@ var models = require('./data/models.json').models;
 var utils = require('./utils');
 utils.initPubSub();
 var initViews = require('./views').initViews;
-var pkg = require('../package.json');
 
 window.BUFFERSIZE = 8192;
 
 $(document).ready(function() {
-
-  // Temporary app data
-  $('#appSettings')
-    .html(
-      '<p>Version: ' + pkg.version + '</p>'
-      + '<p>Buffer Size: ' + BUFFERSIZE + '</p>'
-    );
-
 
   // Make call to API to try and get token
   utils.getToken(function(token) {
@@ -598,7 +524,8 @@ $(document).ready(function() {
   });
 
 });
-},{"../package.json":1,"./Microphone":2,"./data/models.json":3,"./utils":8,"./views":14}],7:[function(require,module,exports){
+
+},{"./Microphone":1,"./data/models.json":2,"./utils":7,"./views":13}],6:[function(require,module,exports){
 /**
  * Copyright 2014 IBM Corp. All Rights Reserved.
  *
@@ -727,7 +654,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   };
 
 }
-},{"./Microphone":2,"./utils":8,"./views/showerror":19}],8:[function(require,module,exports){
+},{"./Microphone":1,"./utils":7,"./views/showerror":18}],7:[function(require,module,exports){
 (function (global){
 
 // For non-view logic
@@ -821,7 +748,7 @@ exports.initPubSub = function() {
   $.publish     = o.trigger.bind(o);
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 
 
 exports.initAnimatePanel = function() {
@@ -842,12 +769,13 @@ exports.initAnimatePanel = function() {
 }
 
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 'use strict';
 
 var $ = (typeof window !== "undefined" ? window.jQuery : typeof global !== "undefined" ? global.jQuery : null);
-var scrolled = false;
+var scrolled = false,
+    textScrolled = false;
 
 var showTimestamp = function(timestamps, confidences) {
   var word = timestamps[0],
@@ -905,7 +833,6 @@ var Alternatives = function(){
     alternatives.forEach(function(alternative, idx) {
       var $alternative;
       if (alternative.transcript) {
-        console.log('ALTERNATIVES INDEX', idx);
         var transcript = alternative.transcript.replace(/%HESITATION\s/g, '');
         transcript = transcript.replace(/(.)\1{2,}/g, '');
         switch (idx) {
@@ -959,11 +886,24 @@ exports.showJSON = function(msg, baseJSON) {
   return baseJSON;
 }
 
+function updateTextScroll(){
+  if(!scrolled){
+    var element = $('#resultsText').get(0);
+    element.scrollTop = element.scrollHeight;
+  }
+}
+
+var initTextScroll = function() {
+  $('#resultsText').on('scroll', function(){
+      textScrolled = true;
+  });
+}
+
 function updateScroll(){
-    if(!scrolled){
-        var element = $('.table-scroll').get(0);
-        element.scrollTop = element.scrollHeight;
-    }
+  if(!scrolled){
+    var element = $('.table-scroll').get(0);
+    element.scrollTop = element.scrollHeight;
+  }
 }
 
 var initScroll = function() {
@@ -971,6 +911,11 @@ var initScroll = function() {
       scrolled=true;
   });
 }
+
+exports.initDisplayMetadata = function() {
+  initScroll();
+  initTextScroll();
+};
 
 
 exports.showResult = function(msg, baseString, callback) {
@@ -1002,7 +947,7 @@ exports.showResult = function(msg, baseString, callback) {
   }
 
   updateScroll();
-
+  updateTextScroll();
   return baseString;
 
 };
@@ -1013,8 +958,9 @@ $.subscribe('clearscreen', function() {
   $hypotheses.empty();
   alternativePrototype.clearString();
 });
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 'use strict';
 
@@ -1050,7 +996,7 @@ exports.initDragDrop = function(ctx) {
 
 }
 
-},{"./fileupload":13}],12:[function(require,module,exports){
+},{"./fileupload":12}],11:[function(require,module,exports){
 
 
 
@@ -1089,7 +1035,7 @@ exports.stopToggleImage = function(timer, el, name) {
   restoreImage(el, name);
 }
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 'use strict';
 
@@ -1225,7 +1171,7 @@ exports.initFileUpload = function(ctx) {
   });
 
 }
-},{"../handlefileupload":4,"../utils":8,"./effects":12,"./showerror":19}],14:[function(require,module,exports){
+},{"../handlefileupload":3,"../utils":7,"./effects":11,"./showerror":18}],13:[function(require,module,exports){
 
 var initSessionPermissions = require('./sessionpermissions').initSessionPermissions;
 var initSelectModel = require('./selectmodel').initSelectModel;
@@ -1235,6 +1181,7 @@ var initDragDrop = require('./dragdrop').initDragDrop;
 var initPlaySample = require('./playsample').initPlaySample;
 var initRecordButton = require('./recordbutton').initRecordButton;
 var initFileUpload = require('./fileupload').initFileUpload;
+var initDisplayMetadata = require('./displaymetadata').initDisplayMetadata;
 
 
 exports.initViews = function(ctx) {
@@ -1248,8 +1195,10 @@ exports.initViews = function(ctx) {
   initShowTab();
   initAnimatePanel();
   initShowTab();
+  initDisplayMetadata();
 }
-},{"./animatepanel":9,"./dragdrop":11,"./fileupload":13,"./playsample":15,"./recordbutton":16,"./selectmodel":17,"./sessionpermissions":18,"./showtab":20}],15:[function(require,module,exports){
+
+},{"./animatepanel":8,"./displaymetadata":9,"./dragdrop":10,"./fileupload":12,"./playsample":14,"./recordbutton":15,"./selectmodel":16,"./sessionpermissions":17,"./showtab":19}],14:[function(require,module,exports){
 
 'use strict';
 
@@ -1391,7 +1340,7 @@ exports.initPlaySample = function(ctx) {
   })(ctx, LOOKUP_TABLE);
 
 };
-},{"../handlefileupload":4,"../socket":7,"../utils":8,"./effects":12,"./showerror":19}],16:[function(require,module,exports){
+},{"../handlefileupload":3,"../socket":6,"../utils":7,"./effects":11,"./showerror":18}],15:[function(require,module,exports){
 
 'use strict';
 
@@ -1452,7 +1401,7 @@ exports.initRecordButton = function(ctx) {
     }
   })());
 }
-},{"../Microphone":2,"../handlemicrophone":5,"./showerror":19}],17:[function(require,module,exports){
+},{"../Microphone":1,"../handlemicrophone":4,"./showerror":18}],16:[function(require,module,exports){
 
 var initPlaySample = require('./playsample').initPlaySample;
 
@@ -1490,7 +1439,7 @@ exports.initSelectModel = function(ctx) {
   });
 
 }
-},{"./playsample":15}],18:[function(require,module,exports){
+},{"./playsample":14}],17:[function(require,module,exports){
 
 'use strict';
 
@@ -1505,7 +1454,7 @@ exports.initSessionPermissions = function() {
   });
 }
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 
 'use strict';
 
@@ -1546,7 +1495,7 @@ exports.hideError = function() {
   var errorAlert = $('.error-row');
   errorAlert.hide();
 }
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 
 'use strict';
 
@@ -1562,4 +1511,4 @@ exports.initShowTab = function() {
   });
 
 }
-},{}]},{},[6]);
+},{}]},{},[5]);
