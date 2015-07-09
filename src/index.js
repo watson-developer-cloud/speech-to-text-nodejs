@@ -22,19 +22,10 @@ var models = require('./data/models.json').models;
 var utils = require('./utils');
 utils.initPubSub();
 var initViews = require('./views').initViews;
-var pkg = require('../package.json');
 
 window.BUFFERSIZE = 8192;
 
 $(document).ready(function() {
-
-  // Temporary app data
-  $('#appSettings')
-    .html(
-      '<p>Version: ' + pkg.version + '</p>'
-      + '<p>Buffer Size: ' + BUFFERSIZE + '</p>'
-    );
-
 
   // Make call to API to try and get token
   utils.getToken(function(token) {
