@@ -28,18 +28,25 @@ Give it a try! Click the button below to fork into IBM DevOps Services and deplo
   ```
   The name you use will determinate your application url initially, e.g. `<application-name>.mybluemix.net`.
 
-4. Connect to Bluemix in the command line tool.
+4. Install [Node.js](http://nodejs.org/)
+
+5. Install project dependencies and build browser application:
+  ```sh
+  $ npm install && npm run build
+  ```
+
+6. Connect to Bluemix in the command line tool.
   ```sh
   $ cf api https://api.ng.bluemix.net
   $ cf login -u <your user ID>
   ```
 
-5. Create the Speech to Text service in Bluemix.
+7. Create the Speech to Text service in Bluemix.
   ```sh
   $ cf create-service speech_to_text standard speech-to-text-service-standard
   ```
 
-6. Push it live!
+8. Push it live!
   ```sh
   $ cf push
   ```
@@ -77,11 +84,30 @@ See the full [Getting Started][getting_started] documentation for more details, 
     You need to copy `username`, `password` and `url`.
 
 2. Install [Node.js](http://nodejs.org/)
-3. Go to the project folder in a terminal and run:
-    `npm install`
-4. Start the application
-5.  `node app.js`
-6. Go to `http://localhost:3000`
+
+3. To install project dependencies, go to the project folder in a terminal and run:
+    ```sh
+    $ npm install
+    ```
+
+4. Then, build the browser application using Browserify:
+
+    * To build with debugging enabled, and rebuild if the app is changed:
+    ```sh
+    $ npm run watch
+    ```
+    
+    * To simply build the application without debugging or file-change monitoring:
+    ```sh
+    $ npm run build
+    ```
+
+5. Start the application:
+    ```sh
+    $ node app.js
+    ```
+
+6. Go to: [http://localhost:3000](http://localhost:3000)
 
 ## Troubleshooting
 
