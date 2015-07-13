@@ -1,7 +1,8 @@
 'use strict';
 
 var $ = require('jquery');
-var scrolled = false;
+var scrolled = false,
+    textScrolled = false;
 
 var showTimestamp = function(timestamps, confidences) {
   var word = timestamps[0],
@@ -59,7 +60,6 @@ var Alternatives = function(){
     alternatives.forEach(function(alternative, idx) {
       var $alternative;
       if (alternative.transcript) {
-        console.log('ALTERNATIVES INDEX', idx);
         var transcript = alternative.transcript.replace(/%HESITATION\s/g, '');
         transcript = transcript.replace(/(.)\1{2,}/g, '');
         switch (idx) {
@@ -113,11 +113,24 @@ exports.showJSON = function(msg, baseJSON) {
   return baseJSON;
 }
 
+function updateTextScroll(){
+  if(!scrolled){
+    var element = $('#resultsText').get(0);
+    element.scrollTop = element.scrollHeight;
+  }
+}
+
+var initTextScroll = function() {
+  $('#resultsText').on('scroll', function(){
+      textScrolled = true;
+  });
+}
+
 function updateScroll(){
-    if(!scrolled){
-        var element = $('.table-scroll').get(0);
-        element.scrollTop = element.scrollHeight;
-    }
+  if(!scrolled){
+    var element = $('.table-scroll').get(0);
+    element.scrollTop = element.scrollHeight;
+  }
 }
 
 var initScroll = function() {
@@ -125,6 +138,11 @@ var initScroll = function() {
       scrolled=true;
   });
 }
+
+exports.initDisplayMetadata = function() {
+  initScroll();
+  initTextScroll();
+};
 
 
 exports.showResult = function(msg, baseString, callback) {
@@ -156,7 +174,7 @@ exports.showResult = function(msg, baseString, callback) {
   }
 
   updateScroll();
-
+  updateTextScroll();
   return baseString;
 
 };
