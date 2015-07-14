@@ -1,3 +1,4 @@
 node_modules
 uploads/
 .DS_Store
+public/js/main.js
