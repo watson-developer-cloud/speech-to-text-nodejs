@@ -82,6 +82,7 @@ var playSample = (function() {
             file: blob
           };
           var samplingRate = (currentModel.indexOf("Broadband") != -1) ? 16000 : 8000;
+          console.log("samplingRate: " + samplingRate);
           onFileProgress(parseOptions,
             // On data chunk
             function(chunk) {

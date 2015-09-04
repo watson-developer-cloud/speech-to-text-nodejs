@@ -107,9 +107,9 @@ Microphone.prototype._onaudioprocess = function(data) {
   // Single channel
   var chan = data.inputBuffer.getChannelData(0);  
   
-  //resampler(this.audioContext.sampleRate,data.inputBuffer,this.onAudio);
+  resampler(this.audioContext.sampleRate,data.inputBuffer,this.onAudio);
 
-  this.onAudio(this._exportDataBufferTo16Khz(new Float32Array(chan)));
+  //this.onAudio(this._exportDataBufferTo16Khz(new Float32Array(chan)));
 
   //export with microphone mhz, remember to update the this.sampleRate
   // with the sample rate from your microphone

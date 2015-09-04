@@ -35,7 +35,7 @@ exports.onFileProgress = function(options, ondata, onerror, onend, samplingRate)
       return;
     }
     // use this timeout to pace the data upload for the playSample case, the idea is that the hyps do not arrive before the audio is played back
-    if (samplingRate) {
+    if (samplingRate != 'undefined') {
     	console.log("samplingRate: " +  samplingRate + " timeout: " + (chunkSize*1000)/(samplingRate*2))
     	setTimeout(function() { fileBlock(offset, chunkSize, file, readChunk); }, (chunkSize*1000)/(samplingRate*2));
     } else {
