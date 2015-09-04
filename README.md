@@ -86,7 +86,7 @@ See the full [Getting Started][getting_started] documentation for more details, 
     ```
     var config = {
       version: 'v1',
-      url: 'https://stream-s.watsonplatform.net/speech-to-text/api',
+      url: 'https://stream.watsonplatform.net/speech-to-text/api',
       username: '<username>',
       password: '<password>'  
     };
