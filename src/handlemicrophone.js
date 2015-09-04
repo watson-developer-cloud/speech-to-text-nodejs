@@ -33,7 +33,8 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'continuous': true,
     'word_confidence': true,
     'timestamps': true,
-    'max_alternatives': 3
+    'max_alternatives': 3,
+    'inactivity_timeout': 600    
   };
   options.model = model;
 

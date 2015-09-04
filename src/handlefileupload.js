@@ -35,7 +35,8 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
       'continuous': true,
       'word_confidence': true,
       'timestamps': true,
-      'max_alternatives': 3
+      'max_alternatives': 3,
+      'inactivity_timeout': 600
     };
     options.model = model;
 

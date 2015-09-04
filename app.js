@@ -34,7 +34,7 @@ var config = {
   password: '<password>'
 };
 
-// if bluemix credentials exists, then override local
+// if bluemix credentials exist, then override local
 var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
 var authorization = watson.authorization(credentials);
 

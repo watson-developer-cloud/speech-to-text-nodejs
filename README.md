@@ -81,7 +81,16 @@ See the full [Getting Started][getting_started] documentation for more details, 
     }
     ```
 
-    You need to copy `username`, `password` and `url`.
+    You need to copy `username`, `password` and `url`. Then you need to pass those values in app.js
+    
+    ```
+    var config = {
+      version: 'v1',
+      url: 'https://stream.watsonplatform.net/speech-to-text/api',
+      username: '<username>',
+      password: '<password>'  
+    };
+    ``` 
 
 2. Install [Node.js](http://nodejs.org/)
 

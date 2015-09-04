@@ -1,0 +1,46 @@
+{
+   "models": [
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_BroadbandModel", 
+         "rate": 16000, 
+         "name": "en-US_BroadbandModel", 
+         "language": "en-US", 
+         "description": "US English broadband model (16KHz)"
+      }, 
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel", 
+         "rate": 8000, 
+         "name": "en-US_NarrowbandModel", 
+         "language": "en-US", 
+         "description": "US English narrowband model (8KHz)"
+      },
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_BroadbandModel", 
+         "rate": 16000, 
+         "name": "es-ES_BroadbandModel", 
+         "language": "es-ES", 
+         "description": "Spanish broadband model (16KHz)"
+      }, 
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_NarrowbandModel", 
+         "rate": 8000, 
+         "name": "es-ES_NarrowbandModel", 
+         "language": "es-ES", 
+         "description": "Spanish narrowband model (8KHz)"
+      }, 
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_BroadbandModel", 
+         "rate": 16000, 
+         "name": "ja-JP_BroadbandModel", 
+         "language": "ja-JP", 
+         "description": "Japanese broadband model (16KHz)"
+      }, 
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_NarrowbandModel", 
+         "rate": 8000, 
+         "name": "ja-JP_NarrowbandModel", 
+         "language": "ja-JP", 
+         "description": "Japanese narrowband model (8KHz)"
+      }
+   ]
+}

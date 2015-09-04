@@ -81,6 +81,7 @@ var playSample = (function() {
           var parseOptions = {
             file: blob
           };
+          var samplingRate = (currentModel.indexOf("Broadband") != -1) ? 16000 : 8000;
           onFileProgress(parseOptions,
             // On data chunk
             function(chunk) {
@@ -94,7 +95,9 @@ var playSample = (function() {
             // On load end
             function() {
               socket.send(JSON.stringify({'action': 'stop'}));
-            });
+            },
+            samplingRate
+            );
         }, 
         // On connection end
           function(evt) {
@@ -139,3 +142,5 @@ exports.initPlaySample = function(ctx) {
   })(ctx, LOOKUP_TABLE);
 
 };
+
+

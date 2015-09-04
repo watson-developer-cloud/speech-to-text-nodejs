@@ -84,19 +84,21 @@ var Alternatives = function(){
 
 var alternativePrototype = new Alternatives();
 
+
 // TODO: Convert to closure approach
-var processString = function(baseString, isFinished) {
+/*var processString = function(baseString, isFinished) {
 
   if (isFinished) {
     var formattedString = baseString.slice(0, -1);
     formattedString = formattedString.charAt(0).toUpperCase() + formattedString.substring(1);
-    formattedString = formattedString.trim() + '.';
+    formattedString = formattedString.trim() + '. ';
     $('#resultsText').val(formattedString);
+    return formattedString;
   } else {
     $('#resultsText').val(baseString);
+    return baseString;
   }
-
-}
+}*/
 
 exports.showJSON = function(msg, baseJSON) {
   
@@ -153,23 +155,25 @@ exports.showResult = function(msg, baseString, callback) {
 
     var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
-
-    //Capitalize first word
+    
+    // apply mappings to beautify
+    text = text.replace(/%HESITATION\s/g, '');
+    text = text.replace(/(.)\1{2,}/g, '');  
+    
+    // capitalize first word
     // if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
-      baseString += text;
-      var displayFinalString = baseString;
-      displayFinalString = displayFinalString.replace(/%HESITATION\s/g, '');
-      displayFinalString = displayFinalString.replace(/(.)\1{2,}/g, '');
-      processString(displayFinalString, true);
-      showMetaData(alternatives[0]);
-      // Only show alternatives if we're final
-      alternativePrototype.showAlternatives(alternatives);
+       text = text.slice(0, -1);
+       text = text.charAt(0).toUpperCase() + text.substring(1);
+       text = text.trim() + '. ';
+       baseString += text;
+       $('#resultsText').val(baseString);
+       showMetaData(alternatives[0]);
+       // Only show alternatives if we're final
+       alternativePrototype.showAlternatives(alternatives);
     } else {
-      var tempString = baseString + text;
-      tempString = tempString.replace(/%HESITATION\s/g, '');
-      tempString = tempString.replace(/(.)\1{2,}/g, '');
-      processString(tempString, false);
+    	  text = text.charAt(0).toUpperCase() + text.substring(1);
+    	 $('#resultsText').val(baseString + text);       
     }
   }
 
