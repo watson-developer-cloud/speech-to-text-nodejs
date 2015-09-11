@@ -40,7 +40,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   var message = options.message || {'action': 'start'};
   var sessionPermissions = withDefault(options.sessionPermissions, JSON.parse(localStorage.getItem('sessionPermissions')));
   var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';
-  var url = options.serviceURI || 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token='
+  var url = options.serviceURI || 'wss://stream-s.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token='
     + token
     + '&X-WDC-PL-OPT-OUT=' + sessionPermissionsQueryParam
     + '&model=' + model;
