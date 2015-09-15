@@ -54,6 +54,8 @@ var playSample = (function() {
 
     localStorage.setItem('currentlyDisplaying', true);
     running = true;
+    
+    $('#resultsText').val('');   // clear hypotheses from previous runs
 
     var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 

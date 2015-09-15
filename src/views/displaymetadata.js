@@ -159,10 +159,13 @@ exports.showResult = function(msg, baseString, model, callback) {
     // apply mappings to beautify
     text = text.replace(/%HESITATION\s/g, '');
     text = text.replace(/(.)\1{2,}/g, '');
+    if (msg.results[0].final)
+       console.log("-> " + text + "\n");
+    text = text.replace(/D_[^\s]+/g,'');
     
     // if all words are mapped to nothing then there is nothing else to do
-    if (text.length == 0) {
-    	return baseString;
+    if ((text.length == 0) || (/^\s+$/.test(text))) {
+    	 return baseString;
     }    	  
     
     // capitalize first word
@@ -194,7 +197,6 @@ exports.showResult = function(msg, baseString, model, callback) {
   updateScroll();
   updateTextScroll();
   return baseString;
-
 };
 
 $.subscribe('clearscreen', function() {
