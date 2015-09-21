@@ -147,7 +147,7 @@ exports.initDisplayMetadata = function() {
 };
 
 
-exports.showResult = function(msg, baseString, callback) {
+exports.showResult = function(msg, baseString, model, callback) {
 
   var idx = +msg.result_index;
 
@@ -158,29 +158,45 @@ exports.showResult = function(msg, baseString, callback) {
     
     // apply mappings to beautify
     text = text.replace(/%HESITATION\s/g, '');
-    text = text.replace(/(.)\1{2,}/g, '');  
+    text = text.replace(/(.)\1{2,}/g, '');
+    if (msg.results[0].final)
+       console.log("-> " + text + "\n");
+    text = text.replace(/D_[^\s]+/g,'');
+    
+    // if all words are mapped to nothing then there is nothing else to do
+    if ((text.length == 0) || (/^\s+$/.test(text))) {
+    	 return baseString;
+    }    	  
     
     // capitalize first word
     // if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
        text = text.slice(0, -1);
        text = text.charAt(0).toUpperCase() + text.substring(1);
-       text = text.trim() + '. ';
+       if ((model.substring(0,5) == "ja-JP") || (model.substring(0,5) == "zh-CN")) {        
+          text = text.trim() + '。';
+          text = text.replace(/ /g,'');      // remove whitespaces 
+       } else {  
+          text = text.trim() + '. ';
+       }       
        baseString += text;
        $('#resultsText').val(baseString);
        showMetaData(alternatives[0]);
        // Only show alternatives if we're final
        alternativePrototype.showAlternatives(alternatives);
     } else {
-    	  text = text.charAt(0).toUpperCase() + text.substring(1);
-    	 $('#resultsText').val(baseString + text);       
+       if ((model.substring(0,5) == "ja-JP") || (model.substring(0,5) == "zh-CN")) {        
+          text = text.replace(/ /g,'');      // remove whitespaces     	         
+       } else {
+        	 text = text.charAt(0).toUpperCase() + text.substring(1);
+       }
+    	 $('#resultsText').val(baseString + text);    	 
     }
   }
 
   updateScroll();
   updateTextScroll();
   return baseString;
-
 };
 
 $.subscribe('clearscreen', function() {
@@ -189,3 +205,4 @@ $.subscribe('clearscreen', function() {
   $hypotheses.empty();
   alternativePrototype.clearString();
 });
+

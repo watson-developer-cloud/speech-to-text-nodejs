@@ -52,7 +52,7 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     function onMessage(msg) {
       if (msg.results) {
         // Convert to closure approach
-        baseString = display.showResult(msg, baseString);
+        baseString = display.showResult(msg, baseString, model);
         baseJSON = display.showJSON(msg, baseJSON);
       }
     }
@@ -70,5 +70,5 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     }
 
     initSocket(options, onOpen, onListening, onMessage, onError, onClose);
+}
 
-  }

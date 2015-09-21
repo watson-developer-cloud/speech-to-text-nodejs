@@ -41,6 +41,34 @@
          "name": "ja-JP_NarrowbandModel", 
          "language": "ja-JP", 
          "description": "Japanese narrowband model (8KHz)"
-      }
+      },
+      {
+         "url": "https://stream-s.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel", 
+         "rate": 16000, 
+         "name": "pt-BR_BroadbandModel", 
+         "language": "pt-BR", 
+         "description": "Brazilian Portuguese broadband model (16KHz)"
+      }, 
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel", 
+         "rate": 8000, 
+         "name": "pt-BR_NarrowbandModel", 
+         "language": "pt-BR", 
+         "description": "Brazilian Portuguese narrowband model (8KHz)"
+      },
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_BroadbandModel", 
+         "rate": 16000, 
+         "name": "zh-CN_BroadbandModel", 
+         "language": "zh-CN", 
+         "description": "Mandarin broadband model (16KHz)"
+      },     
+      {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_NarrowbandModel", 
+         "rate": 8000, 
+         "name": "zh-CN_NarrowbandModel", 
+         "language": "zh-CN", 
+         "description": "Mandarin narrowband model (8KHz)"
+      }      
    ]
 }

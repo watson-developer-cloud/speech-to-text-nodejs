@@ -32,6 +32,7 @@ exports.initRecordButton = function(ctx) {
       }
 
       if (!running) {
+        $('#resultsText').val('');   // clear hypotheses from previous runs
         console.log('Not running, handleMicrophone()');
         handleMicrophone(token, currentModel, mic, function(err, socket) {
           if (err) {
@@ -46,7 +47,7 @@ exports.initRecordButton = function(ctx) {
             mic.record();
             running = true;
           }
-        });
+        });        
       } else {
         console.log('Stopping microphone, sending stop action message');
         recordButton.removeAttr('style');

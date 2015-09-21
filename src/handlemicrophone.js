@@ -56,7 +56,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     console.log('Mic socket msg: ', msg);
     if (msg.results) {
       // Convert to closure approach
-      baseString = display.showResult(msg, baseString);
+      baseString = display.showResult(msg, baseString, model);
       baseJSON = display.showJSON(msg, baseJSON);
     }
   }
@@ -70,5 +70,4 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   initSocket(options, onOpen, onListening, onMessage, onError, onClose);
-
 }

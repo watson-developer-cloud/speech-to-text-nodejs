@@ -44,7 +44,6 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
       restoreUploadTab();
     });
 
-
     // Get current model
     var currentModel = localStorage.getItem('currentModel');
     console.log('currentModel', currentModel);
