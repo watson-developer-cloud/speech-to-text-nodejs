@@ -29,16 +29,14 @@ var express = require('express'),
 // or store in your environment
 var config = {
   version: 'v1',
-  url: 'https://stream-s.watsonplatform.net/speech-to-text/api',
-  //username: '<username>',  
-  //password: '<password>'
-  username: 'c9122908-2741-4610-93b9-f33a731ba920',
-  password: '74jxojn8LV9i'
+  url: 'https://stream.watsonplatform.net/speech-to-text/api',
+  username: '<username>',  
+  password: '<password>'
 };
 
 // if bluemix credentials exist, then override local
-//var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
-var credentials = config;
+var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
+//var credentials = config;
 var authorization = watson.authorization(credentials);
 
 // Setup static public directory
