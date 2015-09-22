@@ -43,7 +43,7 @@
          "description": "Japanese narrowband model (8KHz)"
       },
       {
-         "url": "https://stream-s.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel", 
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel", 
          "rate": 16000, 
          "name": "pt-BR_BroadbandModel", 
          "language": "pt-BR", 
