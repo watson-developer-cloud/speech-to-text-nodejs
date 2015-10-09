@@ -42,6 +42,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     // Clear flashing if socket upload is stopped
     $.subscribe('hardsocketstop', function(data) {
       restoreUploadTab();
+      running = false;
     });
 
     // Get current model
