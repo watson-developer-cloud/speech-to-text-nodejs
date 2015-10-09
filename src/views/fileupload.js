@@ -71,6 +71,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
       } else {
         restoreUploadTab();
         showError('Only WAV or FLAC files can be transcribed, please try another file format');
+        localStorage.setItem('currentlyDisplaying', false);	
         return;
       }
       handleFileUpload(token, currentModel, file, contentType, function(socket) {
