@@ -42,6 +42,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     // Clear flashing if socket upload is stopped
     $.subscribe('hardsocketstop', function(data) {
       restoreUploadTab();
+      running = false;
     });
 
     // Get current model
@@ -71,6 +72,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
       } else {
         restoreUploadTab();
         showError('Only WAV or FLAC files can be transcribed, please try another file format');
+        localStorage.setItem('currentlyDisplaying', false);	
         return;
       }
       handleFileUpload(token, currentModel, file, contentType, function(socket) {
@@ -82,6 +84,12 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
           // On data chunk
           function(chunk) {
             socket.send(chunk);
+          },
+          function(isRunning) {
+            if(running)
+                return true;
+            else
+                return false;
           },
           // On file read error
           function(evt) {

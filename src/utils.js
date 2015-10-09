@@ -11,7 +11,7 @@ var fileBlock = function(_offset, length, _file, readChunk) {
 
 // Based on alediaferia's SO response
 // http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
-exports.onFileProgress = function(options, ondata, onerror, onend, samplingRate) {
+exports.onFileProgress = function(options, ondata, running, onerror, onend, samplingRate) {
   var file       = options.file;
   var fileSize   = file.size;
   var chunkSize  = options.bufferSize || 16000;  // in bytes
@@ -20,6 +20,9 @@ exports.onFileProgress = function(options, ondata, onerror, onend, samplingRate)
     if (offset >= fileSize) {
       console.log("Done reading file");
       onend();
+      return;
+    }
+    if(!running()) {
       return;
     }
     if (evt.target.error == null) {

@@ -55,6 +55,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     $.subscribe('hardsocketstop', function(data) {
       console.log('MICROPHONE: close.');
       socket.send(JSON.stringify({action:'stop'}));
+      socket.close();
     });
     $.subscribe('socketstop', function(data) {
       console.log('MICROPHONE: close.');
