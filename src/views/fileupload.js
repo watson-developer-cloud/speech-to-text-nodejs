@@ -85,6 +85,12 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
           function(chunk) {
             socket.send(chunk);
           },
+          function(isRunning) {
+            if(running)
+                return true;
+            else
+                return false;
+          },
           // On file read error
           function(evt) {
             console.log('Error reading file: ', evt.message);
