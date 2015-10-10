@@ -53,7 +53,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "build": "browserify -o public/js/index.js src/index.js",
+    "build": "browserify src/index.js | uglifyjs > public/js/index.js",
     "watch": "watchify -v -d -o public/js/index.js src/index.js"
   },
   "devDependencies": {
