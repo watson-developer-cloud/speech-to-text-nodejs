@@ -40,7 +40,7 @@ module.exports = function (app) {
   var env = process.env.NODE_ENV || 'development';
   if ('production' === env) {
     console.log('redirect http to https');
-    //app.use(secure());
+    app.use(secure());
     app.use(errorhandler());
   }
 
