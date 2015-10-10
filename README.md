@@ -82,7 +82,7 @@ See the full [Getting Started][getting_started] documentation for more details, 
     ```
 
     You need to copy `username`, `password` and `url`. Then you need to pass those values in app.js
-    
+
     ```
     var config = {
       version: 'v1',
@@ -90,7 +90,7 @@ See the full [Getting Started][getting_started] documentation for more details, 
       username: '<username>',
       password: '<password>'  
     };
-    ``` 
+    ```
 
 2. Install [Node.js](http://nodejs.org/)
 
@@ -100,13 +100,6 @@ See the full [Getting Started][getting_started] documentation for more details, 
     ```
 
 4. Then, build the browser application using Browserify:
-
-    * To build with debugging enabled, and rebuild if the app is changed:
-    ```sh
-    $ npm run watch
-    ```
-    
-    * To simply build the application without debugging or file-change monitoring:
     ```sh
     $ npm run build
     ```
