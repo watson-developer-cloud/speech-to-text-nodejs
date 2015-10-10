@@ -99,7 +99,7 @@ See the full [Getting Started][getting_started] documentation for more details, 
     $ npm install
     ```
 
-4. Then, build the browser application using Browserify:
+4. Then, build the browser application using [Browserify][browserify]:
     ```sh
     $ npm run build
     ```
@@ -134,3 +134,4 @@ To troubleshoot your Bluemix app the main useful source of information are the l
 [cloud_foundry]: https://github.com/cloudfoundry/cli
 [getting_started]: http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/getting_started/
 [sign_up]: https://apps.admin.ibmcloud.com/manage/trial/bluemix.html?cm_mmc=WatsonDeveloperCloud-_-LandingSiteGetStarted-_-x-_-CreateAnAccountOnBluemixCLI
+[browserify]: http://browserify.org/
