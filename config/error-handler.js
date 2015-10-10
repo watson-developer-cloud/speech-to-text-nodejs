@@ -13,19 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
 
-exports.getModels = function(options, callback) {
-  var token = options.token;
-  var modelUrl = options.url || 'https://stream.watsonplatform.net/speech-to-text/api/v1/models';
-  var sttRequest = new XMLHttpRequest();
-  sttRequest.open('GET', modelUrl, true);
-  sttRequest.withCredentials = true;
-  sttRequest.setRequestHeader('Accept', 'application/json');
-  sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
-  sttRequest.onload = function() {
-    var response = JSON.parse(sttRequest.responseText);
-    callback(response.models);
-  };
-  sttRequest.send();
+'use strict';
+var fs = require('fs');
+
+module.exports = function (app) {
+
+  // catch 404 and forward to error handler
+  app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.code = 404;
+    err.message = 'Not Found';
+    next(err);
+  });
+
+  // error handler
+  app.use(function(err, req, res, next) {
+    var error = {
+      code: err.code || 500,
+      error: err.error || err.message
+    };
+    console.log('error:', error);
+
+    if (err.code === 'EBADCSRFTOKEN') {
+      error = {
+        code: 403,
+        error: 'http://goo.gl/mGOksD'
+      };
+    }
+    res.status(error.code).json(error);
+  });
+
 };

@@ -1,10 +1,24 @@
-
+/**
+ * Copyright 2014 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* global $ */
 'use strict';
 
 var utils = require('../utils');
 var onFileProgress = utils.onFileProgress;
 var handleFileUpload = require('../handlefileupload').handleFileUpload;
-var initSocket = require('../socket').initSocket;
 var showError = require('./showerror').showError;
 var effects = require('./effects');
 
@@ -15,7 +29,11 @@ var LOOKUP_TABLE = {
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav'],
   'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav'],
   'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav'],
-  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav']
+  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav'],
+  'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav'],
+  'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav'],
+  'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav'],
+  'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav']
 };
 
 var playSample = (function() {
@@ -23,7 +41,7 @@ var playSample = (function() {
   var running = false;
   localStorage.setItem('currentlyDisplaying', false);
 
-  return function(token, imageTag, iconName, url, callback) {
+  return function(token, imageTag, iconName, url) {
 
     $.publish('clearscreen');
 
@@ -51,12 +69,14 @@ var playSample = (function() {
     localStorage.setItem('currentlyDisplaying', true);
     running = true;
 
+    $('#resultsText').val('');   // clear hypotheses from previous runs
+
     var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'blob';
-    xhr.onload = function(e) {
+    xhr.onload = function() {
       var blob = xhr.response;
       var currentModel = localStorage.getItem('currentModel') || 'en-US_BroadbandModel';
       var reader = new FileReader();
@@ -81,10 +101,17 @@ var playSample = (function() {
           var parseOptions = {
             file: blob
           };
+          var samplingRate = (currentModel.indexOf('Broadband') != -1) ? 16000 : 8000;
           onFileProgress(parseOptions,
             // On data chunk
-            function(chunk) {
+            function onData(chunk) {
               socket.send(chunk);
+            },
+            function isRunning() {
+              if(running)
+                return true;
+              else
+                return false;
             },
             // On file read error
             function(evt) {
@@ -94,10 +121,12 @@ var playSample = (function() {
             // On load end
             function() {
               socket.send(JSON.stringify({'action': 'stop'}));
-            });
-        }, 
+            },
+            samplingRate
+            );
+        },
         // On connection end
-          function(evt) {
+          function() {
             effects.stopToggleImage(timer, imageTag, iconName);
             effects.restoreImage(imageTag, iconName);
             localStorage.getItem('currentlyDisplaying', false);
@@ -118,7 +147,7 @@ exports.initPlaySample = function(ctx) {
     el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
-    el.click( function(evt) {
+    el.click( function() {
       playSample(ctx.token, imageTag, iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
@@ -131,7 +160,7 @@ exports.initPlaySample = function(ctx) {
     el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
-    el.click( function(evt) {
+    el.click( function() {
       playSample(ctx.token, imageTag, iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });

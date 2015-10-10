@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="ct" content="s<%= ct %>">
     <title>Speech to Text</title>
     <link href="css/watson-bootstrap-style.css" rel="stylesheet">
-    <link href="css/browser-compatibility.css" rel="stylesheet">
-    <link href="css/demo-stt.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
   </head>
   <body>
     <!-- top nav section -->
@@ -42,12 +42,13 @@
 
         <div class="col-lg-10 col-md-10 col-xs-12">
           <h1>Speech to Text</h1>
-          <p>The IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Japanese, and Spanish speech into text.</p>
+          <p>The IBM Watson Speech to Text service uses speech recognition capabilities to convert English, Spanish, Japanese, Brazilian Portuguese and Mandarin speech into text.</p>
           <p><img src="images/link.svg" class="glyph"><strong>Resources:</strong></br>
           <div class="resources">
-            <a href="http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/#!/speech-to-text">API Overview</a>
+            <a href="http://http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/speech-to-text/api">API Reference</a>
             <a href="http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/speech-to-text/">Documentation</a>
             <a href="https://github.com/watson-developer-cloud/speech-to-text-nodejs">Fork on Github</a>
+            <a href="https://bluemix.net/deploy?repository=https://github.com/watson-developer-cloud/speech-to-text-nodejs">Fork and Deploy on Github</a>
           </div><!-- .resources -->
           </p>
         </div><!-- .col-lg-10 -->
@@ -129,26 +130,19 @@
 
           </nav>
         </div>
-
-
-
         <!-- Tab panes -->
-        <div class="row" style="  margin: 0;"> 
+        <div class="row" style="  margin: 0;">
           <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 0;">
             <div class="well">
               <form autocomplete="off" class="form-horizontal">
                 <div role="tabpanel">
-
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
                     <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
-                  </ul> 
-
+                  </ul>
                   <div class="hr-tab"></div>
-
                   <fieldset>
-
                     <div class="row error-row">
                       <div class="col-lg-12">
                         <div id="errorAlert" >
@@ -166,8 +160,6 @@
                         </div>
                       </div>
                     </div>
-
-
                     <div class="form-group row tabpanel-row">
                       <div class="col-lg-12">
                         <div class="tab-content">
@@ -186,7 +178,6 @@
             </div>
           </div><!-- /.well -->
         </div><!-- /.tabpanel -->
-
 
         <div class="row">
           <div class="col-md-12">
@@ -236,7 +227,6 @@
           </div><!-- /.col -->
         </div><!-- /.row -->
 
-
       </div><!-- /.container -->
 
       <!-- for file upload dialog in toolbar -->
@@ -244,10 +234,7 @@
 
       <!-- Place js files at the end of the document, with fallbacks for CDNs -->
       <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-      <script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js"><\/script>')</script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-      <script> (typeof $().emulateTransitionEnd == 'function')|| document.write('<script src="js/bootstrap-3.3.5.min.js"><\/script>')</script>
-      <script src="js/main.js"></script>
-
+      <script src="js/index.js"></script>
   </body>
 </html>

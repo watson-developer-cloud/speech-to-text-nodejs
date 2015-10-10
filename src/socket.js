@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 IBM Corp. All Rights Reserved.
+ * Copyright 2015 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 /*global $:false */
 
+'use strict';
 
 var utils = require('./utils');
-var Microphone = require('./Microphone');
 var showerror = require('./views/showerror');
 var showError = showerror.showError;
-var hideError = showerror.hideError;
 
 // Mini WS callback API, so we can initialize
 // with model and token in URI, plus
@@ -38,25 +37,25 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   var token = options.token;
   var model = options.model || localStorage.getItem('currentModel');
   var message = options.message || {'action': 'start'};
-  var sessionPermissions = withDefault(options.sessionPermissions, JSON.parse(localStorage.getItem('sessionPermissions')));
+  var sessionPermissions = withDefault(options.sessionPermissions,
+    JSON.parse(localStorage.getItem('sessionPermissions')));
   var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';
-  var url = options.serviceURI || 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token='
-    + token
-    + '&X-WDC-PL-OPT-OUT=' + sessionPermissionsQueryParam
-    + '&model=' + model;
+  var url = options.serviceURI || 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token=';
+    url+= token + '&X-WDC-PL-OPT-OUT=' + sessionPermissionsQueryParam + '&model=' + model;
   console.log('URL model', model);
   try {
     socket = new WebSocket(url);
   } catch(err) {
     console.error('WS connection error: ', err);
   }
-  socket.onopen = function(evt) {
+  socket.onopen = function() {
     listening = false;
-    $.subscribe('hardsocketstop', function(data) {
+    $.subscribe('hardsocketstop', function() {
       console.log('MICROPHONE: close.');
       socket.send(JSON.stringify({action:'stop'}));
+      socket.close();
     });
-    $.subscribe('socketstop', function(data) {
+    $.subscribe('socketstop', function() {
       console.log('MICROPHONE: close.');
       socket.close();
     });
@@ -97,9 +96,9 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       console.log('generator count', tokenGenerator.getCount());
       if (tokenGenerator.getCount() > 1) {
         $.publish('hardsocketstop');
-        throw new Error("No authorization token is currently available");
+        throw new Error('No authorization token is currently available');
       }
-      tokenGenerator.getToken(function(token, err) {
+      tokenGenerator.getToken(function(err, token) {
         if (err) {
           $.publish('hardsocketstop');
           return false;
@@ -116,7 +115,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     }
     if (evt.code > 1000) {
       console.error('Server error ' + evt.code + ': please refresh your browser and try again');
-      // showError('Server error ' + evt.code + ': please refresh your browser and try again');
       return false;
     }
     // Made it through, normal close
@@ -125,4 +123,4 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
     onclose(evt);
   };
 
-}
+};
