@@ -50,12 +50,13 @@
   },
   "scripts": {
     "start": "node app.js",
-    "build": "browserify -o public/js/index.js src/index.js",
+    "build": "browserify src/index.js | uglifyjs > public/js/index.js",
     "watch": "watchify -v -d -o public/js/index.js src/index.js"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
     "browserify-shim": "^3.8.9",
-    "watchify": "^3.2.3"
+    "watchify": "^3.2.3",
+    "uglifyjs": "^2.4.10"
   }
 }
