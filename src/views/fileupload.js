@@ -1,4 +1,19 @@
-
+/**
+ * Copyright 2014 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* global $ */
 'use strict';
 
 var showError = require('./showerror').showError;
@@ -14,13 +29,6 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     localStorage.setItem('currentlyDisplaying', false);
 
     return function(token, file) {
-
-    var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
-
-    // if (currentlyDisplaying) {
-    //   showError('Currently another file is playing, please stop the file or wait until it finishes');
-    //   return;
-    // }
 
     $.publish('clearscreen');
 
@@ -40,7 +48,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     }
 
     // Clear flashing if socket upload is stopped
-    $.subscribe('hardsocketstop', function(data) {
+    $.subscribe('hardsocketstop', function() {
       restoreUploadTab();
       running = false;
     });
@@ -72,7 +80,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
       } else {
         restoreUploadTab();
         showError('Only WAV or FLAC files can be transcribed, please try another file format');
-        localStorage.setItem('currentlyDisplaying', false);	
+        localStorage.setItem('currentlyDisplaying', false);
         return;
       }
       handleFileUpload(token, currentModel, file, contentType, function(socket) {
@@ -82,10 +90,10 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         };
         utils.onFileProgress(parseOptions,
           // On data chunk
-          function(chunk) {
+          function onData(chunk) {
             socket.send(chunk);
           },
-          function(isRunning) {
+          function isRunning() {
             if(running)
                 return true;
             else
@@ -100,28 +108,28 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
           function() {
             socket.send(JSON.stringify({'action': 'stop'}));
           });
-      }, 
-        function(evt) {
+      },
+        function() {
           effects.stopToggleImage(timer, uploadImageTag, 'upload');
           uploadText.text('Select File');
           localStorage.setItem('currentlyDisplaying', false);
         }
       );
     };
-  }
+  };
 })();
 
 
 exports.initFileUpload = function(ctx) {
 
-  var fileUploadDialog = $("#fileUploadDialog");
+  var fileUploadDialog = $('#fileUploadDialog');
 
-  fileUploadDialog.change(function(evt) {
+  fileUploadDialog.change(function() {
     var file = fileUploadDialog.get(0).files[0];
     handleSelectedFile(ctx.token, file);
   });
 
-  $("#fileUploadTarget").click(function(evt) {
+  $('#fileUploadTarget').click(function() {
 
     var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
 
@@ -139,4 +147,4 @@ exports.initFileUpload = function(ctx) {
 
   });
 
-}
+};

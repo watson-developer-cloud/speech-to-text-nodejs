@@ -5,8 +5,11 @@ declared-services:
     plan: standard
 applications:
 - name: speech-to-text-nodejs
-  command: node app.js
   path: .
-  memory: 256m
+  command: npm start
+  memory: 512M
+  instances: 2
   services:
   - speech-to-text-service-standard
+  env:
+    NODE_ENV: production

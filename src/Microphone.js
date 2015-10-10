@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 IBM Corp. All Rights Reserved.
+ * Copyright 2015 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* global OfflineAudioContext */
 'use strict';
 
 var utils = require('./utils');
@@ -105,8 +105,8 @@ Microphone.prototype._onaudioprocess = function(data) {
   }
 
   // Single channel
-  var chan = data.inputBuffer.getChannelData(0);  
-  
+  var chan = data.inputBuffer.getChannelData(0);
+
   //resampler(this.audioContext.sampleRate,data.inputBuffer,this.onAudio);
 
   this.onAudio(this._exportDataBufferTo16Khz(new Float32Array(chan)));
@@ -163,8 +163,8 @@ Microphone.prototype.stop = function() {
 Microphone.prototype._exportDataBufferTo16Khz = function(bufferNewSamples) {
   var buffer = null,
     newSamples = bufferNewSamples.length,
-    unusedSamples = this.bufferUnusedSamples.length;   
-    
+    unusedSamples = this.bufferUnusedSamples.length;
+
 
   if (unusedSamples > 0) {
     buffer = new Float32Array(unusedSamples + newSamples);
@@ -219,13 +219,13 @@ Microphone.prototype._exportDataBufferTo16Khz = function(bufferNewSamples) {
   });
   };
 
-  
-  
+
+
 // native way of resampling captured audio
 var resampler = function(sampleRate, audioBuffer, callbackProcessAudio) {
-	
-	console.log("length: " + audioBuffer.length + " " + sampleRate);
-	var channels = 1; 
+
+	console.log('length: ' + audioBuffer.length + ' ' + sampleRate);
+	var channels = 1;
 	var targetSampleRate = 16000;
    var numSamplesTarget = audioBuffer.length * targetSampleRate / sampleRate;
 
@@ -234,9 +234,9 @@ var resampler = function(sampleRate, audioBuffer, callbackProcessAudio) {
    bufferSource.buffer = audioBuffer;
 
 	// callback that is called when the resampling finishes
-   offlineContext.oncomplete = function(event) {   	
-      var samplesTarget = event.renderedBuffer.getChannelData(0);                                       
-      console.log('Done resampling: ' + samplesTarget.length + " samples produced");  
+   offlineContext.oncomplete = function(event) {
+      var samplesTarget = event.renderedBuffer.getChannelData(0);
+      console.log('Done resampling: ' + samplesTarget.length + ' samples produced');
 
 		// convert from [-1,1] range of floating point numbers to [-32767,32767] range of integers
 		var index = 0;
@@ -249,15 +249,15 @@ var resampler = function(sampleRate, audioBuffer, callbackProcessAudio) {
   		}
 
       // l16 is the MIME type for 16-bit PCM
-      callbackProcessAudio(new Blob([dataView], { type: 'audio/l16' }));         
+      callbackProcessAudio(new Blob([dataView], { type: 'audio/l16' }));
    };
 
    bufferSource.connect(offlineContext.destination);
    bufferSource.start(0);
-   offlineContext.startRendering();   
+   offlineContext.startRendering();
 };
- 
-  
+
+
 
 /**
  * Creates a Blob type: 'audio/l16' with the
@@ -288,7 +288,7 @@ var exportDataBuffer = function(buffer, bufferSize) {
 
 Microphone.prototype._exportDataBuffer = function(buffer){
   utils.exportDataBuffer(buffer, this.bufferSize);
-}; 
+};
 
 
 // Functions used to control Microphone events listeners.
@@ -297,4 +297,3 @@ Microphone.prototype.onStopRecording =  function() {};
 Microphone.prototype.onAudio =  function() {};
 
 module.exports = Microphone;
-

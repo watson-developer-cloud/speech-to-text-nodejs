@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 IBM Corp. All Rights Reserved.
+ * Copyright 2015 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*global $:false */
+/*global $:false, BUFFERSIZE */
 
 'use strict';
 
-var Microphone = require('./Microphone');
 var models = require('./data/models.json').models;
 var utils = require('./utils');
 utils.initPubSub();
 var initViews = require('./views').initViews;
+var showerror = require('./views/showerror');
+var showError = showerror.showError;
 
 window.BUFFERSIZE = 8192;
 
 $(document).ready(function() {
+  var tokenGenerator = utils.createTokenGenerator();
 
   // Make call to API to try and get token
-  utils.getToken(function(token) {
-
-    window.onbeforeunload = function(e) {
+  tokenGenerator.getToken(function(err, token) {
+    window.onbeforeunload = function() {
       localStorage.clear();
     };
 
     if (!token) {
       console.error('No authorization token available');
       console.error('Attempting to reconnect...');
+
+      if (err && err.code)
+        showError('Server error ' + err.code + ': '+ err.error);
+      else
+        showError('Server error ' + err.code + ': please refresh your browser and try again');
     }
 
     var viewContext = {

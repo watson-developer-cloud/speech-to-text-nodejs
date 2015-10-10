@@ -1,5 +1,5 @@
 /**
- * Copyright 2014, 2015 IBM Corp. All Rights Reserved.
+ * Copyright 2015 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,38 @@
 
 'use strict';
 
-var express = require('express'),
-    app = express(),
-    errorhandler = require('errorhandler'),
-    bluemix = require('./config/bluemix'),
-    watson = require('watson-developer-cloud'),
-    path = require('path'),
-    // environmental variable points to demo's json config file
-    extend = require('util')._extend;
+var express      = require('express'),
+    app          = express(),
+    vcapServices = require('vcap_services'),
+    extend       = require('util')._extend,
+    watson       = require('watson-developer-cloud');
 
-// For local development, put username and password in config
-// or store in your environment
-var config = {
+// Bootstrap application settings
+require('./config/express')(app);
+
+// For local development, replace username and password
+var config = extend({
   version: 'v1',
   url: 'https://stream.watsonplatform.net/speech-to-text/api',
-  username: '<username>',  
+  username: '<username>',
   password: '<password>'
-};
+}, vcapServices.getCredentials('speech_to_text'));
 
-// if bluemix credentials exist, then override local
-var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
-//var credentials = config;
-var authorization = watson.authorization(credentials);
+var authService = watson.authorization(config);
 
-// Setup static public directory
-app.use(express.static(path.join(__dirname , './public')));
-
-// Get token from Watson using your credentials
-app.get('/token', function(req, res) {
-  authorization.getToken({url: credentials.url}, function(err, token) {
-    if (err) {
-      console.log('error:', err);
-      res.status(err.code);
-    }
-
-    res.send(token);
+// Get token using your credentials
+app.post('/api/token', function(req, res, next) {
+  authService.getToken({url: config.url}, function(err, token) {
+    if (err)
+      next(err);
+    else
+      res.send(token);
   });
 });
 
-// Add error handling in dev
-if (!process.env.VCAP_SERVICES) {
-  app.use(errorhandler());
-}
+// error-handler settings
+require('./config/error-handler')(app);
+
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
 console.log('listening at:', port);
