@@ -15,7 +15,6 @@
  */
 
 'use strict';
-var fs = require('fs');
 
 module.exports = function (app) {
 
@@ -34,13 +33,6 @@ module.exports = function (app) {
       error: err.error || err.message
     };
     console.log('error:', error);
-
-    if (err.code === 'EBADCSRFTOKEN') {
-      error = {
-        code: 403,
-        error: 'http://goo.gl/mGOksD'
-      };
-    }
     res.status(error.code).json(error);
   });
 
