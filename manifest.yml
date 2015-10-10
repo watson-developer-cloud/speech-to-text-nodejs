@@ -8,8 +8,5 @@ applications:
   path: .
   command: npm start
   memory: 512M
-  instances: 2
   services:
   - speech-to-text-service-standard
-  env:
-    NODE_ENV: production
