@@ -15,8 +15,6 @@
  */
 
 'use strict';
-var fs = require('fs');
-
 module.exports = function (app) {
 
   // catch 404 and forward to error handler
