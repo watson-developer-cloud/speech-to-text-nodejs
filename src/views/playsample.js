@@ -39,34 +39,37 @@ var LOOKUP_TABLE = {
 var playSample = (function() {
 
   var running = false;
-  localStorage.setItem('currentlyDisplaying', false);
+  localStorage.setItem('currentlyDisplaying', 'false');
 
   return function(token, imageTag, iconName, url) {
 
     $.publish('clearscreen');
 
-    var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+    var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
     console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
 
     // This error handling needs to be expanded to accomodate
     // the two different play samples files
-    if (currentlyDisplaying) {
+    if (currentlyDisplaying==='sample') {
       console.log('HARD SOCKET STOP');
       $.publish('socketstop');
-      localStorage.setItem('currentlyDisplaying', false);
+      localStorage.setItem('currentlyDisplaying', 'false');
       effects.stopToggleImage(timer, imageTag, iconName);
       effects.restoreImage(imageTag, iconName);
       running = false;
       return;
     }
 
-    if (currentlyDisplaying && running) {
+    if (currentlyDisplaying=='record') {
+      showError('Currently audio is being recorded, please stop recording before playing a sample');
+      return;
+    } else if (currentlyDisplaying=='fileupload') {
       showError('Currently another file is playing, please stop the file or wait until it finishes');
       return;
     }
 
-    localStorage.setItem('currentlyDisplaying', true);
+    localStorage.setItem('currentlyDisplaying', 'sample');
     running = true;
 
     $('#resultsText').val('');   // clear hypotheses from previous runs
@@ -97,7 +100,7 @@ var playSample = (function() {
           audio.pause();
           audio.currentTime = 0;
         });
-        handleFileUpload(token, currentModel, blob, contentType, function(socket) {
+        handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {
           var parseOptions = {
             file: blob
           };
@@ -129,7 +132,7 @@ var playSample = (function() {
           function() {
             effects.stopToggleImage(timer, imageTag, iconName);
             effects.restoreImage(imageTag, iconName);
-            localStorage.getItem('currentlyDisplaying', false);
+            localStorage.getItem('currentlyDisplaying', 'false');
           }
         );
       };
