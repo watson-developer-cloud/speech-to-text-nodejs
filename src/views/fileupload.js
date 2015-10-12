@@ -26,13 +26,14 @@ var utils = require('../utils');
 var handleSelectedFile = exports.handleSelectedFile = (function() {
 
     var running = false;
-    localStorage.setItem('currentlyDisplaying', false);
+    localStorage.setItem('currentlyDisplaying', 'false');
 
     return function(token, file) {
 
     $.publish('clearscreen');
 
-    localStorage.setItem('currentlyDisplaying', true);
+    
+    localStorage.setItem('currentlyDisplaying', 'fileupload');
     running = true;
 
     // Visual effects
@@ -77,13 +78,24 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
           audio.pause();
           audio.currentTime = 0;
         });
+      } else if (r.result === 'OggS') {
+        contentType = 'audio/ogg; codecs=opus';
+        var audio = new Audio();
+        var opusBlob = new Blob([file], {type: 'audio/ogg; codecs=opus'});
+        var opusURL = URL.createObjectURL(opusBlob);
+        audio.src=opusURL;
+        audio.play();
+        $.subscribe('hardsocketstop', function() {
+            audio.pause();
+            audio.currentTime = 0;
+        });
       } else {
         restoreUploadTab();
-        showError('Only WAV or FLAC files can be transcribed, please try another file format');
-        localStorage.setItem('currentlyDisplaying', false);
+        showError('Only WAV or FLAC or Opus files can be transcribed, please try another file format');
+        localStorage.setItem('currentlyDisplaying', 'false');
         return;
       }
-      handleFileUpload(token, currentModel, file, contentType, function(socket) {
+      handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
         var blob = new Blob([file]);
         var parseOptions = {
           file: blob
@@ -112,7 +124,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         function() {
           effects.stopToggleImage(timer, uploadImageTag, 'upload');
           uploadText.text('Select File');
-          localStorage.setItem('currentlyDisplaying', false);
+          localStorage.setItem('currentlyDisplaying', 'false');
         }
       );
     };
@@ -131,15 +143,20 @@ exports.initFileUpload = function(ctx) {
 
   $('#fileUploadTarget').click(function() {
 
-    var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+    var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
-    if (currentlyDisplaying) {
+    if (currentlyDisplaying=='fileupload') {
       console.log('HARD SOCKET STOP');
       $.publish('hardsocketstop');
-      localStorage.setItem('currentlyDisplaying', false);
+      localStorage.setItem('currentlyDisplaying', 'false');
+      return;
+    } else if (currentlyDisplaying=='sample') {
+      showError('Currently another file is playing, please stop the file or wait until it finishes'); 
+      return;
+    } else if (currentlyDisplaying=='record') {
+      showError('Currently audio is being recorded, please stop recording before playing a sample');
       return;
     }
-
     fileUploadDialog.val(null);
 
     fileUploadDialog

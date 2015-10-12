@@ -19,10 +19,10 @@
 var display = require('./views/displaymetadata');
 var initSocket = require('./socket').initSocket;
 
-exports.handleFileUpload = function(token, model, file, contentType, callback, onend) {
+exports.handleFileUpload = function(type, token, model, file, contentType, callback, onend) {
 
     // Set currentlyDisplaying to prevent other sockets from opening
-    localStorage.setItem('currentlyDisplaying', true);
+    localStorage.setItem('currentlyDisplaying', type);
 
     // $('#progressIndicator').css('visibility', 'visible');
 
@@ -73,13 +73,13 @@ exports.handleFileUpload = function(token, model, file, contentType, callback, o
     }
 
     function onError(evt) {
-      localStorage.setItem('currentlyDisplaying', false);
+      localStorage.setItem('currentlyDisplaying', 'false');
       onend(evt);
       console.log('Socket err: ', evt.code);
     }
 
     function onClose(evt) {
-      localStorage.setItem('currentlyDisplaying', false);
+      localStorage.setItem('currentlyDisplaying', 'false');
       onend(evt);
       console.log('Socket closing: ', evt);
     }
