@@ -38,13 +38,13 @@ exports.initRecordButton = function(ctx) {
       evt.preventDefault();
 
       var currentModel = localStorage.getItem('currentModel');
-      var currentlyDisplaying = JSON.parse(localStorage.getItem('currentlyDisplaying'));
+      var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
-      if (currentlyDisplaying) {
+      if (currentlyDisplaying=='sample'||currentlyDisplaying=='fileupload') {
         showError('Currently another file is playing, please stop the file or wait until it finishes');
         return;
       }
-
+      localStorage.setItem('currentlyDisplaying', 'record');
       if (!running) {
         $('#resultsText').val('');   // clear hypotheses from previous runs
         console.log('Not running, handleMicrophone()');
@@ -54,6 +54,7 @@ exports.initRecordButton = function(ctx) {
             console.log(msg);
             showError(msg);
             running = false;
+            localStorage.setItem('currentlyDisplaying', 'false');
           } else {
             recordButton.css('background-color', '#d74108');
             recordButton.find('img').attr('src', 'images/stop.svg');
@@ -69,6 +70,7 @@ exports.initRecordButton = function(ctx) {
         $.publish('hardsocketstop');
         mic.stop();
         running = false;
+        localStorage.setItem('currentlyDisplaying', 'false');
       }
     };
   })());
