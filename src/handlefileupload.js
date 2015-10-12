@@ -8,6 +8,7 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
 
     // Set currentlyDisplaying to prevent other sockets from opening
     localStorage.setItem('currentlyDisplaying', type);
+    
     // $('#progressIndicator').css('visibility', 'visible');
 
     $.subscribe('progress', function(evt, data) {
