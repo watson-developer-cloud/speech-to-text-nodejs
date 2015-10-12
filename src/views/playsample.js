@@ -30,6 +30,7 @@ var playSample = (function() {
   return function(token, imageTag, iconName, url, callback) {
 
     $.publish('clearscreen');
+    
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
     console.log('CURRENTLY DISPLAYING:', currentlyDisplaying);
@@ -44,14 +45,12 @@ var playSample = (function() {
       effects.restoreImage(imageTag, iconName);
       running = false;
       return;
-    }
-    else if(currentlyDisplaying==='fileupload') {
-      showError('Currently, another file is playing, so please stop the file or wait until it finishes');
-        return;
-    }
-    else if(currentlyDisplaying==='record') {
-      showError('Currently, audio is being recorded, please stop recording first');
-      return;
+    } else if(currentlyDisplaying==='fileupload') {
+        showError('Currently, another file is playing, so please stop the file or wait until it finishes');
+          return;
+    } else if(currentlyDisplaying==='record') {
+        showError('Currently, audio is being recorded, please stop recording first');
+          return;
     }
     localStorage.setItem('currentlyDisplaying', 'sample');
     running = true;
