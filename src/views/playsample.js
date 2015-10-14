@@ -28,8 +28,6 @@ var LOOKUP_TABLE = {
   'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav'],
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav'],
   'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav'],
-  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav'],
-  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav'],
   'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav'],
   'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav'],
   'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav'],
@@ -40,36 +38,36 @@ var playSample = (function() {
 
   var running = false;
   localStorage.setItem('currentlyDisplaying', 'false');
+  localStorage.setItem('samplePlaying', 'false');
 
-  return function(token, imageTag, iconName, url) {
+  return function(token, imageTag, sampleNumber, iconName, url) {
 
     $.publish('clearscreen');
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
+    var samplePlaying = localStorage.getItem('samplePlaying');
 
-    console.log('CURRENTLY DISPLAYING', currentlyDisplaying);
-
-    // This error handling needs to be expanded to accomodate
-    // the two different play samples files
-    if (currentlyDisplaying==='sample') {
+    if (samplePlaying === sampleNumber) {
       console.log('HARD SOCKET STOP');
       $.publish('socketstop');
       localStorage.setItem('currentlyDisplaying', 'false');
+      localStorage.setItem('samplePlaying', 'false');
       effects.stopToggleImage(timer, imageTag, iconName);
       effects.restoreImage(imageTag, iconName);
       running = false;
       return;
     }
 
-    if (currentlyDisplaying=='record') {
+    if (currentlyDisplaying === 'record') {
       showError('Currently audio is being recorded, please stop recording before playing a sample');
       return;
-    } else if (currentlyDisplaying=='fileupload') {
+    } else if (currentlyDisplaying === 'fileupload' || samplePlaying !== 'false') {
       showError('Currently another file is playing, please stop the file or wait until it finishes');
       return;
     }
 
     localStorage.setItem('currentlyDisplaying', 'sample');
+    localStorage.setItem('samplePlaying', sampleNumber);
     running = true;
 
     $('#resultsText').val('');   // clear hypotheses from previous runs
@@ -104,7 +102,7 @@ var playSample = (function() {
           var parseOptions = {
             file: blob
           };
-          var samplingRate = (currentModel.indexOf('Broadband') != -1) ? 16000 : 8000;
+          var samplingRate = (currentModel.indexOf('Broadband') !== -1) ? 16000 : 8000;
           onFileProgress(parseOptions,
             // On data chunk
             function onData(chunk) {
@@ -133,6 +131,7 @@ var playSample = (function() {
             effects.stopToggleImage(timer, imageTag, iconName);
             effects.restoreImage(imageTag, iconName);
             localStorage.getItem('currentlyDisplaying', 'false');
+            localStorage.setItem('samplePlaying', 'false');
           }
         );
       };
@@ -151,7 +150,7 @@ exports.initPlaySample = function(ctx) {
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function() {
-      playSample(ctx.token, imageTag, iconName, fileName, function(result) {
+      playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
     });
@@ -164,7 +163,7 @@ exports.initPlaySample = function(ctx) {
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function() {
-      playSample(ctx.token, imageTag, iconName, fileName, function(result) {
+      playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, function(result) {
         console.log('Play sample result', result);
       });
     });

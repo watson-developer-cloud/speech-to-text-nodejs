@@ -142,7 +142,7 @@ Microphone.prototype.stop = function() {
   if (!this.recording)
     return;
   this.recording = false;
-  this.stream.stop();
+  this.stream.getTracks()[0].stop();
   this.requestedAccess = false;
   this.mic.disconnect(0);
   this.mic = null;
@@ -224,37 +224,37 @@ Microphone.prototype._exportDataBufferTo16Khz = function(bufferNewSamples) {
 // native way of resampling captured audio
 var resampler = function(sampleRate, audioBuffer, callbackProcessAudio) {
 
-	console.log('length: ' + audioBuffer.length + ' ' + sampleRate);
-	var channels = 1;
-	var targetSampleRate = 16000;
-   var numSamplesTarget = audioBuffer.length * targetSampleRate / sampleRate;
+  console.log('length: ' + audioBuffer.length + ' ' + sampleRate);
+  var channels = 1;
+  var targetSampleRate = 16000;
+  var numSamplesTarget = audioBuffer.length * targetSampleRate / sampleRate;
 
-   var offlineContext = new OfflineAudioContext(channels, numSamplesTarget, targetSampleRate);
-   var bufferSource = offlineContext.createBufferSource();
-   bufferSource.buffer = audioBuffer;
+  var offlineContext = new OfflineAudioContext(channels, numSamplesTarget, targetSampleRate);
+  var bufferSource = offlineContext.createBufferSource();
+  bufferSource.buffer = audioBuffer;
 
-	// callback that is called when the resampling finishes
-   offlineContext.oncomplete = function(event) {
-      var samplesTarget = event.renderedBuffer.getChannelData(0);
-      console.log('Done resampling: ' + samplesTarget.length + ' samples produced');
+  // callback that is called when the resampling finishes
+  offlineContext.oncomplete = function(event) {
+    var samplesTarget = event.renderedBuffer.getChannelData(0);
+    console.log('Done resampling: ' + samplesTarget.length + ' samples produced');
 
-		// convert from [-1,1] range of floating point numbers to [-32767,32767] range of integers
-		var index = 0;
-		var volume = 0x7FFF;
-  		var pcmEncodedBuffer = new ArrayBuffer(samplesTarget.length*2);    // short integer to byte
-  		var dataView = new DataView(pcmEncodedBuffer);
-      for (var i = 0; i < samplesTarget.length; i++) {
-    		dataView.setInt16(index, samplesTarget[i]*volume, true);
-    		index += 2;
-  		}
+  // convert from [-1,1] range of floating point numbers to [-32767,32767] range of integers
+  var index = 0;
+  var volume = 0x7FFF;
+    var pcmEncodedBuffer = new ArrayBuffer(samplesTarget.length*2);    // short integer to byte
+    var dataView = new DataView(pcmEncodedBuffer);
+    for (var i = 0; i < samplesTarget.length; i++) {
+      dataView.setInt16(index, samplesTarget[i]*volume, true);
+      index += 2;
+    }
 
-      // l16 is the MIME type for 16-bit PCM
-      callbackProcessAudio(new Blob([dataView], { type: 'audio/l16' }));
-   };
+    // l16 is the MIME type for 16-bit PCM
+    callbackProcessAudio(new Blob([dataView], { type: 'audio/l16' }));
+  };
 
-   bufferSource.connect(offlineContext.destination);
-   bufferSource.start(0);
-   offlineContext.startRendering();
+  bufferSource.connect(offlineContext.destination);
+  bufferSource.start(0);
+  offlineContext.startRendering();
 };
 
 
