@@ -22,6 +22,9 @@ exports.initSelectModel = function(ctx) {
 
 
   ctx.models.forEach(function(model) {
+    if(model.name.indexOf('JP')>-1) {
+        return;
+    }
     $('#dropdownMenuList').append(
       $('<li>')
         .attr('role', 'presentation')
@@ -29,10 +32,10 @@ exports.initSelectModel = function(ctx) {
           $('<a>').attr('role', 'menu-item')
             .attr('href', '/')
             .attr('data-model', model.name)
-            .append(model.description)
+            .append(model.description.substring(0, model.description.length - 1), model.rate==8000?' (8KHz)':' (16KHz)'))
           )
-      );
   });
+
 
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
