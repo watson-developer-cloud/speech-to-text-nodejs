@@ -36,7 +36,6 @@ exports.initSelectModel = function(ctx) {
           )
   });
 
-
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
     evt.stopPropagation();
