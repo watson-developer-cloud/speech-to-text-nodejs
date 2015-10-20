@@ -16,7 +16,6 @@
 'use strict';
 
 var initSessionPermissions = require('./sessionpermissions').initSessionPermissions;
-var initSelectModel = require('./selectmodel').initSelectModel;
 var initAnimatePanel = require('./animatepanel').initAnimatePanel;
 var initShowTab = require('./showtab').initShowTab;
 var initDragDrop = require('./dragdrop').initDragDrop;
@@ -28,7 +27,6 @@ var initDisplayMetadata = require('./displaymetadata').initDisplayMetadata;
 
 exports.initViews = function(ctx) {
   console.log('Initializing views...');
-  initSelectModel(ctx);
   initPlaySample(ctx);
   initDragDrop(ctx);
   initRecordButton(ctx);

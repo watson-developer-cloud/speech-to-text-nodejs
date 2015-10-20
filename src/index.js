@@ -23,6 +23,7 @@ utils.initPubSub();
 var initViews = require('./views').initViews;
 var showerror = require('./views/showerror');
 var showError = showerror.showError;
+var getModels = require('./models').getModels;
 
 window.BUFFERSIZE = 8192;
 
@@ -60,8 +61,9 @@ $(document).ready(function() {
     // Set default current model
     localStorage.setItem('currentModel', 'en-US_BroadbandModel');
     localStorage.setItem('sessionPermissions', 'true');
-
-
+    
+    getModels(token);
+    
     $.subscribe('clearscreen', function() {
       $('#resultsText').text('');
       $('#resultsJSON').text('');
