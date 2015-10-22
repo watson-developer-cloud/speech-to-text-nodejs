@@ -7,12 +7,11 @@
     "cookie-parser": "^1.4.0",
     "csurf": "^1.8.3",
     "ejs": "^2.3.4",
-    "errorhandler": "~1.4.2",
     "express": "~4.13.3",
     "express-rate-limit": "^2.0.2",
     "express-secure-only": "^0.2.1",
+    "helmet": "^0.12.0",
     "morgan": "^1.6.1",
-    "serve-favicon": "^2.3.0",
     "vcap_services": "^0.1.7",
     "watson-developer-cloud": "^0.10.6"
   },
