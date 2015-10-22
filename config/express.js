@@ -18,41 +18,18 @@
 
 // Module dependencies
 var express    = require('express'),
-  favicon      = require('serve-favicon'),
-  errorhandler = require('errorhandler'),
-  bodyParser   = require('body-parser'),
-  csrf         = require('csurf'),
-  cookieParser = require('cookie-parser');
+  bodyParser   = require('body-parser');
 
 module.exports = function (app) {
   app.set('view engine', 'ejs');
   app.enable('trust proxy');
 
-  // use only https
-  var env = process.env.NODE_ENV || 'development';
-  if ('production' === env) {
-    app.use(errorhandler());
-  }
+  // Only loaded when SECURE_EXPRESS is `true`
+  if (process.env.SECURE_EXPRESS)
+    require('./security')(app);
 
   // Configure Express
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
-
-  // Setup static public directory
+  app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
+  app.use(bodyParser.json({ limit: '1mb' }));
   app.use(express.static(__dirname + '/../public'));
-  app.use(favicon(__dirname + '/../public/images/favicon.ico'));
-
-  // cookies
-  var secret = Math.random().toString(36).substring(7);
-  app.use(cookieParser(secret));
-
-  // csrf
-  var csrfProtection = csrf({ cookie: true });
-  app.get('/', csrfProtection, function(req, res) {
-    res.render('index', { ct: req.csrfToken() });
-  });
-
-  // apply to all requests that begin with /api/
-  // csfr token
-  app.use('/api/', csrfProtection);
 };

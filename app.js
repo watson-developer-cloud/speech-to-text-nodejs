@@ -35,6 +35,10 @@ var config = extend({
 
 var authService = watson.authorization(config);
 
+app.get('/', function(req, res) {
+  res.render('index', { ct: req._csrfToken });
+});
+
 // Get token using your credentials
 app.post('/api/token', function(req, res, next) {
   authService.getToken({url: config.url}, function(err, token) {
