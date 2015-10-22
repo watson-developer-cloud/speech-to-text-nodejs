@@ -176,7 +176,7 @@ exports.showResult = function(msg, baseString, model) {
        // Only show alternatives if we're final
        alternativePrototype.showAlternatives(alternatives);
     } else {
-      text = text.replace(/ /g,'');      // remove whitespaces
+      //text = text.replace(/ /g,'');      // remove whitespaces
       text = text.charAt(0).toUpperCase() + text.substring(1);
       $('#resultsText').val(baseString + text);
     }
