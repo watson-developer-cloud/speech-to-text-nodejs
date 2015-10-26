@@ -45,9 +45,9 @@ exports.getModels = function(token) {
     viewContext.models = response.models;
     selectModel(viewContext);
   };
-  sttRequest.send();
   sttRequest.onerror = function() {
     viewContext.models = require('./data/models.json').models;
     selectModel(viewContext);
   };
+  sttRequest.send();
 };
