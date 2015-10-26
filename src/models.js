@@ -16,6 +16,12 @@
 'use strict';
 
 exports.getModels = function(token) {
+  var viewContext = {
+    currentModel: 'en-US_BroadbandModel',
+    models: null,
+    token: token,
+    bufferSize: BUFFERSIZE
+  };
   var modelUrl = 'https://stream.watsonplatform.net/speech-to-text/api/v1/models';
   var sttRequest = new XMLHttpRequest();
   sttRequest.open('GET', modelUrl, true);
@@ -35,13 +41,12 @@ exports.getModels = function(token) {
     });
     response.models=sorted;
     localStorage.setItem('models', JSON.stringify(response.models));
-    var viewContext1 = {
-      currentModel: 'en-US_BroadbandModel',
-      models: response.models,
-      token: token,
-      bufferSize: BUFFERSIZE
-    };
-    require('./views/selectmodel').initSelectModel(viewContext1);
+    viewContext.models = response.models;
+    require('./views/selectmodel').initSelectModel(viewContext);
   };
   sttRequest.send();
+  sttRequest.onerror = function() {
+    viewContext.models = require('./data/models.json').models;
+    require('./views/selectmodel').initSelectModel(viewContext);
+  };
 };
