@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 'use strict';
+var selectModel = require('./views/selectmodel').initSelectModel;
 
 exports.getModels = function(token) {
   var viewContext = {
@@ -42,11 +43,11 @@ exports.getModels = function(token) {
     response.models=sorted;
     localStorage.setItem('models', JSON.stringify(response.models));
     viewContext.models = response.models;
-    require('./views/selectmodel').initSelectModel(viewContext);
+    selectModel(viewContext);
   };
   sttRequest.send();
   sttRequest.onerror = function() {
     viewContext.models = require('./data/models.json').models;
-    require('./views/selectmodel').initSelectModel(viewContext);
+    selectModel(viewContext);
   };
 };
