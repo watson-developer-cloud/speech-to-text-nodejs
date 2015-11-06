@@ -12,3 +12,4 @@ applications:
   - speech-to-text-service-standard
   env:
     NODE_ENV: production
+    SECURE_EXPRESS: 1
