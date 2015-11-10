@@ -22,15 +22,10 @@ var secure     = require('express-secure-only'),
   csrf         = require('csurf'),
   cookieParser = require('cookie-parser'),
   helmet       = require('helmet'),
-  morgan       = require('morgan'),
   fs           = require('fs');
 
 module.exports = function (app) {
   app.enable('trust proxy');
-
-  // 0. setup the logger
-  var logStream = fs.createWriteStream(__dirname + '/../logs/access.log', {flags: 'a'});
-  app.use('/api/', morgan('combined', {stream: logStream}));
 
   // 1. redirects http to https
   app.use(secure());
