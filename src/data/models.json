@@ -5,56 +5,56 @@
          "rate": 16000,
          "name": "en-US_BroadbandModel",
          "language": "en-US",
-         "description": "US English broadband model (16KHz)"
+         "description": "US English broadband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel",
          "rate": 8000,
          "name": "en-US_NarrowbandModel",
          "language": "en-US",
-         "description": "US English narrowband model (8KHz)"
+         "description": "US English narrowband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_BroadbandModel",
          "rate": 16000,
          "name": "es-ES_BroadbandModel",
          "language": "es-ES",
-         "description": "Spanish broadband model (16KHz)"
+         "description": "Spanish broadband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_NarrowbandModel",
          "rate": 8000,
          "name": "es-ES_NarrowbandModel",
          "language": "es-ES",
-         "description": "Spanish narrowband model (8KHz)"
+         "description": "Spanish narrowband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel",
          "rate": 16000,
          "name": "pt-BR_BroadbandModel",
          "language": "pt-BR",
-         "description": "Brazilian Portuguese broadband model (16KHz)"
+         "description": "Brazilian Portuguese broadband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel",
          "rate": 8000,
          "name": "pt-BR_NarrowbandModel",
          "language": "pt-BR",
-         "description": "Brazilian Portuguese narrowband model (8KHz)"
+         "description": "Brazilian Portuguese narrowband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_BroadbandModel",
          "rate": 16000,
          "name": "zh-CN_BroadbandModel",
          "language": "zh-CN",
-         "description": "Mandarin broadband model (16KHz)"
+         "description": "Mandarin broadband model."
       },
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_NarrowbandModel",
          "rate": 8000,
          "name": "zh-CN_NarrowbandModel",
          "language": "zh-CN",
-         "description": "Mandarin narrowband model (8KHz)"
+         "description": "Mandarin narrowband model."
       }
    ]
 }
