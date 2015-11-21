@@ -17,13 +17,14 @@
 'use strict';
 
 var utils = require('./utils');
+var showError = require('./views/showerror').showError;
+
 /**
  * Captures microphone input from the browser.
  * Works at least on latest versions of Firefox and Chrome
  */
 function Microphone(_options) {
   var options = _options || {};
-  var showError = require('./views/showerror').showError;
 
   // we record in mono because the speech recognition service
   // does not support stereo.
