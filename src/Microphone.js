@@ -17,6 +17,7 @@
 'use strict';
 
 var utils = require('./utils');
+var showError = require('./views/showerror').showError;
 /**
  * Captures microphone input from the browser.
  * Works at least on latest versions of Firefox and Chrome
@@ -38,7 +39,7 @@ function Microphone(_options) {
   // Chrome or Firefox or IE User media
   if (!navigator.getUserMedia) {
     navigator.getUserMedia = navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    /*navigator.mozGetUserMedia ||*/ navigator.msGetUserMedia;
   }
 
 }
@@ -55,6 +56,9 @@ Microphone.prototype.onPermissionRejected = function() {
 
 Microphone.prototype.onError = function(error) {
   console.log('Microphone.onError():', error);
+  if(error==="Browser doesn't support microphone input") {
+    showError('The record audio functionality is currently supported  on Google Chrome only.');
+  }
 };
 
 /**
