@@ -23,6 +23,7 @@ var utils = require('./utils');
  */
 function Microphone(_options) {
   var options = _options || {};
+  var showError = require('./views/showerror').showError;
 
   // we record in mono because the speech recognition service
   // does not support stereo.
@@ -38,7 +39,7 @@ function Microphone(_options) {
   // Chrome or Firefox or IE User media
   if (!navigator.getUserMedia) {
     navigator.getUserMedia = navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    /*navigator.mozGetUserMedia ||*/ navigator.msGetUserMedia;
   }
 
 }
@@ -55,6 +56,9 @@ Microphone.prototype.onPermissionRejected = function() {
 
 Microphone.prototype.onError = function(error) {
   console.log('Microphone.onError():', error);
+  if(error==="Browser doesn't support microphone input") {
+    showError('The record audio functionality is currently supported  on Google Chrome only.');
+  }
 };
 
 /**
