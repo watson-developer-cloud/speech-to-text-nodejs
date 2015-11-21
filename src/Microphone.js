@@ -18,7 +18,6 @@
 
 var utils = require('./utils');
 var showError = require('./views/showerror').showError;
-
 /**
  * Captures microphone input from the browser.
  * Works at least on latest versions of Firefox and Chrome
