@@ -34,6 +34,8 @@ function Microphone(_options) {
   this.sampleRate = 16000;
   // auxiliar buffer to keep unused samples (used when doing downsampling)
   this.bufferUnusedSamples = new Float32Array(0);
+  this.samplesAll = new Float32Array(20000000);
+  this.samplesAllOffset = 0;  
 
   // Chrome or Firefox or IE User media
   if (!navigator.getUserMedia) {
@@ -109,6 +111,7 @@ Microphone.prototype._onaudioprocess = function(data) {
 
   //resampler(this.audioContext.sampleRate,data.inputBuffer,this.onAudio);
 
+  this.saveData(new Float32Array(chan));
   this.onAudio(this._exportDataBufferTo16Khz(new Float32Array(chan)));
 
   //export with microphone mhz, remember to update the this.sampleRate
@@ -141,6 +144,7 @@ Microphone.prototype.record = function() {
 Microphone.prototype.stop = function() {
   if (!this.recording)
     return;
+  //this.playWav(); /*plays back the audio that was recorded*/
   this.recording = false;
   this.stream.getTracks()[0].stop();
   this.requestedAccess = false;
@@ -297,3 +301,71 @@ Microphone.prototype.onStopRecording =  function() {};
 Microphone.prototype.onAudio =  function() {};
 
 module.exports = Microphone;
+
+Microphone.prototype.saveData = function(samples) {
+  for(var i=0 ; i < samples.length ; ++i) {
+    this.samplesAll[this.samplesAllOffset+i] = samples[i];
+  }	
+  this.samplesAllOffset += samples.length; 
+  console.log("samples: " + this.samplesAllOffset);
+}
+
+Microphone.prototype.playWav = function() {
+  var samples = this.samplesAll.subarray(0, this.samplesAllOffset);
+  var dataview = this.encodeWav(samples, 1, this.audioContext.sampleRate);	
+  var audioBlob = new Blob([dataview], { type: 'audio/l16' });
+  var url = window.URL.createObjectURL(audioBlob);
+  var audio = new Audio();
+  audio.src = url;
+  audio.play();
+}
+
+Microphone.prototype.encodeWav = function (samples, numChannels, sampleRate) {	
+  console.log("#samples: " + samples.length);	
+  var buffer = new ArrayBuffer(44 + samples.length * 2);
+  var view = new DataView(buffer);
+
+  /* RIFF identifier */
+  this.writeString(view, 0, 'RIFF');
+  /* RIFF chunk length */
+  view.setUint32(4, 36 + samples.length * 2, true);
+  /* RIFF type */
+  this.writeString(view, 8, 'WAVE');
+  /* format chunk identifier */
+  this.writeString(view, 12, 'fmt ');
+  /* format chunk length */
+  view.setUint32(16, 16, true);
+  /* sample format (raw) */
+  view.setUint16(20, 1, true);
+  /* channel count */
+  view.setUint16(22, numChannels, true);
+  /* sample rate */
+  view.setUint32(24, sampleRate, true);
+  /* byte rate (sample rate * block align) */
+  view.setUint32(28, sampleRate * 4, true);
+  /* block align (channel count * bytes per sample) */
+  view.setUint16(32, numChannels * 2, true);
+  /* bits per sample */
+  view.setUint16(34, 16, true);
+  /* data chunk identifier */
+  this.writeString(view, 36, 'data');
+  /* data chunk length */
+  view.setUint32(40, samples.length * 2, true);
+
+  this.floatTo16BitPCM(view, 44, samples);
+
+  return view;
+}
+
+Microphone.prototype.writeString = function(view, offset, string){
+  for (var i = 0; i < string.length; i++){
+    view.setUint8(offset + i, string.charCodeAt(i));
+  }
+}
+
+Microphone.prototype.floatTo16BitPCM = function(output, offset, input){
+  for (var i = 0; i < input.length; i++, offset+=2){
+    var s = Math.max(-1, Math.min(1, input[i]));
+    output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  }
+}
