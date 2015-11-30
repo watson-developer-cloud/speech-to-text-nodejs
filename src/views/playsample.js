@@ -124,8 +124,8 @@ var playSample = (function() {
             // On load end
             function() {
               socket.send(JSON.stringify({'action': 'stop'}));
-            },
-            samplingRate
+            }/*,
+            samplingRate*/
             );
         },
         // On connection end
