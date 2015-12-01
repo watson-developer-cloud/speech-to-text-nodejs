@@ -144,7 +144,8 @@ Microphone.prototype.record = function() {
 Microphone.prototype.stop = function() {
   if (!this.recording)
     return;
-  //this.playWav(); /*plays back the audio that was recorded*/
+  if(JSON.parse(localStorage.getItem('playback')))
+    this.playWav(); /*plays back the audio that was recorded*/
   this.recording = false;
   this.stream.getTracks()[0].stop();
   this.requestedAccess = false;

@@ -119,8 +119,8 @@ To troubleshoot your Bluemix app the main useful source of information are the l
   $ cf logs <application-name> --recent
   ```
 
-For problems with recording audio, it might be a good idea to play back the audio you just recorded.
-To do that, uncomment the call for the playWav function in Microphone.prototype.stop, in the Microphone.js file.
+For problems with recording audio, you can play back the audio you just recorded for debugging purposes.
+To do that, add '?debug=true' (without the quotations) in the URL.
 
 ## License
 
