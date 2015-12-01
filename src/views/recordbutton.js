@@ -36,6 +36,10 @@ exports.initRecordButton = function(ctx) {
     return function(evt) {
       // Prevent default anchor behavior
       evt.preventDefault();
+        
+      if(JSON.parse(localStorage.getItem('recordButton'))) {
+         return;
+        }
 
       var currentModel = localStorage.getItem('currentModel');
       var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
