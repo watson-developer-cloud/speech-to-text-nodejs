@@ -17,6 +17,7 @@
 'use strict';
 
 var utils = require('./utils');
+var showError = require('./views/showerror').showError;
 /**
  * Captures microphone input from the browser.
  * Works at least on latest versions of Firefox and Chrome
@@ -151,6 +152,10 @@ Microphone.prototype.stop = function() {
   this.requestedAccess = false;
   this.mic.disconnect(0);
   this.mic = null;
+  if(typeof InstallTrigger !== 'undefined') {
+    showError("For the best recognition results, please reload the page if you want to record again.");
+    localStorage.setItem('recordButton', 'true');
+  }
   this.onStopRecording();
 };
 
