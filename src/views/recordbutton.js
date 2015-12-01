@@ -38,7 +38,8 @@ exports.initRecordButton = function(ctx) {
       evt.preventDefault();
         
       if(JSON.parse(localStorage.getItem('recordButton'))) {
-         return;
+          showError("For the best recognition results, please reload the page if you want to record again.");
+          return;
         }
 
       var currentModel = localStorage.getItem('currentModel');
