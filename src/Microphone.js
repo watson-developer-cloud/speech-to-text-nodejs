@@ -151,6 +151,9 @@ Microphone.prototype.stop = function() {
   this.requestedAccess = false;
   this.mic.disconnect(0);
   this.mic = null;
+  if(typeof InstallTrigger !== 'undefined') {
+    localStorage.setItem('recordButton', 'true');
+  }
   this.onStopRecording();
 };
 

@@ -72,6 +72,7 @@ $(document).ready(function() {
     // Set default current model
     localStorage.setItem('currentModel', 'en-US_BroadbandModel');
     localStorage.setItem('sessionPermissions', 'true');
+    localStorage.setItem('recordButton', 'false');
     
     getModels(token);
     
