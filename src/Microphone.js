@@ -78,8 +78,10 @@ Microphone.prototype.onMediaStream =  function(stream) {
 
   audioInput.connect(gain);
 
+  if(!this.mic) {
   this.mic = this.audioContext.createScriptProcessor(this.bufferSize,
     this.inputChannels, this.outputChannels);
+  }
 
   // uncomment the following line if you want to use your microphone sample rate
   //this.sampleRate = this.audioContext.sampleRate;
@@ -150,10 +152,6 @@ Microphone.prototype.stop = function() {
   this.stream.getTracks()[0].stop();
   this.requestedAccess = false;
   this.mic.disconnect(0);
-  this.mic = null;
-  if(typeof InstallTrigger !== 'undefined') {
-    localStorage.setItem('recordButton', 'true');
-  }
   this.onStopRecording();
 };
 
