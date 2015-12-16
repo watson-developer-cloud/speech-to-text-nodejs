@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
   "dependencies": {
-    "body-parser": "~1.14.1",
+    "body-parser": "~1.14.2",
     "cookie-parser": "^1.4.0",
     "csurf": "^1.8.3",
     "ejs": "^2.3.4",
