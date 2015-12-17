@@ -24,6 +24,9 @@ var effects = require('./effects');
 
 
 var LOOKUP_TABLE = {
+  'ar-AR_BroadbandModel': ['ar-AR_Broadband_sample1.wav', 'ar-AR_Broadband_sample2.wav'],
+  'en-UK_BroadbandModel': ['en-UK_Broadband_sample1.wav', 'en-UK_Broadband_sample2.wav'],
+  'en-UK_NarrowbandModel': ['en-UK_Narrowband_sample1.wav', 'en-UK_Narrowband_sample2.wav'],
   'en-US_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav'],
   'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav'],
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav'],
