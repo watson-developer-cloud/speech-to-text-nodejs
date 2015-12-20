@@ -164,20 +164,30 @@ exports.showResult = function(msg, baseString, model) {
     	 return baseString;
     }
 
+    var japanese =  ((model.substring(0,5) === 'ja-JP') || (model.substring(0,5) === 'zh-CN'));
+
     // capitalize first word
     // if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
        text = text.slice(0, -1);
        text = text.charAt(0).toUpperCase() + text.substring(1);
-        text = text.trim() + '. ';
+       if (japanese) {
+         text = text.trim() + '。';
+         text = text.replace(/ /g,'');
+       } else {
+           text = text.trim() + '. ';
+       }
        baseString += text;
        $('#resultsText').val(baseString);
        showMetaData(alternatives[0]);
        // Only show alternatives if we're final
        alternativePrototype.showAlternatives(alternatives);
     } else {
-      //text = text.replace(/ /g,'');      // remove whitespaces
-      text = text.charAt(0).toUpperCase() + text.substring(1);
+      if(japanese) {
+        text = text.replace(/ /g,'');      // remove whitespaces
+      } else {
+          text = text.charAt(0).toUpperCase() + text.substring(1);
+      }
       $('#resultsText').val(baseString + text);
     }
   }

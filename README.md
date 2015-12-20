@@ -119,6 +119,9 @@ To troubleshoot your Bluemix app the main useful source of information are the l
   $ cf logs <application-name> --recent
   ```
 
+For problems with recording audio, you can play back the audio you just recorded for debugging purposes.
+To do that, add '?debug=true' (without the quotations) in the URL.
+
 ## License
 
   This sample code is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE).

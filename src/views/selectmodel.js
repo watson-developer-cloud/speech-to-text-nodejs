@@ -22,9 +22,6 @@ exports.initSelectModel = function(ctx) {
 
 
   ctx.models.forEach(function(model) {
-    if(model.name.indexOf('JP')>-1) {
-        return;
-    }
     $('#dropdownMenuList').append(
       $('<li>')
         .attr('role', 'presentation')
