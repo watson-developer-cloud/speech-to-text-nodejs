@@ -55,7 +55,7 @@
     "watch": "watchify -v -d -o public/js/index.js src/index.js"
   },
   "devDependencies": {
-    "browserify": "^12.0.1",
+    "browserify": "^12.0.2",
     "browserify-shim": "^3.8.11",
     "watchify": "^3.6.1",
     "uglifyjs": "^2.4.10"
