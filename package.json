@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "browserify": "^12.0.1",
-    "browserify-shim": "^3.8.11",
+    "browserify-shim": "^3.8.12",
     "watchify": "^3.6.1",
     "uglifyjs": "^2.4.10"
   }
