@@ -7,7 +7,7 @@
     "cookie-parser": "^1.4.1",
     "csurf": "^1.8.3",
     "ejs": "^2.3.4",
-    "express": "~4.13.3",
+    "express": "~4.13.4",
     "express-rate-limit": "^2.0.2",
     "express-secure-only": "^0.2.1",
     "helmet": "^1.0.1",
