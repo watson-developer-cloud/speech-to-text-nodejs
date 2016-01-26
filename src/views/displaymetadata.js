@@ -203,3 +203,15 @@ $.subscribe('clearscreen', function() {
   $hypotheses.empty();
   alternativePrototype.clearString();
 });
+
+
+exports.renderStream = function(stream, model) {
+    var display = exports;
+    var baseString = '';
+    var baseJSON = '';
+    stream.on('results', function(results) {
+        var msg = {results: results};
+        display.showResult(msg, baseString, model);
+        display.showJSON(msg, baseJSON);
+    });
+};

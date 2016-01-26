@@ -18,9 +18,10 @@
 var watson = require('watson-speech');
 var showError = require('./showerror').showError;
 var showNotice = require('./showerror').showNotice;
-var handleFileUpload = require('../handlefileupload').handleFileUpload;
+//var handleFileUpload = require('../handlefileupload').handleFileUpload;
 var effects = require('./effects');
-var utils = require('../utils');
+//var utils = require('../utils');
+var display = require('./displaymetadata');
 
 // Need to remove the view logic here and move this out to the handlefileupload controller
 var handleSelectedFile = exports.handleSelectedFile = (function() {
@@ -61,14 +62,15 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     var stream = watson.stream({
         token: token,
         file: fileInput,
-        playFile: true
+        playFile: true,
+        model: currentModel
     });
 
     stream.on('playback-error', function(err) {
-        if (err.message.indexOf('flac') {
+        if (err.message.indexOf('flac') >-1) {
             showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
         } else {
-            console.log('playback-error', err)l
+            console.log('playback-error', err);
         }
     });
 
@@ -89,6 +91,8 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         showError('Error: ' + evt.message);
         onEnd();
     });
+
+    display.renderStream(stream, currentModel);
 
         // todo: catch unsupported media type  and run this:
         //restoreUploadTab();

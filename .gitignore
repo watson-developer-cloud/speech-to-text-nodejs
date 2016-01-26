@@ -3,3 +3,4 @@ uploads/
 .DS_Store
 logs/
 .env
+*.log
