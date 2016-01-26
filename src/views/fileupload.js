@@ -15,7 +15,7 @@
  */
 /* global $ */
 'use strict';
-
+var watson = require('watson-speech');
 var showError = require('./showerror').showError;
 var showNotice = require('./showerror').showNotice;
 var handleFileUpload = require('../handlefileupload').handleFileUpload;
@@ -28,7 +28,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     var running = false;
     localStorage.setItem('currentlyDisplaying', 'false');
 
-    return function(token, file) {
+    return function(token, fileInput) {
 
     $.publish('clearscreen');
 
@@ -58,76 +58,111 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     var currentModel = localStorage.getItem('currentModel');
     console.log('currentModel', currentModel);
 
-    // Read first 4 bytes to determine header
-    var blobToText = new Blob([file]).slice(0, 4);
-    var r = new FileReader();
-    r.readAsText(blobToText);
-    r.onload = function() {
-      var contentType;
-      if (r.result === 'fLaC') {
-        contentType = 'audio/flac';
-        showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
-      } else if (r.result === 'RIFF') {
-        contentType = 'audio/wav';
-        var audio = new Audio();
-        var wavBlob = new Blob([file], {type: 'audio/wav'});
-        var wavURL = URL.createObjectURL(wavBlob);
-        audio.src = wavURL;
-        audio.play();
-        $.subscribe('hardsocketstop', function() {
-          audio.pause();
-          audio.currentTime = 0;
-        });
-      } else if (r.result === 'OggS') {
-        contentType = 'audio/ogg; codecs=opus';
-        var audio = new Audio();
-        var opusBlob = new Blob([file], {type: 'audio/ogg; codecs=opus'});
-        var opusURL = URL.createObjectURL(opusBlob);
-        audio.src=opusURL;
-        audio.play();
-        $.subscribe('hardsocketstop', function() {
-            audio.pause();
-            audio.currentTime = 0;
-        });
-      } else {
-        restoreUploadTab();
-        showError('Only WAV or FLAC or Opus files can be transcribed, please try another file format');
-        localStorage.setItem('currentlyDisplaying', 'false');
-        return;
-      }
-      handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
-        var blob = new Blob([file]);
-        var parseOptions = {
-          file: blob
-        };
-        utils.onFileProgress(parseOptions,
-          // On data chunk
-          function onData(chunk) {
-            socket.send(chunk);
-          },
-          function isRunning() {
-            if(running)
-                return true;
-            else
-                return false;
-          },
-          // On file read error
-          function(evt) {
-            console.log('Error reading file: ', evt.message);
-            showError('Error: ' + evt.message);
-          },
-          // On load end
-          function() {
-            socket.send(JSON.stringify({'action': 'stop'}));
-          });
-      },
-        function() {
-          effects.stopToggleImage(timer, uploadImageTag, 'upload');
-          uploadText.text('Select File');
-          localStorage.setItem('currentlyDisplaying', 'false');
+    var stream = watson.stream({
+        token: token,
+        file: fileInput,
+        playFile: true
+    });
+
+    stream.on('playback-error', function(err) {
+        if (err.message.indexOf('flac') {
+            showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
+        } else {
+            console.log('playback-error', err)l
         }
-      );
-    };
+    });
+
+        function onEnd() {
+            effects.stopToggleImage(timer, uploadImageTag, 'upload');
+            uploadText.text('Select File');
+            localStorage.setItem('currentlyDisplaying', 'false');
+        }
+
+    stream.on('close', function() {
+        $.publish('hardsocketstop');
+        onEnd();
+    });
+
+    stream.on('error', function(err) {
+        $.publish('hardsocketstop');
+        console.log('error', err);
+        showError('Error: ' + evt.message);
+        onEnd();
+    });
+
+        // todo: catch unsupported media type  and run this:
+        //restoreUploadTab();
+        //showError('Only WAV or FLAC or Opus files can be transcribed, please try another file format');
+        //localStorage.setItem('currentlyDisplaying', 'false');
+        //return;
+
+    // Read first 4 bytes to determine header
+    //var blobToText = new Blob([file]).slice(0, 4);
+    //var r = new FileReader();
+    //r.readAsText(blobToText);
+    //r.onload = function() {
+    //  var contentType;
+    //  if (r.result === 'fLaC') {
+    //    contentType = 'audio/flac';
+    //    showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
+    //  } else if (r.result === 'RIFF') {
+    //    contentType = 'audio/wav';
+    //    var audio = new Audio();
+    //    var wavBlob = new Blob([file], {type: 'audio/wav'});
+    //    var wavURL = URL.createObjectURL(wavBlob);
+    //    audio.src = wavURL;
+    //    audio.play();
+    //    $.subscribe('hardsocketstop', function() {
+    //      audio.pause();
+    //      audio.currentTime = 0;
+    //    });
+    //  } else if (r.result === 'OggS') {
+    //    contentType = 'audio/ogg; codecs=opus';
+    //    var audio = new Audio();
+    //    var opusBlob = new Blob([file], {type: 'audio/ogg; codecs=opus'});
+    //    var opusURL = URL.createObjectURL(opusBlob);
+    //    audio.src=opusURL;
+    //    audio.play();
+    //    $.subscribe('hardsocketstop', function() {
+    //        audio.pause();
+    //        audio.currentTime = 0;
+    //    });
+    //  } else {
+    //
+    //  }
+    //  handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
+    //    var blob = new Blob([file]);
+    //    var parseOptions = {
+    //      file: blob
+    //    };
+    //    utils.onFileProgress(parseOptions,
+    //      // On data chunk
+    //      function onData(chunk) {
+    //        socket.send(chunk);
+    //      },
+    //      function isRunning() {
+    //        if(running)
+    //            return true;
+    //        else
+    //            return false;
+    //      },
+    //      // On file read error
+    //      function(evt) {
+    //        console.log('Error reading file: ', evt.message);
+    //        showError('Error: ' + evt.message);
+    //      },
+    //      // On load end
+    //      function() {
+    //        socket.send(JSON.stringify({'action': 'stop'}));
+    //      });
+    //  },
+    //    function() {
+    //      effects.stopToggleImage(timer, uploadImageTag, 'upload');
+    //      uploadText.text('Select File');
+    //      localStorage.setItem('currentlyDisplaying', 'false');
+    //    }
+    //  );
+    //};
   };
 })();
 
@@ -137,8 +172,8 @@ exports.initFileUpload = function(ctx) {
   var fileUploadDialog = $('#fileUploadDialog');
 
   fileUploadDialog.change(function() {
-    var file = fileUploadDialog.get(0).files[0];
-    handleSelectedFile(ctx.token, file);
+    var fileInput = fileUploadDialog.get(0);
+    handleSelectedFile(ctx.token, fileInput);
   });
 
   $('#fileUploadTarget').click(function() {
