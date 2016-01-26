@@ -30,11 +30,6 @@ exports.initRecordButton = function(ctx) {
 
 
     var running = false;
-    //var token = ctx.token;
-    //var micOptions = {
-    //  bufferSize: ctx.buffersize
-    //};
-    //var mic = new Microphone(micOptions);
 
     var stream;
 
@@ -55,17 +50,7 @@ exports.initRecordButton = function(ctx) {
       if (!running) {
         $('#resultsText').val('');   // clear hypotheses from previous runs
         console.log('Not running, handleMicrophone()');
-        //handleMicrophone(token, currentModel, mic, function(err) {
-        //  if (err) {
-        //    var msg = 'Error: ' + err.message;
-        //    console.log(msg);
-        //    showError(msg);
-        //    running = false;
-        //    localStorage.setItem('currentlyDisplaying', 'false');
-        //  } else {
-        //
-        //  }
-        //});
+
         stream = watson.stream({
           token: ctx.token,
           // bufferSize: ctx.buffersize // Mozilla docs recommend against specifying this
