@@ -211,7 +211,7 @@ exports.renderStream = function(stream, model) {
     var baseJSON = '';
     stream.on('results', function(results) {
         var msg = {results: results};
-        display.showResult(msg, baseString, model);
-        display.showJSON(msg, baseJSON);
+        baseString = display.showResult(msg, baseString, model);
+        baseJSON = display.showJSON(msg, baseJSON);
     });
 };

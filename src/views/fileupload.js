@@ -67,11 +67,15 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     });
 
     stream.on('playback-error', function(err) {
-        if (err.message.indexOf('flac') >-1) {
+        if (err.name == 'UNSUPPORTED_FORMAT' && err.contentType.indexOf('flac') > -1) {
             showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
         } else {
-            console.log('playback-error', err);
+            restoreUploadTab();
+            showError('Only WAV or FLAC or Opus files can be transcribed, please try another file format');
+            localStorage.setItem('currentlyDisplaying', 'false');
+            stream.stop();
         }
+        console.log('playback-error', err);
     });
 
         function onEnd() {
@@ -80,25 +84,21 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
             localStorage.setItem('currentlyDisplaying', 'false');
         }
 
-    stream.on('close', function() {
+    stream.on('close', function handleClose() {
         $.publish('hardsocketstop');
         onEnd();
     });
 
-    stream.on('error', function(err) {
+    stream.on('error', function handleError(err) {
         $.publish('hardsocketstop');
         console.log('error', err);
-        showError('Error: ' + evt.message);
+        showError('Error: ' + err.message);
         onEnd();
     });
 
     display.renderStream(stream, currentModel);
 
-        // todo: catch unsupported media type  and run this:
-        //restoreUploadTab();
-        //showError('Only WAV or FLAC or Opus files can be transcribed, please try another file format');
-        //localStorage.setItem('currentlyDisplaying', 'false');
-        //return;
+
   };
 })();
 
