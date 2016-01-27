@@ -15,6 +15,7 @@
  */
 /* global $ */
 'use strict';
+
 var watson = require('watson-speech');
 var showError = require('./showerror').showError;
 var showNotice = require('./showerror').showNotice;
@@ -29,7 +30,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     var running = false;
     localStorage.setItem('currentlyDisplaying', 'false');
 
-    return function(token, fileInput) {
+    return function(token, file) {
 
     $.publish('clearscreen');
 
@@ -61,7 +62,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
 
     var stream = watson.stream({
         token: token,
-        file: fileInput,
+        source: file,
         playFile: true,
         model: currentModel
     });
@@ -108,7 +109,7 @@ exports.initFileUpload = function(ctx) {
   var fileUploadDialog = $('#fileUploadDialog');
 
   fileUploadDialog.change(function() {
-    var fileInput = fileUploadDialog.get(0);
+    var fileInput = fileUploadDialog.get(0).files[0];
     handleSelectedFile(ctx.token, fileInput);
   });
 
