@@ -16,6 +16,8 @@
 /* global $ */
 'use strict';
 
+var WatsonSpeechToText = require('watson-speech/speech-to-text');
+
 var scrolled = false,
     textScrolled = false;
 
@@ -75,8 +77,7 @@ var Alternatives = function(){
     alternatives.forEach(function(alternative, idx) {
       var $alternative;
       if (alternative.transcript) {
-        var transcript = alternative.transcript.replace(/%HESITATION\s/g, '');
-        transcript = transcript.replace(/(.)\1{2,}/g, '');
+        var transcript = alternative.transcript;
         switch (idx) {
           case 0:
             stringOne = stringOne + transcript;
@@ -146,51 +147,26 @@ exports.initDisplayMetadata = function() {
 };
 
 
-exports.showResult = function(msg, baseString, model) {
-  if (msg.results && msg.results.length > 0) {
+exports.showResult = function(result, baseString) {
 
-    var alternatives = msg.results[0].alternatives;
-    var text = msg.results[0].alternatives[0].transcript || '';
-
-    // apply mappings to beautify
-    text = text.replace(/%HESITATION\s/g, '');
-    text = text.replace(/(.)\1{2,}/g, '');
-    if (msg.results[0].final)
-       console.log('-> ' + text);
-    text = text.replace(/D_[^\s]+/g,'');
+    var alternatives = result.alternatives;
+    var text = alternatives[0].transcript || '';
 
     // if all words are mapped to nothing then there is nothing else to do
-    if ((text.length === 0) || (/^\s+$/.test(text))) {
-    	 return baseString;
+    if ((text.length === 0)) {
+         return baseString;
     }
 
-    var japanese =  ((model.substring(0,5) === 'ja-JP') || (model.substring(0,5) === 'zh-CN'));
-
-    // capitalize first word
     // if final results, append a new paragraph
-    if (msg.results && msg.results[0] && msg.results[0].final) {
-       text = text.slice(0, -1);
-       text = text.charAt(0).toUpperCase() + text.substring(1);
-       if (japanese) {
-         text = text.trim() + '。';
-         text = text.replace(/ /g,'');
-       } else {
-           text = text.trim() + '. ';
-       }
+    if (result.final) {
        baseString += text;
        $('#resultsText').val(baseString);
        showMetaData(alternatives[0]);
        // Only show alternatives if we're final
        alternativePrototype.showAlternatives(alternatives);
     } else {
-      if(japanese) {
-        text = text.replace(/ /g,'');      // remove whitespaces
-      } else {
-          text = text.charAt(0).toUpperCase() + text.substring(1);
-      }
       $('#resultsText').val(baseString + text);
     }
-  }
 
   updateScroll();
   updateTextScroll();
@@ -207,11 +183,17 @@ $.subscribe('clearscreen', function() {
 
 exports.renderStream = function(stream, model) {
     var display = exports;
-    var baseString = '';
+
     var baseJSON = '';
-    stream.on('results', function(results) {
-        var msg = {results: results};
-        baseString = display.showResult(msg, baseString, model);
+    stream.on('message', function(msg) {
+        // use the 'message'  event to show the raw JSON received over the wire
         baseJSON = display.showJSON(msg, baseJSON);
+    });
+
+    var baseString = '';
+    // format the stream and then use the formatted 'result' event to display the text
+    stream.pipe(new WatsonSpeechToText.FormatStream({model: model}))
+        .on('result', function(result) {
+        baseString = display.showResult(result, baseString);
     });
 };
