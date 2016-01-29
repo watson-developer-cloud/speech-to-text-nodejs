@@ -17,7 +17,7 @@
 'use strict';
 
 var WatsonSpeechToText = require('watson-speech/speech-to-text');
-var display = require('./displaymetadata');
+var display = require('./displayresults');
 var showError = require('./showerror').showError;
 
 exports.initRecordButton = function(ctx) {

@@ -20,7 +20,7 @@ var WatsonSpeechToText = require('watson-speech/speech-to-text');
 var showError = require('./showerror').showError;
 var showNotice = require('./showerror').showNotice;
 var effects = require('./effects');
-var display = require('./displaymetadata');
+var display = require('./displayresults');
 
 // Need to remove the view logic here and move this out to the handlefileupload controller
 var handleSelectedFile = exports.handleSelectedFile = (function() {

@@ -22,7 +22,7 @@ var initDragDrop = require('./dragdrop').initDragDrop;
 var initPlaySample = require('./playsample').initPlaySample;
 var initRecordButton = require('./recordbutton').initRecordButton;
 var initFileUpload = require('./fileupload').initFileUpload;
-var initDisplayMetadata = require('./displaymetadata').initDisplayMetadata;
+var initDisplayMetadata = require('./displayresults').initDisplayMetadata;
 
 
 exports.initViews = function(ctx) {

@@ -19,7 +19,7 @@
 var showError = require('./showerror').showError;
 var effects = require('./effects');
 var WatsonSpeechToText = require('watson-speech/speech-to-text');
-var display = require('./displaymetadata');
+var display = require('./displayresults');
 
 
 var LOOKUP_TABLE = {
