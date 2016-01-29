@@ -98,7 +98,7 @@ var playSample = (function() {
     stream.on('end', function() {
       effects.stopToggleImage(timer, imageTag, iconName);
       effects.restoreImage(imageTag, iconName);
-      localStorage.getItem('currentlyDisplaying', 'false');
+      localStorage.setItem('currentlyDisplaying', 'false');
       localStorage.setItem('samplePlaying', 'false');
       audio = null;
     });
