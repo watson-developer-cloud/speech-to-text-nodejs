@@ -100,29 +100,7 @@ var Alternatives = function(){
 
 var alternativePrototype = new Alternatives();
 
-/**
- * Keeps a full string of the JSON to display in memory, but only actually renders it if the JSON tab is active in order
- * to improve performance. Returns a string of unrendered JSON or a blank string depending on app state,
- * it's up to the caller to preserve and return the unrendered JSON as the second argument on the next call to showJSON()
- *
- * @param {Object} msg - new message
- * @param {String} baseJSON - previous unrendered JSON string
- * @returns {string} - the current unrendered JSON. Will be an empty string if the json tab is selected
- */
-exports.showJSON = function(msg, baseJSON) {
 
-   var json = JSON.stringify(msg, null, 2);
-    baseJSON += json;
-    baseJSON += '\n';
-
-  if ($('.nav-tabs .active').text() === 'JSON') {
-      $('#resultsJSON').append(baseJSON);
-      baseJSON = '';
-      console.log('updating json');
-  }
-
-  return baseJSON;
-};
 
 function updateTextScroll(){
   if(!scrolled){
@@ -165,7 +143,7 @@ exports.initDisplayMetadata = function() {
  * @param {String} baseString - Final text from previous calls, or '' if this is the first call for this transcription.
  * @returns {String}
  */
-exports.showResult = function(result, baseString) {
+function showResult(result, baseString) {
 
     var alternatives = result.alternatives;
     var text = alternatives[0].transcript || '';
@@ -198,30 +176,47 @@ $.subscribe('clearscreen', function() {
   alternativePrototype.clearString();
 });
 
+function renderJson(messages) {
+    var text = messages.map(function(msg) {
+        return JSON.stringify(msg, null, 2);
+    }).join('\n') + '\n';
+    $('#resultsJSON').append(text);
+}
+
+function isJsonTabActive() {
+    return $('.nav-tabs .active').text() === 'JSON';
+}
 
 exports.renderStream = function(stream, model) {
-    var display = exports;
+    // init the JSON tab
+    var $resultsJSON = $('#resultsJSON');
+    $resultsJSON.empty();
 
-    var baseJSON = '';
+    // buffer the JSON messages in memory unless the tab is active
+    var jsonBuffer = [];
     stream.on('message', function(msg) {
-        // use the 'message'  event to show the raw JSON received over the wire
-        // note: this just buffers the result in memory unless the tab is selected
-        baseJSON = display.showJSON(msg, baseJSON);
+        if (isJsonTabActive()) {
+            renderJson([msg]);
+        } else {
+            jsonBuffer.push(msg);
+        }
     });
-
     // render the json tab when it is selected
     $.unsubscribe('showjson');
     $.subscribe('showjson', function() {
-        var $resultsJSON = $('#resultsJSON');
-        $resultsJSON.empty();
-        $resultsJSON.append(baseJSON);
+        if (jsonBuffer.length) {
+            renderJson(jsonBuffer);
+            jsonBuffer.length = 0; // delete all messages
+        }
     });
 
-
+    // handle the text tab
+    // this is a bit tricky because we want to update the text of the interim results without loosing the previous final results
+    // so we store the final text in baseString and then showResult() automatically updates it when we get more final text
     var baseString = '';
     // format the stream and then use the formatted 'result' event to display the text
     stream.pipe(new WatsonSpeechToText.FormatStream({model: model, hesitation: ''}))
         .on('result', function(result) {
-            baseString = display.showResult(result, baseString);
+            baseString = showResult(result, baseString);
         });
 };
