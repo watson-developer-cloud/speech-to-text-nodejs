@@ -205,8 +205,18 @@ exports.renderStream = function(stream, model) {
     var baseJSON = '';
     stream.on('message', function(msg) {
         // use the 'message'  event to show the raw JSON received over the wire
+        // note: this just buffers the result in memory unless the tab is selected
         baseJSON = display.showJSON(msg, baseJSON);
     });
+
+    // render the json tab when it is selected
+    $.unsubscribe('showjson');
+    $.subscribe('showjson', function() {
+        var $resultsJSON = $('#resultsJSON');
+        $resultsJSON.empty();
+        $resultsJSON.append(baseJSON);
+    });
+
 
     var baseString = '';
     // format the stream and then use the formatted 'result' event to display the text
