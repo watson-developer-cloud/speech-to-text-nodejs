@@ -91,6 +91,7 @@ var playSample = (function() {
     stream = WatsonSpeechToText.recognizeElement({
       token: token,
       element: audio,
+      model: currentModel,
       'X-Watson-Learning-Opt-Out': JSON.parse(localStorage.getItem('sessionPermissions')) ? '0' : '1'
     });
 
