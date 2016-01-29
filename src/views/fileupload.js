@@ -16,12 +16,10 @@
 /* global $ */
 'use strict';
 
-var watson = require('watson-speech');
+var WatsonSpeechToText = require('watson-speech/speech-to-text');
 var showError = require('./showerror').showError;
 var showNotice = require('./showerror').showNotice;
-//var handleFileUpload = require('../handlefileupload').handleFileUpload;
 var effects = require('./effects');
-//var utils = require('../utils');
 var display = require('./displaymetadata');
 
 // Need to remove the view logic here and move this out to the handlefileupload controller
@@ -60,11 +58,12 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     var currentModel = localStorage.getItem('currentModel');
     console.log('currentModel', currentModel);
 
-    var stream = watson.stream({
+    var stream = WatsonSpeechToText.recognizeBlob({
         token: token,
-        source: file,
+        data: file,
         playFile: true,
-        model: currentModel
+        model: currentModel,
+        'X-Watson-Learning-Opt-Out': JSON.parse(localStorage.getItem('sessionPermissions')) ? '0' : '1'
     });
 
     stream.on('playback-error', function(err) {

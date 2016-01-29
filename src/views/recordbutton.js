@@ -16,9 +16,7 @@
 /* global $ */
 'use strict';
 
-var watson = require('watson-speech');
-//var Microphone = require('../Microphone');
-//var handleMicrophone = require('../handlemicrophone').handleMicrophone;
+var WatsonSpeechToText = require('watson-speech/speech-to-text');
 var display = require('./displaymetadata');
 var showError = require('./showerror').showError;
 
@@ -51,10 +49,11 @@ exports.initRecordButton = function(ctx) {
         $('#resultsText').val('');   // clear hypotheses from previous runs
         console.log('Not running, handleMicrophone()');
 
-        stream = watson.stream({
+        stream = WatsonSpeechToText.recognizeMicrophone({
           token: ctx.token,
           // bufferSize: ctx.buffersize // Mozilla docs recommend against specifying this
-          model: currentModel
+          model: currentModel,
+          'X-Watson-Learning-Opt-Out': JSON.parse(localStorage.getItem('sessionPermissions')) ? '0' : '1'
         });
 
         // todo: make this wait until the user has granted permission

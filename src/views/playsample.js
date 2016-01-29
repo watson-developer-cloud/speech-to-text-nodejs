@@ -18,7 +18,7 @@
 
 var showError = require('./showerror').showError;
 var effects = require('./effects');
-var watson = require('watson-speech');
+var WatsonSpeechToText = require('watson-speech/speech-to-text');
 var display = require('./displaymetadata');
 
 
@@ -88,9 +88,10 @@ var playSample = (function() {
 
     audio = new Audio();
     audio.src = url;
-    stream = watson.stream({
+    stream = WatsonSpeechToText.recognizeElement({
       token: token,
-      source: audio
+      element: audio,
+      'X-Watson-Learning-Opt-Out': JSON.parse(localStorage.getItem('sessionPermissions')) ? '0' : '1'
     });
 
     stream.on('end', function() {
