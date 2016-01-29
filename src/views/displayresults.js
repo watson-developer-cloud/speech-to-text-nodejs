@@ -100,6 +100,15 @@ var Alternatives = function(){
 
 var alternativePrototype = new Alternatives();
 
+/**
+ * Keeps a full string of the JSON to display in memory, but only actually renders it if the JSON tab is active in order
+ * to improve performance. Returns a string of unrendered JSON or a blank string depending on app state,
+ * it's up to the caller to preserve and return the unrendered JSON as the second argument on the next call to showJSON()
+ *
+ * @param {Object} msg - new message
+ * @param {String} baseJSON - previous unrendered JSON string
+ * @returns {string} - the current unrendered JSON. Will be an empty string if the json tab is selected
+ */
 exports.showJSON = function(msg, baseJSON) {
 
    var json = JSON.stringify(msg, null, 2);
@@ -146,7 +155,16 @@ exports.initDisplayMetadata = function() {
   initTextScroll();
 };
 
-
+/**
+ * Renders both final and interim results to a readonly textarea.
+ * Returns final, but not interim text, and expects the caller to include this as the second argument to the next call.
+ *
+ * Also updates scrolling and alternatives.
+ *
+ * @param {Object} result - result object from server, may contain interim or final results
+ * @param {String} baseString - Final text from previous calls, or '' if this is the first call for this transcription.
+ * @returns {String}
+ */
 exports.showResult = function(result, baseString) {
 
     var alternatives = result.alternatives;
@@ -192,8 +210,8 @@ exports.renderStream = function(stream, model) {
 
     var baseString = '';
     // format the stream and then use the formatted 'result' event to display the text
-    stream.pipe(new WatsonSpeechToText.FormatStream({model: model}))
+    stream.pipe(new WatsonSpeechToText.FormatStream({model: model, hesitation: ''}))
         .on('result', function(result) {
-        baseString = display.showResult(result, baseString);
-    });
+            baseString = display.showResult(result, baseString);
+        });
 };
