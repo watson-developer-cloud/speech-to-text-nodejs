@@ -78,11 +78,11 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         console.log('playback-error', err);
     });
 
-        function onEnd() {
-            effects.stopToggleImage(timer, uploadImageTag, 'upload');
-            uploadText.text('Select File');
-            localStorage.setItem('currentlyDisplaying', 'false');
-        }
+    function onEnd() {
+        effects.stopToggleImage(timer, uploadImageTag, 'upload');
+        uploadText.text('Select File');
+        localStorage.setItem('currentlyDisplaying', 'false');
+    }
 
     stream.on('close', function handleClose() {
         $.publish('hardsocketstop');
@@ -96,7 +96,9 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         onEnd();
     });
 
-    display.renderStream(stream, currentModel);
+    var realtimeStream = stream.pipe(new WatsonSpeechToText.TimingStream());
+
+    display.renderStream(realtimeStream, currentModel);
 
 
   };
