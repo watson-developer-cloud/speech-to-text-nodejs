@@ -16,8 +16,8 @@
 /* global $ */
 'use strict';
 
-var Microphone = require('../Microphone');
-var handleMicrophone = require('../handlemicrophone').handleMicrophone;
+var WatsonSpeechToText = require('watson-speech/speech-to-text');
+var display = require('./displayresults');
 var showError = require('./showerror').showError;
 
 exports.initRecordButton = function(ctx) {
@@ -26,12 +26,10 @@ exports.initRecordButton = function(ctx) {
 
   recordButton.click((function() {
 
+
     var running = false;
-    var token = ctx.token;
-    var micOptions = {
-      bufferSize: ctx.buffersize
-    };
-    var mic = new Microphone(micOptions);
+
+    var stream;
 
     return function(evt) {
       // Prevent default anchor behavior
@@ -44,31 +42,42 @@ exports.initRecordButton = function(ctx) {
         showError('Currently another file is playing, please stop the file or wait until it finishes');
         return;
       }
+
+
       localStorage.setItem('currentlyDisplaying', 'record');
       if (!running) {
         $('#resultsText').val('');   // clear hypotheses from previous runs
         console.log('Not running, handleMicrophone()');
-        handleMicrophone(token, currentModel, mic, function(err) {
-          if (err) {
-            var msg = 'Error: ' + err.message;
-            console.log(msg);
-            showError(msg);
-            running = false;
-            localStorage.setItem('currentlyDisplaying', 'false');
-          } else {
-            recordButton.css('background-color', '#d74108');
-            recordButton.find('img').attr('src', 'images/stop.svg');
-            console.log('starting mic');
-            mic.record();
-            running = true;
-          }
+
+        stream = WatsonSpeechToText.recognizeMicrophone({
+          token: ctx.token,
+          // bufferSize: ctx.buffersize // Mozilla docs recommend against specifying this
+          model: currentModel,
+          'X-Watson-Learning-Opt-Out': JSON.parse(localStorage.getItem('sessionPermissions')) ? '0' : '1'
         });
+
+        // todo: make this wait until the user has granted permission
+        recordButton.css('background-color', '#d74108');
+        recordButton.find('img').attr('src', 'images/stop.svg');
+        console.log('starting mic');
+        //mic.record();
+        running = true;
+
+        stream.on('error', function(err) {
+          var msg = 'Error: ' + err.message;
+          console.log(msg);
+          showError(msg);
+          running = false;
+          localStorage.setItem('currentlyDisplaying', 'false');
+        });
+
+        display.renderStream(stream, currentModel);
       } else {
         console.log('Stopping microphone, sending stop action message');
         recordButton.removeAttr('style');
         recordButton.find('img').attr('src', 'images/microphone.svg');
         $.publish('hardsocketstop');
-        mic.stop();
+        stream.stop();
         running = false;
         localStorage.setItem('currentlyDisplaying', 'false');
       }

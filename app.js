@@ -22,6 +22,8 @@ var express      = require('express'),
     extend       = require('util')._extend,
     watson       = require('watson-developer-cloud');
 
+require('dotenv').load({silent: true}); // allows you to store credentials in a file named .env for local testing
+
 // Bootstrap application settings
 require('./config/express')(app);
 

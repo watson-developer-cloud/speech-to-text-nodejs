@@ -16,7 +16,6 @@
 /*global $:false, BUFFERSIZE */
 
 'use strict';
-
 var models = require('./data/models.json').models;
 var utils = require('./utils');
 utils.initPubSub();

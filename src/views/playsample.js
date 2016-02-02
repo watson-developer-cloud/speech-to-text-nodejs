@@ -16,11 +16,10 @@
 /* global $ */
 'use strict';
 
-var utils = require('../utils');
-var onFileProgress = utils.onFileProgress;
-var handleFileUpload = require('../handlefileupload').handleFileUpload;
 var showError = require('./showerror').showError;
 var effects = require('./effects');
+var WatsonSpeechToText = require('watson-speech/speech-to-text');
+var display = require('./displayresults');
 
 
 var LOOKUP_TABLE = {
@@ -42,26 +41,34 @@ var LOOKUP_TABLE = {
 var playSample = (function() {
 
   var running = false;
+  var audio;
+  var stream;
   localStorage.setItem('currentlyDisplaying', 'false');
   localStorage.setItem('samplePlaying', 'false');
 
-  return function(token, imageTag, sampleNumber, iconName, url) {
+  return function(token, imageTag, sampleNumber, iconName, url, currentModel) {
 
     $.publish('clearscreen');
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
     var samplePlaying = localStorage.getItem('samplePlaying');
 
-    if (samplePlaying === sampleNumber) {
-      console.log('HARD SOCKET STOP');
-      $.publish('socketstop');
-      localStorage.setItem('currentlyDisplaying', 'false');
-      localStorage.setItem('samplePlaying', 'false');
-      effects.stopToggleImage(timer, imageTag, iconName);
-      effects.restoreImage(imageTag, iconName);
-      running = false;
-      return;
+    if (running) {
+      stream.stop();
+      // same as current means that we should just stop the current playback and return
+      if (samplePlaying === sampleNumber) {
+        console.log('HARD SOCKET STOP');
+        $.publish('socketstop');
+        localStorage.setItem('currentlyDisplaying', 'false');
+        localStorage.setItem('samplePlaying', 'false');
+        effects.stopToggleImage(timer, imageTag, iconName);
+        effects.restoreImage(imageTag, iconName);
+        running = false;
+        return;
+      }
+      // else: a different sample was requested - stop the current playback, and then begin playing the new sample
     }
+
 
     if (currentlyDisplaying === 'record') {
       showError('Currently audio is being recorded, please stop recording before playing a sample');
@@ -79,69 +86,25 @@ var playSample = (function() {
 
     var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'blob';
-    xhr.onload = function() {
-      var blob = xhr.response;
-      var currentModel = localStorage.getItem('currentModel') || 'en-US_BroadbandModel';
-      var reader = new FileReader();
-      var blobToText = new Blob([blob]).slice(0, 4);
-      reader.readAsText(blobToText);
-      reader.onload = function() {
-        var contentType = reader.result === 'fLaC' ? 'audio/flac' : 'audio/wav';
-        console.log('Uploading file', reader.result);
-        var mediaSourceURL = URL.createObjectURL(blob);
-        var audio = new Audio();
-        audio.src = mediaSourceURL;
-        audio.play();
-        $.subscribe('hardsocketstop', function() {
-          audio.pause();
-          audio.currentTime = 0;
-        });
-        $.subscribe('socketstop', function() {
-          audio.pause();
-          audio.currentTime = 0;
-        });
-        handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {
-          var parseOptions = {
-            file: blob
-          };
-          var samplingRate = (currentModel.indexOf('Broadband') !== -1) ? 16000 : 8000;
-          onFileProgress(parseOptions,
-            // On data chunk
-            function onData(chunk) {
-              socket.send(chunk);
-            },
-            function isRunning() {
-              if(running)
-                return true;
-              else
-                return false;
-            },
-            // On file read error
-            function(evt) {
-              console.log('Error reading file: ', evt.message);
-              // showError(evt.message);
-            },
-            // On load end
-            function() {
-              socket.send(JSON.stringify({'action': 'stop'}));
-            }/*,
-            samplingRate*/
-            );
-        },
-        // On connection end
-          function() {
-            effects.stopToggleImage(timer, imageTag, iconName);
-            effects.restoreImage(imageTag, iconName);
-            localStorage.getItem('currentlyDisplaying', 'false');
-            localStorage.setItem('samplePlaying', 'false');
-          }
-        );
-      };
-    };
-    xhr.send();
+    audio = new Audio();
+    audio.src = url;
+    stream = WatsonSpeechToText.recognizeElement({
+      token: token,
+      element: audio,
+      model: currentModel,
+      'X-Watson-Learning-Opt-Out': JSON.parse(localStorage.getItem('sessionPermissions')) ? '0' : '1'
+    });
+
+    stream.on('end', function() {
+      effects.stopToggleImage(timer, imageTag, iconName);
+      effects.restoreImage(imageTag, iconName);
+      localStorage.setItem('currentlyDisplaying', 'false');
+      localStorage.setItem('samplePlaying', 'false');
+      audio = null;
+    });
+
+    display.renderStream(stream, currentModel);
+
   };
 })();
 
@@ -155,9 +118,7 @@ exports.initPlaySample = function(ctx) {
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function() {
-      playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, function(result) {
-        console.log('Play sample result', result);
-      });
+      playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, ctx.currentModel);
     });
   })(ctx, LOOKUP_TABLE);
 
@@ -168,9 +129,7 @@ exports.initPlaySample = function(ctx) {
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function() {
-      playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, function(result) {
-        console.log('Play sample result', result);
-      });
+      playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, ctx.currentModel);
     });
   })(ctx, LOOKUP_TABLE);
 
