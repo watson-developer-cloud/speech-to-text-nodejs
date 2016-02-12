@@ -45,7 +45,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     function restoreUploadTab() {
       clearInterval(timer);
       effects.restoreImage(uploadImageTag, 'upload');
-      uploadText.text('Select File');
+      uploadText.text('Select Audio File');
     }
 
     // Clear flashing if socket upload is stopped
@@ -123,7 +123,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
       },
         function() {
           effects.stopToggleImage(timer, uploadImageTag, 'upload');
-          uploadText.text('Select File');
+          uploadText.text('Select Audio File');
           localStorage.setItem('currentlyDisplaying', 'false');
         }
       );

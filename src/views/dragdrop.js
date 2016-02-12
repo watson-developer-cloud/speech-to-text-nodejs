@@ -33,17 +33,21 @@ exports.initDragDrop = function(ctx) {
   });
 
   dragAndDropTarget.on('drop', function (e) {
-    console.log('File dropped');
     e.preventDefault();
     var evt = e.originalEvent;
+	
+	if(evt.dataTransfer.files.length == 0)
+		return;
+		
+	var file = evt.dataTransfer.files[0];
+	console.log('File dropped');
+
     // Handle dragged file event
-    handleFileUploadEvent(evt);
+    handleFileUploadEvent(file);
   });
 
-  function handleFileUploadEvent(evt) {
-    // Init file upload with default model
-    var file = evt.dataTransfer.files[0];
-    handleSelectedFile(ctx.token, file);
+  function handleFileUploadEvent(file) {
+	handleSelectedFile(ctx.token, file);
   }
 
 };

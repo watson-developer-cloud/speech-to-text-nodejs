@@ -35,11 +35,16 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   var baseJSON = '';
 
   $.subscribe('showjson', function() {
-    var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.empty();
-    $resultsJSON.append(baseJSON);
+	var $resultsJSON = $('#resultsJSON');
+	// $resultsJSON.empty();		  // L.R.
+	// $resultsJSON.append(baseJSON); // L.R.
+	$resultsJSON.val(baseJSON);	   	  // L.R.
   });
 
+  // L.R.
+  var keywords = display.getKeywordsToSearch();
+  var keywords_threshold = keywords.length == 0? null : 0.01;
+  
   var options = {};
   options.token = token;
   options.message = {
@@ -50,7 +55,10 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'word_confidence': true,
     'timestamps': true,
     'max_alternatives': 3,
-    'inactivity_timeout': 600
+    'inactivity_timeout': 600,
+	'word_alternatives_threshold': 0.001, // L.R.
+	'keywords_threshold': keywords_threshold, // L.R.
+	'keywords': keywords  // L.R.
   };
   options.model = model;
 
@@ -69,10 +77,13 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onMessage(msg) {
-    if (msg.results) {
-      baseString = display.showResult(msg, baseString, model);
-      baseJSON = display.showJSON(msg, baseJSON);
-    }
+	if (msg.results) {
+		// Convert to closure approach
+		baseString = display.showResult(msg, baseString, model);
+		// baseJSON = display.showJSON(msg, baseJSON); // L.R.
+		baseJSON = JSON.stringify(msg, null, 2);	   // L.R.
+		display.showJSON(baseJSON);			   		   // L.R.
+	}
   }
 
   function onError() {

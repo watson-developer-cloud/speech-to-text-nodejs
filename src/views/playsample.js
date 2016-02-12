@@ -19,24 +19,25 @@
 var utils = require('../utils');
 var onFileProgress = utils.onFileProgress;
 var handleFileUpload = require('../handlefileupload').handleFileUpload;
+var getKeywordsToSearch = require('./displaymetadata').getKeywordsToSearch;
 var showError = require('./showerror').showError;
 var effects = require('./effects');
 
-
+//
 var LOOKUP_TABLE = {
-  'ar-AR_BroadbandModel': ['ar-AR_Broadband_sample1.wav', 'ar-AR_Broadband_sample2.wav'],
-  'en-UK_BroadbandModel': ['en-UK_Broadband_sample1.wav', 'en-UK_Broadband_sample2.wav'],
-  'en-UK_NarrowbandModel': ['en-UK_Narrowband_sample1.wav', 'en-UK_Narrowband_sample2.wav'],
-  'en-US_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav'],
-  'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav'],
-  'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav'],
-  'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav'],  
-  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav'],
-  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav'],
-  'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav'],
-  'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav'],
-  'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav'],
-  'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav']
+  'ar-AR_BroadbandModel': ['ar-AR_Broadband_sample1.wav', 'ar-AR_Broadband_sample2.wav', 'الطقس , رياح معتدلة', 'احلامنا , نستلهم'],
+  'en-UK_BroadbandModel': ['en-UK_Broadband_sample1.wav', 'en-UK_Broadband_sample2.wav', 'important industry, affordable travel, business', 'consumer, quality, best practice'],
+  'en-UK_NarrowbandModel': ['en-UK_Narrowband_sample1.wav', 'en-UK_Narrowband_sample2.wav', '', ''],
+  'en-US_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav', 'sense of pride, watson, technology, changing the world', 'round, whirling velocity, unwanted emotion'],
+  'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav', '', ''],
+  'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav', 'quiero preguntarle, existen productos', 'preparando, regalos para la familia, sobrinos'],
+  'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav', '', ''],  
+  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav', '場所 , 今日', '変更 , 給与 , コード'],
+  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav', '', ''],
+  'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav', 'sistema da ibm, setor bancário, qualidade, necessidades dos clientes', 'médicos, informações, planos de tratamento'],
+  'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav', '', ''],
+  'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav', '沃 森 是 认知 , 大 数据 分析 能力', '技术 , 语音 , 的 用户 体验 , 人们 , 手机'],
+  'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '', '']
 };
 
 var playSample = (function() {
@@ -45,8 +46,7 @@ var playSample = (function() {
   localStorage.setItem('currentlyDisplaying', 'false');
   localStorage.setItem('samplePlaying', 'false');
 
-  return function(token, imageTag, sampleNumber, iconName, url) {
-
+  return function(token, imageTag, sampleNumber, iconName, url, keywords) {
     $.publish('clearscreen');
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
@@ -103,6 +103,12 @@ var playSample = (function() {
           audio.pause();
           audio.currentTime = 0;
         });
+		
+		if(getKeywordsToSearch().length == 0) {
+			$("#tb_keywords").focus();
+			$("#tb_keywords").val(keywords);
+			$("#tb_keywords").change();
+		}
         handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {
           var parseOptions = {
             file: blob
@@ -147,15 +153,15 @@ var playSample = (function() {
 
 
 exports.initPlaySample = function(ctx) {
-
   (function() {
     var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][0];
-    var el = $('.play-sample-1');
+	var keywords = LOOKUP_TABLE[ctx.currentModel][2];
+	var el = $('.play-sample-1');
     el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function() {
-      playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, function(result) {
+      playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, keywords, function(result) {
         console.log('Play sample result', result);
       });
     });
@@ -163,12 +169,13 @@ exports.initPlaySample = function(ctx) {
 
   (function() {
     var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][1];
+	var keywords = LOOKUP_TABLE[ctx.currentModel][3];
     var el = $('.play-sample-2');
     el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
     el.click( function() {
-      playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, function(result) {
+      playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, keywords, function(result) {
         console.log('Play sample result', result);
       });
     });
