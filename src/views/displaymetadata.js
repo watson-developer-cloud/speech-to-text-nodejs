@@ -300,7 +300,9 @@ var parseBin = function (element, index, array) {
 };
 
 function draw() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	//ctx.clearRect(0, 0, canvas.width, canvas.height);
+	//<canvas id="canvas" width="960" height="368"/>
+	ctx.clearRect(0, 0, 960, 368);
 	scene.draw();
 }
 
@@ -703,7 +705,6 @@ var initTextScroll = function() {
 };
 
 function onResize() {
-	//console.log(canvas.width, $("#canvas").width(), canvas.height, $("#canvas").height());
 	var x_ratio = $("#canvas").width()/canvas.width;
 	var y_ratio = $("#canvas").height()/canvas.height;
 	canvas.width = $("#canvas").width();
