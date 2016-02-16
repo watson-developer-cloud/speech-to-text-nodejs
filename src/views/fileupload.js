@@ -66,7 +66,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
       var contentType;
       if (r.result === 'fLaC') {
         contentType = 'audio/flac';
-        showNotice('Notice: browsers do not support playing FLAC audio, so no audio will accompany the transcription');
+        showNotice('Notice: This browser does not support playing FLAC audio, so no audio will accompany the transcription.');
       } else if (r.result === 'RIFF') {
         contentType = 'audio/wav';
         var audio = new Audio();
@@ -91,7 +91,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         });
       } else {
         restoreUploadTab();
-        showError('Only WAV or FLAC or Opus files can be transcribed, please try another file format');
+        showError('Only WAV or FLAC or OPUS files can be transcribed. Please try another file format.');
         localStorage.setItem('currentlyDisplaying', 'false');
         return;
       }
