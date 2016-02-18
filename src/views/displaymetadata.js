@@ -507,7 +507,6 @@ var addKeywordToSearch = function (element, index, array) {
 	var keyword = element.trim();
 	if(keyword.length == 0) return;
 	keywords_to_search.push(keyword);
-	//keywordNotFound(keyword);
 };	
 
 $('#errorWrongKeywordsFiletypeClose').click(function(e) {

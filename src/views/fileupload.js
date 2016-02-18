@@ -91,7 +91,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         });
       } else {
         restoreUploadTab();
-        showError('Only WAV or FLAC or OPUS files can be transcribed. Please try another file format.');
+        showError('Only WAV, FLAC, or OPUS files can be transcribed. Please try another file format.');
         localStorage.setItem('currentlyDisplaying', 'false');
         return;
       }
