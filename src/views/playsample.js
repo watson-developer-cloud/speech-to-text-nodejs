@@ -171,6 +171,7 @@ exports.initPlaySample = function(ctx) {
 	for(var word in set) {
 		keywords.push(set[word]);
 	}
+	keywords.sort();
 	
 	console.log(keywords);
 	
