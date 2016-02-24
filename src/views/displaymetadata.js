@@ -821,7 +821,9 @@ exports.showResult = function(msg, baseString, model) {
 	
 	// apply mappings to beautify
     text = text.replace(/%HESITATION\s/g, '');
-    text = text.replace(/(.)\1{2,}/g, '');
+    //text = text.replace(/(.)\1{2,}/g, '');
+	text = text.replace(/([^*])\1{2,}/g, '');
+	
     if (msg.results[0].final) {
 		console.log('-> ' + text);
 		// L.R
