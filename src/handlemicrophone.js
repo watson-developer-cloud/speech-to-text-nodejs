@@ -36,10 +36,12 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.empty();
-    $resultsJSON.append(baseJSON);
+    $resultsJSON.val(baseJSON);
   });
 
+  var keywords = display.getKeywordsToSearch();
+  var keywords_threshold = keywords.length == 0? null : 0.01;
+  
   var options = {};
   options.token = token;
   options.message = {
@@ -50,7 +52,10 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'word_confidence': true,
     'timestamps': true,
     'max_alternatives': 3,
-    'inactivity_timeout': 600
+    'inactivity_timeout': 600,
+    'word_alternatives_threshold': 0.001, 
+    'keywords_threshold': keywords_threshold, 
+    'keywords': keywords
   };
   options.model = model;
 
@@ -60,7 +65,6 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onListening(socket) {
-
     mic.onAudio = function(blob) {
       if (socket.readyState < 2) {
         socket.send(blob);
@@ -70,8 +74,10 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   function onMessage(msg) {
     if (msg.results) {
+      // Convert to closure approach
       baseString = display.showResult(msg, baseString, model);
-      baseJSON = display.showJSON(msg, baseJSON);
+      baseJSON = JSON.stringify(msg, null, 2);
+      display.showJSON(baseJSON);
     }
   }
 

@@ -24,7 +24,6 @@ var initRecordButton = require('./recordbutton').initRecordButton;
 var initFileUpload = require('./fileupload').initFileUpload;
 var initDisplayMetadata = require('./displaymetadata').initDisplayMetadata;
 
-
 exports.initViews = function(ctx) {
   console.log('Initializing views...');
   initPlaySample(ctx);
