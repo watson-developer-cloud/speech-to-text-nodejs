@@ -298,7 +298,7 @@ function parseBin(element, index, array) {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, 960, 368);
+  ctx.clearRect(0, 0, 970, 370);
   scene.draw();
 }
 
