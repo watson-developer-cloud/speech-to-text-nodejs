@@ -45,9 +45,9 @@ exports.initSelectModel = function(ctx) {
     localStorage.setItem('currentModel', newModel);
     ctx.currentModel = newModel;
     initPlaySample(ctx);
-	$("#tb_keywords").focus();
-	$("#tb_keywords").val('');
-	$("#tb_keywords").change();
+    $("#tb_keywords").focus();
+    $("#tb_keywords").val('');
+    $("#tb_keywords").change();
     $.publish('clearscreen');
   });
 
