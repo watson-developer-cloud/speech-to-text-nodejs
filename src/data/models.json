@@ -5,7 +5,7 @@
          "rate": 16000, 
          "name": "ar-AR_BroadbandModel", 
          "language": "ar-AR", 
-		 "description": "Modern Standard Arabic broadband model."
+         "description": "Modern Standard Arabic broadband model."
       }, 
       {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_BroadbandModel", 

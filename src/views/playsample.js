@@ -23,7 +23,6 @@ var getKeywordsToSearch = require('./displaymetadata').getKeywordsToSearch;
 var showError = require('./showerror').showError;
 var effects = require('./effects');
 
-//
 var LOOKUP_TABLE = {
   'ar-AR_BroadbandModel': ['ar-AR_Broadband_sample1.wav', 'ar-AR_Broadband_sample2.wav', 'الطقس , رياح معتدلة', 'احلامنا , نستلهم'],
   'en-UK_BroadbandModel': ['en-UK_Broadband_sample1.wav', 'en-UK_Broadband_sample2.wav', 'important industry, affordable travel, business', 'consumer, quality, best practice'],
@@ -103,12 +102,12 @@ var playSample = (function() {
           audio.pause();
           audio.currentTime = 0;
         });
-		
-		if(getKeywordsToSearch().length == 0) {
-			$("#tb_keywords").focus();
-			$("#tb_keywords").val(keywords);
-			$("#tb_keywords").change();
-		}
+
+        if(getKeywordsToSearch().length == 0) {
+          $("#tb_keywords").focus();
+          $("#tb_keywords").val(keywords);
+          $("#tb_keywords").change();
+        }
         handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {
           var parseOptions = {
             file: blob
@@ -151,56 +150,52 @@ var playSample = (function() {
   };
 })();
 
-
 exports.initPlaySample = function(ctx) {
-	var keywords1 = LOOKUP_TABLE[ctx.currentModel][2].split(",");
-	var keywords2 = LOOKUP_TABLE[ctx.currentModel][3].split(",");
-	var set = {};
-	
-	for(var i = keywords1.length - 1; i >= 0; --i) {
-		var word = keywords1[i].trim();
-		set[word] = word;
-	}
-	
-	for(var i = keywords2.length - 1; i >= 0; --i) {
-		var word = keywords2[i].trim();
-		set[word] = word;
-	}
-	
-	var keywords = [];
-	for(var word in set) {
-		keywords.push(set[word]);
-	}
-	keywords.sort();
-	
-	console.log(keywords);
-	
-	(function() {
-		var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][0];
-		// var keywords = LOOKUP_TABLE[ctx.currentModel][2];
-		var el = $('.play-sample-1');
-		el.off('click');
-		var iconName = 'play';
-		var imageTag = el.find('img');
-		el.click( function() {
-			playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, keywords, function(result) {
-				console.log('Play sample result', result);
-			});
-		});
-	})(ctx, LOOKUP_TABLE);
+  var keywords1 = LOOKUP_TABLE[ctx.currentModel][2].split(",");
+  var keywords2 = LOOKUP_TABLE[ctx.currentModel][3].split(",");
+  var set = {};
 
-	(function() {
-		var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][1];
-		// var keywords = LOOKUP_TABLE[ctx.currentModel][3];
-		var el = $('.play-sample-2');
-		el.off('click');
-		var iconName = 'play';
-		var imageTag = el.find('img');
-		el.click( function() {
-			playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, keywords, function(result) {
-				console.log('Play sample result', result);
-			});
-		});
-	})(ctx, LOOKUP_TABLE);
+  for(var i = keywords1.length - 1; i >= 0; --i) {
+    var word = keywords1[i].trim();
+    set[word] = word;
+  }
 
+  for(var i = keywords2.length - 1; i >= 0; --i) {
+    var word = keywords2[i].trim();
+    set[word] = word;
+  }
+
+  var keywords = [];
+  for(var word in set) {
+    keywords.push(set[word]);
+  }
+  keywords.sort();
+
+  (function() {
+    var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][0];
+    // var keywords = LOOKUP_TABLE[ctx.currentModel][2];
+    var el = $('.play-sample-1');
+    el.off('click');
+    var iconName = 'play';
+    var imageTag = el.find('img');
+    el.click( function() {
+      playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, keywords, function(result) {
+        console.log('Play sample result', result);
+      });
+    });
+  })(ctx, LOOKUP_TABLE);
+
+  (function() {
+    var fileName = 'audio/' + LOOKUP_TABLE[ctx.currentModel][1];
+    // var keywords = LOOKUP_TABLE[ctx.currentModel][3];
+    var el = $('.play-sample-2');
+    el.off('click');
+    var iconName = 'play';
+    var imageTag = el.find('img');
+    el.click( function() {
+      playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, keywords, function(result) {
+        console.log('Play sample result', result);
+      });
+    });
+  })(ctx, LOOKUP_TABLE);
 };

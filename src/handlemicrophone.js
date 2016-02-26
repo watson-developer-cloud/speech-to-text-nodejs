@@ -35,13 +35,10 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   var baseJSON = '';
 
   $.subscribe('showjson', function() {
-	var $resultsJSON = $('#resultsJSON');
-	// $resultsJSON.empty();		  // L.R.
-	// $resultsJSON.append(baseJSON); // L.R.
-	$resultsJSON.val(baseJSON);	   	  // L.R.
+    var $resultsJSON = $('#resultsJSON');
+    $resultsJSON.val(baseJSON);
   });
 
-  // L.R.
   var keywords = display.getKeywordsToSearch();
   var keywords_threshold = keywords.length == 0? null : 0.01;
   
@@ -56,9 +53,9 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'timestamps': true,
     'max_alternatives': 3,
     'inactivity_timeout': 600,
-	'word_alternatives_threshold': 0.001, // L.R.
-	'keywords_threshold': keywords_threshold, // L.R.
-	'keywords': keywords  // L.R.
+    'word_alternatives_threshold': 0.001, 
+    'keywords_threshold': keywords_threshold, 
+    'keywords': keywords
   };
   options.model = model;
 
@@ -68,7 +65,6 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onListening(socket) {
-
     mic.onAudio = function(blob) {
       if (socket.readyState < 2) {
         socket.send(blob);
@@ -77,13 +73,12 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onMessage(msg) {
-	if (msg.results) {
-		// Convert to closure approach
-		baseString = display.showResult(msg, baseString, model);
-		// baseJSON = display.showJSON(msg, baseJSON); // L.R.
-		baseJSON = JSON.stringify(msg, null, 2);	   // L.R.
-		display.showJSON(baseJSON);			   		   // L.R.
-	}
+    if (msg.results) {
+      // Convert to closure approach
+      baseString = display.showResult(msg, baseString, model);
+      baseJSON = JSON.stringify(msg, null, 2);
+      display.showJSON(baseJSON);
+    }
   }
 
   function onError() {

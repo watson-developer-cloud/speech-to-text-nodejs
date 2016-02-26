@@ -20,79 +20,72 @@ var display = require('./views/displaymetadata');
 var initSocket = require('./socket').initSocket;
 
 exports.handleFileUpload = function(type, token, model, file, contentType, callback, onend) {
+  // Set currentlyDisplaying to prevent other sockets from opening
+  localStorage.setItem('currentlyDisplaying', type);
 
-    // Set currentlyDisplaying to prevent other sockets from opening
-    localStorage.setItem('currentlyDisplaying', type);
+  $.subscribe('progress', function(evt, data) {
+    console.log('progress: ', data);
+  });
 
-    // $('#progressIndicator').css('visibility', 'visible');
+  console.log('contentType', contentType);
 
-    $.subscribe('progress', function(evt, data) {
-		console.log('progress: ', data);
-    });
+  var baseString = '';
+  var baseJSON = '';
 
-    console.log('contentType', contentType);
+  $.subscribe('showjson', function() {
+    var $resultsJSON = $('#resultsJSON');
+    $resultsJSON.val(baseJSON);
+  });
 
-    var baseString = '';
-    var baseJSON = '';
+  var keywords = display.getKeywordsToSearch();
+  var keywords_threshold = keywords.length == 0? null : 0.01;
 
-    $.subscribe('showjson', function() {
-		var $resultsJSON = $('#resultsJSON');
-		// $resultsJSON.empty();		  // L.R.
-		// $resultsJSON.append(baseJSON); // L.R.
-		$resultsJSON.val(baseJSON);	   	  // L.R.
-    });
-	
-	// L.R.
-	var keywords = display.getKeywordsToSearch();
-	var keywords_threshold = keywords.length == 0? null : 0.01;
-		
-    var options = {};
-    options.token = token;
-    options.message = {
-      'action': 'start',
-      'content-type': contentType,
-      'interim_results': true,
-      'continuous': true,
-      'word_confidence': true,
-      'timestamps': true,
-      'max_alternatives': 3,
-      'inactivity_timeout': 600,
-	  'word_alternatives_threshold': 0.001, // L.R.
-	  'keywords_threshold': keywords_threshold, // L.R.
-	  'keywords': keywords  // L.R.
-    };
-    options.model = model;
+  var options = {};
+  options.token = token;
+  options.message = {
+    'action': 'start',
+    'content-type': contentType,
+    'interim_results': true,
+    'continuous': true,
+    'word_confidence': true,
+    'timestamps': true,
+    'max_alternatives': 3,
+    'inactivity_timeout': 600,
+    'word_alternatives_threshold': 0.001,
+    'keywords_threshold': keywords_threshold, 
+    'keywords': keywords 
+  };
+  options.model = model;
 
-    function onOpen() {
-      console.log('Socket opened');
+  function onOpen() {
+    console.log('Socket opened');
+  }
+
+  function onListening(socket) {
+    console.log('Socket listening');
+    callback(socket);
+  }
+
+  function onMessage(msg) {
+    if (msg.results) {
+      // Convert to closure approach
+      baseString = display.showResult(msg, baseString, model);
+      baseJSON = JSON.stringify(msg, null, 2);
+      display.showJSON(baseJSON);
     }
+  }
 
-    function onListening(socket) {
-      console.log('Socket listening');
-      callback(socket);
-    }
+  function onError(evt) {
+    localStorage.setItem('currentlyDisplaying', 'false');
+    onend(evt);
+    console.log('Socket err: ', evt.code);
+  }
 
-    function onMessage(msg) {
-		if (msg.results) {
-			// Convert to closure approach
-			baseString = display.showResult(msg, baseString, model);
-			// baseJSON = display.showJSON(msg, baseJSON); // L.R.
-			baseJSON = JSON.stringify(msg, null, 2);	   // L.R.
-			display.showJSON(baseJSON);			   		   // L.R.
-		}
-    }
+  function onClose(evt) {
+    localStorage.setItem('currentlyDisplaying', 'false');
+    onend(evt);
+    console.log('Socket closing: ', evt);
+  }
 
-    function onError(evt) {
-      localStorage.setItem('currentlyDisplaying', 'false');
-      onend(evt);
-      console.log('Socket err: ', evt.code);
-    }
-
-    function onClose(evt) {
-      localStorage.setItem('currentlyDisplaying', 'false');
-      onend(evt);
-      console.log('Socket closing: ', evt);
-    }
-
-    initSocket(options, onOpen, onListening, onMessage, onError, onClose);
+  initSocket(options, onOpen, onListening, onMessage, onError, onClose);
 };
