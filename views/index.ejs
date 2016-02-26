@@ -80,32 +80,32 @@
         </div><!-- .col-lg-12 -->
 
         <div class="row">
-			<div class="col-lg-4 col-md-6 col-sm-12">
-				<div class="dropdown">
-					<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-						<span id="dropdownMenuDefault" class="dropdown-text">US English broadband model (16KHz) </span>
-						<span class="caret"></span>
-					</button>
-					<ul id="dropdownMenuList" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-					</ul>
-				</div>
-			</div><!-- .col-lg-6 -->
-			<div style="float:left;margin-left:130px;">
-				<input type="text" id="tb_keywords" value="Type comma separated keywords here (OPTIONAL)." style="font-style:italic;color:#A0A0A0;" autocomplete="off"/>
-				<!--
-				<div id="btnLoadKWS">
-					<img src="images/upload-black.svg" class="icon"></img>
-					Select Keywords
-					<input type="file" style="display:none;">
-					<span id="error-wrong-keywords-filetype">
-						<div>
-							Only *.txt files containing a list of keywords can be loaded
-							<a class="pull-right" href="#" id="errorWrongKeywordsFiletypeClose">&times;</a>
-						</div>
-					</span>
-				</div>	
-				-->
-			</div> 
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                <span id="dropdownMenuDefault" class="dropdown-text">US English broadband model (16KHz) </span>
+                <span class="caret"></span>
+              </button>
+              <ul id="dropdownMenuList" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              </ul>
+            </div>
+          </div><!-- .col-lg-6 -->
+          <div style="float:left;margin-left:130px;">
+            <input type="text" id="tb_keywords" value="Type comma separated keywords here (OPTIONAL)." style="font-style:italic;color:#A0A0A0;" autocomplete="off"/>
+            <!--
+              <div id="btnLoadKWS">
+                <img src="images/upload-black.svg" class="icon"></img>
+                Select Keywords
+                <input type="file" style="display:none;">
+                <span id="error-wrong-keywords-filetype">
+                  <div>
+                    Only *.txt files containing a list of keywords can be loaded
+                    <a class="pull-right" href="#" id="errorWrongKeywordsFiletypeClose">&times;</a>
+                  </div>
+                </span>
+              </div>	
+            -->
+          </div> 
 
         </div><!-- row -->
 
@@ -191,40 +191,36 @@
                 </div>
               </form>
             </div>
-			<div class="keywords_pane">
-				<div class="keywords_title">Keywords Spotted</div>
-				<div id="keywords">
-					<ul style="margin-top:10px; margin-left:-40px;"></ul>
-				</div>
-			</div> <!-- L.R. -->
+            <div class="keywords_pane">
+              <div class="keywords_title">Keywords Spotted</div>
+              <div id="keywords">
+                <ul style="margin-top:10px; margin-left:-40px;"></ul>
+              </div>
+            </div>  
           </div><!-- /.well -->
         </div><!-- /.tabpanel -->
 
         <div class="col-lg-12 col-md-12 col-sm-12">
-		    <!-- L.R. (start) -->
-            <div style="margin-top:2em;">
-				<span style="font-size:1.563em;font-weight:400;color:#323232;-webkit-user-select:none;-moz-user-select:none;">
-					Word Alternatives
-				</span>
-				<a id="show_alternate_words">Hide alternate words</a>
-			</div>
+          <div style="margin-top:2em;">
+            <span style="font-size:1.563em;font-weight:400;color:#323232;-webkit-user-select:none;-moz-user-select:none;">
+              Word Alternatives
+            </span>
+            <a id="show_alternate_words">Hide alternate words</a>
+          </div>
+          <div style="padding:0;margin-top:1em;">
+            <canvas id="canvas" width="960" height="368"/>
+            </canvas>
+            <div id="confusion-networks">
+              <div id="canvas-placeholder">
+                Word Alternatives will appear shortly after audio transcription is started
+              </div>
+              <input id="vslider" type="range" orient="vertical"/>
+            </div>
+            <input id="hslider" type="range" style="display:none;"/>
+            <img id="left-arrow" src="images/arrow-left-icon-disabled.svg"/>
+            <img id="right-arrow" src="images/arrow-right-icon-disabled.svg"/>
+          </div>
 
-			<div style="padding:0;margin-top:1em;">
-				<canvas id="canvas" width="960" height="368"/>
-				</canvas>
-				<div id="confusion-networks">
-					<div id="canvas-placeholder">
-						Word Alternatives will appear shortly after audio transcription is started
-					</div>
-					<input id="vslider" type="range" orient="vertical"/>
-				</div>
-				<input id="hslider" type="range" style="display:none;"/>
-				<img id="left-arrow" src="images/arrow-left-icon-disabled.svg"/>
-				<img id="right-arrow" src="images/arrow-right-icon-disabled.svg"/>
-			</div>
-			
-		    <!-- L.R. (end) -->
-		  
             <!-- Spacer-->
             <!-- TODO: Move this to CSS-->
             <div class="row">
