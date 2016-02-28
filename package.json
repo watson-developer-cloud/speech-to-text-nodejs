@@ -8,7 +8,7 @@
     "csurf": "^1.8.3",
     "ejs": "^2.3.4",
     "express": "~4.13.3",
-    "express-rate-limit": "^2.0.2",
+    "express-rate-limit": "^2.1.0",
     "express-secure-only": "^0.2.1",
     "helmet": "^1.0.1",
     "vcap_services": "^0.1.7",
