@@ -35,19 +35,19 @@ exports.initDragDrop = function(ctx) {
   dragAndDropTarget.on('drop', function (e) {
     e.preventDefault();
     var evt = e.originalEvent;
-	
-	if(evt.dataTransfer.files.length == 0)
-		return;
-		
-	var file = evt.dataTransfer.files[0];
-	console.log('File dropped');
+
+    if(evt.dataTransfer.files.length == 0)
+      return;
+
+    var file = evt.dataTransfer.files[0];
+    console.log('File dropped');
 
     // Handle dragged file event
     handleFileUploadEvent(file);
   });
 
   function handleFileUploadEvent(file) {
-	handleSelectedFile(ctx.token, file);
+    handleSelectedFile(ctx.token, file);
   }
 
 };
