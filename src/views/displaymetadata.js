@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /* global $ */
+/* eslint no-invalid-this: 0, brace-style: 0, dot-notation: 0, spaced-comment:0 */
 'use strict';
 
 const INITIAL_OFFSET_X = 30;
@@ -42,7 +43,7 @@ var rightArrowEnabled = false;
 var worker = null;
 var runTimer = false;
 var scrolled = false;
-var textScrolled = false;
+// var textScrolled = false;
 var pushed = 0;
 var popped = 0;
 
@@ -51,12 +52,12 @@ ctx.font = defaultFont;
 // -----------------------------------------------------------
 // class WordAlternative
 var WordAlternative = function(text, confidence) {
-  if(text == '<eps>') {
-    this._text ='<silence>';
+  if (text == '<eps>') {
+    this._text = '<silence>';
     this._foreColor = '#888';
   }
-  else if(text == '%HESITATION') {
-    this._text ='<hesitation>';
+  else if (text == '%HESITATION') {
+    this._text = '<hesitation>';
     this._foreColor = '#888';
   }
   else {
@@ -70,7 +71,7 @@ var WordAlternative = function(text, confidence) {
   this._fillStyle = '#f4f4f4';
   this._selectedFillStyle = '#e3e3e3';
   this._selected = false;
-}
+};
 
 WordAlternative.prototype.width = function() {
   return this._width;
@@ -86,21 +87,21 @@ WordAlternative.prototype.width = function() {
 
 WordAlternative.prototype.select = function() {
   this._selected = true;
-}
+};
 
 WordAlternative.prototype.unselect = function() {
   this._selected = false;
-}
+};
 
 WordAlternative.prototype.draw = function(x, y, width) {
-  ctx.fillStyle = this._selected? this._selectedFillStyle : this._fillStyle;
+  ctx.fillStyle = this._selected ? this._selectedFillStyle : this._fillStyle;
   ctx.lineWidth = 1;
   ctx.strokeStyle = '#d3d3d3';
   ctx.fillRect(x, y, width, this.height());
   ctx.strokeRect(x, y, width, this.height());
 
   ctx.fillStyle = this._foreColor;
-  ctx.font = this._selected? boldFont : defaultFont;
+  ctx.font = this._selected ? boldFont : defaultFont;
   ctx.fillText(this._text, x + 16, y + 20);
   ctx.font = italicFont;
   const appendix = (this._confidence.toFixed(3) * 100).toFixed(1) + '%';
@@ -119,13 +120,13 @@ var Bin = function(startTime, endTime) {
   this._maxWordAlternativeWidth = 0;
   this._height = 0;
   this._index = 0;
-}
+};
 
 Bin.prototype.addWordAlternative = function(wa) {
   this._wordAlternatives.push(wa);
-  for(var index = 0; index < this._wordAlternatives.length; index++) {
+  for (var index = 0; index < this._wordAlternatives.length; index++) {
     var width = this._wordAlternatives[index].width();
-    if(width > this._maxWordAlternativeWidth) 
+    if (width > this._maxWordAlternativeWidth)
       this._maxWordAlternativeWidth = width;
   }
   this._height += wa.height();
@@ -140,15 +141,15 @@ Bin.prototype.width = function() {
 };
 
 Bin.prototype.draw = function(x, y) {
-  for(var index = 0; index < this._wordAlternatives.length; index++) {
+  for (var index = 0; index < this._wordAlternatives.length; index++) {
     var wa = this._wordAlternatives[index];
     wa.draw(x + this._connectorWidth, y + delta_y * (index + 1), this._maxWordAlternativeWidth);
-    if(showAllHypotheses == false)
+    if (showAllHypotheses == false)
       break;
   }
 
   ctx.moveTo(x + space + radius, y + fontSize);
-  if(this._wordAlternatives.length > 0) {
+  if (this._wordAlternatives.length > 0) {
     ctx.strokeStyle = '#4178BE';
     ctx.lineWidth = 2;
     ctx.lineTo(x + this.width() - (space + radius), y + fontSize);
@@ -165,32 +166,32 @@ var Scene = function() {
   this._width = 0;
   this._height = 0;
   this._shift = 100;
-}
+};
 
 Scene.prototype.draw = function() {
   var x = this._offset_X;
   var y = this._offset_Y;
   var last_bin_end_time = 0;
 
-  for(var index = 0; index < this._bins.length; index++) {
+  for (var index = 0; index < this._bins.length; index++) {
     var bin = this._bins[index];
-    var x_visible = Math.abs(x) <= canvas.width; 
+    var x_visible = Math.abs(x) <= canvas.width;
     ctx.beginPath();
 
-    if(bin._startTime > last_bin_end_time) {
-      if(x_visible) {
+    if (bin._startTime > last_bin_end_time) {
+      if (x_visible) {
         ctx.moveTo(x + radius + space, y + fontSize);
       }
-      if(last_bin_end_time > 0) {
+      if (last_bin_end_time > 0) {
         x += this._shift;
-        if(x_visible) {
+        if (x_visible) {
           ctx.strokeStyle = '#4178BE';
           ctx.lineWidth = 2;
           ctx.lineTo(x - (radius + space), y + fontSize);
           ctx.stroke();
         }
-      }    
-      if(x_visible) {
+      }
+      if (x_visible) {
         ctx.moveTo(x + radius, y + fontSize);
         ctx.lineWidth = 2;
         ctx.arc(x, y + fontSize, radius, 0, 2 * Math.PI, false);
@@ -201,7 +202,7 @@ Scene.prototype.draw = function() {
       }
     }
 
-    if(x_visible) {
+    if (x_visible) {
       bin.draw(x, y);
       ctx.moveTo(x + bin.width() + radius, y + fontSize);
       ctx.strokeStyle = '#4178BE';
@@ -225,14 +226,15 @@ Scene.prototype.addBin = function(bin) {
   this._bins.push(bin);
   var width = 2 * INITIAL_OFFSET_X;
   var last_bin_end_time = 0;
-  for(var index = 0; index < this._bins.length; index++) {
+  for (var index = 0; index < this._bins.length; index++) {
+    // eslint-disable-next-line no-redeclare
     var bin = this._bins[index];
-    if(bin._startTime > last_bin_end_time && last_bin_end_time > 0) {
+    if (bin._startTime > last_bin_end_time && last_bin_end_time > 0) {
       width += this._shift;
     }
     last_bin_end_time = bin._endTime;
     width += bin.width();
-    if(this._height < bin.height()) {
+    if (this._height < bin.height()) {
       this._height = bin.height();
       vslider.min = canvas.height - this._height - 2.5 * INITIAL_OFFSET_Y;
     }
@@ -250,11 +252,11 @@ Scene.prototype.height = function() {
 
 Scene.prototype.findBins = function(start_time, end_time) {
   var foundBins = [];
-  for(var index = 0; index < this._bins.length; index++) {
+  for (var index = 0; index < this._bins.length; index++) {
     var bin = this._bins[index];
     var binStartTime = bin._startTime;
     var binEndTime = bin._endTime;
-    if(binStartTime >= start_time && binEndTime <= end_time) {
+    if (binStartTime >= start_time && binEndTime <= end_time) {
       foundBins.push(bin);
     }
   }
@@ -264,11 +266,12 @@ Scene.prototype.findBins = function(start_time, end_time) {
 Scene.prototype.startTimeToSliderValue = function(start_time) {
   var last_bin_end_time = 0;
   var value = 0;
-  for(var binIndex = 0; binIndex < this._bins.length; binIndex++) {
+  for (var binIndex = 0; binIndex < this._bins.length; binIndex++) {
     var bin = this._bins[binIndex];
-    if(bin._startTime < start_time) {
+    if (bin._startTime < start_time) {
       value += bin.width();
-      if(bin._startTime > last_bin_end_time && last_bin_end_time > 0) {
+      if (bin._startTime > last_bin_end_time && last_bin_end_time > 0) {
+        // eslint-disable-next-line no-use-before-define
         value += scene._shift;
       }
       last_bin_end_time = bin._endTime;
@@ -281,14 +284,14 @@ Scene.prototype.startTimeToSliderValue = function(start_time) {
 
 var scene = new Scene();
 
-function parseAlternative(element, index, array) {
+function parseAlternative(element/*, index, array*/) {
   var confidence = element['confidence'];
   var word = element['word'];
   var bin = scene._bins[scene._bins.length - 1];
   bin.addWordAlternative(new WordAlternative(word, confidence));
 }
 
-function parseBin(element, index, array) {
+function parseBin(element/*, index, array*/) {
   var start_time = element['start_time'];
   var end_time = element['end_time'];
   var alternatives = element['alternatives'];
@@ -303,7 +306,7 @@ function draw() {
 }
 
 function onHScroll() {
-  if(hslider.value == 0) {
+  if (hslider.value == 0) {
     leftArrowEnabled = false;
     rightArrowEnabled = true;
     $('#left-arrow').attr('src', 'images/arrow-left-icon-disabled.svg');
@@ -311,7 +314,7 @@ function onHScroll() {
     $('#right-arrow').attr('src', 'images/arrow-right-icon.svg');
     $('#right-arrow').css('background-color', '#C7C7C7');
   }
-  else if(hslider.value == Math.floor(hslider.max)) {
+  else if (hslider.value == Math.floor(hslider.max)) {
     leftArrowEnabled = true;
     rightArrowEnabled = false;
     $('#left-arrow').attr('src', 'images/arrow-left-icon.svg');
@@ -377,7 +380,7 @@ function clearDetectedKeywords() {
 
 $('#left-arrow').hover(
   function() {
-    if(leftArrowEnabled) {
+    if (leftArrowEnabled) {
       $(this).css('background-color', '#C7C7C7');
       $(this).css('opacity', '1');
     }
@@ -387,7 +390,7 @@ $('#left-arrow').hover(
     }
   },
   function() {
-    if(leftArrowEnabled) {
+    if (leftArrowEnabled) {
       $(this).css('background-color', '#C7C7C7');
     }
     else {
@@ -399,7 +402,7 @@ $('#left-arrow').hover(
 
 $('#right-arrow').hover(
   function() {
-    if(rightArrowEnabled) {
+    if (rightArrowEnabled) {
       $(this).css('background-color', '#C7C7C7');
       $(this).css('opacity', '1');
     }
@@ -409,7 +412,7 @@ $('#right-arrow').hover(
     }
   },
   function() {
-    if(rightArrowEnabled) {
+    if (rightArrowEnabled) {
       $(this).css('background-color', '#C7C7C7');
     }
     else {
@@ -421,24 +424,24 @@ $('#right-arrow').hover(
 
 $('#left-arrow').click(function() {
   var updated_value = hslider.value - hstep;
-  if(updated_value < 0) {
+  if (updated_value < 0) {
     updated_value = 0;
   }
   hslider.value = updated_value;
   onHScroll();
-});   
+});
 
 $('#right-arrow').click(function() {
   var updated_value = Number(hslider.value) + hstep;
-  if(updated_value > hslider.max) {
+  if (updated_value > hslider.max) {
     updated_value = hslider.max;
   }
   hslider.value = updated_value;
   onHScroll();
 });
 
-$('#btnLoadKWS').click(function(e) {
-  $(this).find("input[type='file']").click();
+$('#btnLoadKWS').click(function(/*e*/) {
+  $(this).find('input[type=\'file\']').click();
 });
 
 $('#btnLoadKWS input').click(function(e) {
@@ -449,24 +452,25 @@ $('#btnLoadKWS input').change(function(e) {
   e.stopPropagation();
   clearKeywordsToSearch();
   var selectedFile = $(this)[0].files[0];
-  if(typeof selectedFile == 'undefined') {
+  if (typeof selectedFile == 'undefined') {
     console.log('User cancelled OpenFile dialog. No keywords file loaded.');
     return;
   }
 
-  if($(this).val().lastIndexOf('.txt') == -1) {
+  if ($(this).val().lastIndexOf('.txt') == -1) {
     $('#error-wrong-keywords-filetype').css('display', 'block');
     return;
   }
- 
+
   var reader = new FileReader();
   reader.readAsText(selectedFile);
   reader.onload = function() {
     $('#keywords ul').empty();
     var text = reader.result;
     var keywordsToSearch = text.split('\n');
+    // eslint-disable-next-line no-use-before-define
     keywordsToSearch.forEach(addKeywordToSearch);
-    if(keywordsToSearch.length > 0) {
+    if (keywordsToSearch.length > 0) {
       $('.keywords_title').css('display', 'block');
       $('#keywords').css('display', 'block');
       $('#transcription_text').css('width', '55%');
@@ -475,7 +479,7 @@ $('#btnLoadKWS input').change(function(e) {
 });
 
 $('#tb_keywords').focus(function () {
-  if(keywordsInputDirty == false) {
+  if (keywordsInputDirty == false) {
     keywordsInputDirty = true;
     $(this).css('font-style', 'normal');
     $(this).css('color', '#121212');
@@ -486,8 +490,9 @@ $('#tb_keywords').focus(function () {
 $('#tb_keywords').change(function() {
   clearKeywordsToSearch();
   var text = $(this).val();
+  // eslint-disable-next-line no-use-before-define
   text.split(',').forEach(addKeywordToSearch);
-  if(keywords_to_search.length > 0) {
+  if (keywords_to_search.length > 0) {
     $('.keywords_title').css('display', 'block');
     $('#keywords').css('display', 'block');
     $('#transcription_text').css('width', '55%');
@@ -497,42 +502,42 @@ $('#tb_keywords').change(function() {
 // -----------------------------------------------------------------
 
 function keywordNotFound(keyword) {
-  var $li_kwd = $("<li class='keyword_no_occurrences'/>");
+  var $li_kwd = $('<li class=\'keyword_no_occurrences\'/>');
   $li_kwd.append(document.createTextNode(keyword));
   $('#keywords ul').append($li_kwd);
 }
 
-function addKeywordToSearch(element, index, array) {
+function addKeywordToSearch(element/*, index, array*/) {
   var keyword = element.trim();
-  if(keyword.length == 0) return;
+  if (keyword.length == 0) return;
 
-  if(keywords_to_search.indexOf(keyword) == -1) {
+  if (keywords_to_search.indexOf(keyword) == -1) {
     keywords_to_search.push(keyword);
   }
 }
 
-$('#errorWrongKeywordsFiletypeClose').click(function(e) {
+$('#errorWrongKeywordsFiletypeClose').click(function(/*e*/) {
   $('#error-wrong-keywords-filetype').css('display', 'none');
 });
 
 function toggleSpottedKeywordClass(node) {
-  if(node.className == 'keyword_collapsed') {
-    node.getElementsByClassName('keyword_icon')[0].src  = 'images/close-icon.svg';
+  if (node.className == 'keyword_collapsed') {
+    node.getElementsByClassName('keyword_icon')[0].src = 'images/close-icon.svg';
     node.className = 'keyword_expanded';
   }
-  else if(node.className == 'keyword_expanded') { 
-    node.getElementsByClassName('keyword_icon')[0].src  = 'images/open-icon.svg';
+  else if (node.className == 'keyword_expanded') {
+    node.getElementsByClassName('keyword_icon')[0].src = 'images/open-icon.svg';
     node.className = 'keyword_collapsed';
   }
 }
 
 $('#keywords ul').click(function(e) {
-  var node = e.srcElement == undefined ? e.target : e.srcElement;
+  var node = e.srcElement || e.target;
 
-  if(node.className == 'keyword_text') {
+  if (node.className == 'keyword_text') {
     toggleSpottedKeywordClass(node.parentNode);
   }
-  else if(node.className == 'keyword_icon') {
+  else if (node.className == 'keyword_icon') {
     toggleSpottedKeywordClass(node.parentNode.parentNode);
   }
   else {
@@ -541,10 +546,12 @@ $('#keywords ul').click(function(e) {
 });
 
 function parseKeywords(keywords_result) {
-  for(var keyword in keywords_result) {
+  // eslint-disable-next-line guard-for-in
+  for (var keyword in keywords_result) {
     var arr = keywords_result[keyword];
-    if(arr.length == 0) continue;
-    if(keyword in detected_keywords == false) {
+    // eslint-disable-next-line no-continue
+    if (arr.length == 0) continue;
+    if (keyword in detected_keywords == false) {
       detected_keywords[keyword] = [];
     }
     detected_keywords[keyword] = detected_keywords[keyword].concat(arr);
@@ -552,10 +559,10 @@ function parseKeywords(keywords_result) {
 }
 
 function unselectLastKeyword() {
-  for(var binIndex = 0; binIndex < scene._bins.length; binIndex++) {
+  for (var binIndex = 0; binIndex < scene._bins.length; binIndex++) {
     var bin = scene._bins[binIndex];
     var wordAlternatives = bin._wordAlternatives;
-    for(var waIndex = 0; waIndex < wordAlternatives.length; waIndex++) {
+    for (var waIndex = 0; waIndex < wordAlternatives.length; waIndex++) {
       var wordAlternative = wordAlternatives[waIndex];
       wordAlternative.unselect();
     }
@@ -565,30 +572,31 @@ function unselectLastKeyword() {
 window.onKeywordOccurrenceSelected = function(start_time, keywordFragments) {
   unselectLastKeyword();
   var keywordConsistsOfTopHypothesesOnly = true;
-  for(var index = 0; index < keywordFragments.length; index++) {
+  for (var index = 0; index < keywordFragments.length; index++) {
     var fragment = keywordFragments[index];
     var binIndex = fragment[0];
     var waIndex = fragment[1];
-    if(waIndex > 0) {
+    if (waIndex > 0) {
       keywordConsistsOfTopHypothesesOnly = false;
     }
     var bin = scene._bins[binIndex];
     var wordAlternative = bin._wordAlternatives[waIndex];
     wordAlternative.select();
   }
-  if(showAllHypotheses == false && keywordConsistsOfTopHypothesesOnly == false) {
+  if (showAllHypotheses == false && keywordConsistsOfTopHypothesesOnly == false) {
+    // eslint-disable-next-line no-use-before-define
     toggleAlternateWords();
   }
   hslider.value = scene.startTimeToSliderValue(start_time);
   onHScroll();
 
   $('html, body').animate({scrollTop: $('#canvas').offset().top}, 500);
-}
+};
 
 function keywordToHashSet(normalized_text) {
   var hashSet = {};
   var segments = normalized_text.split(' ');
-  for(var index = 0; index < segments.length; index++) { 
+  for (var index = 0; index < segments.length; index++) {
     var segment = segments[index];
     hashSet[segment] = true;
   }
@@ -596,16 +604,16 @@ function keywordToHashSet(normalized_text) {
 }
 
 function updateKeyword(keyword) {
-  var arr = detected_keywords[keyword];	
+  var arr = detected_keywords[keyword];
   var arrlen = arr.length;
 
-  var $li = $("<li class='keyword_collapsed'/>");
-  var $keyword_text = $("<span class='keyword_text'><img class='keyword_icon' src='images/open-icon.svg'>" + keyword + "</span>");
-  var $keyword_count = $("<span class='keyword_count'>(" + arrlen + ")</span>");
+  var $li = $('<li class=\'keyword_collapsed\'/>');
+  var $keyword_text = $('<span class=\'keyword_text\'><img class=\'keyword_icon\' src=\'images/open-icon.svg\'>' + keyword + '</span>');
+  var $keyword_count = $('<span class=\'keyword_count\'>(' + arrlen + ')</span>');
   $li.append($keyword_text);
   $li.append($keyword_count);
-  var $table = $("<table class='kws_occurrences'/>");
-  for(var index = 0; index < arrlen; index++) {
+  var $table = $('<table class=\'kws_occurrences\'/>');
+  for (var index = 0; index < arrlen; index++) {
     var kwd_occurrence = arr[index];
     var start_time = kwd_occurrence['start_time'].toFixed(2);
     var end_time = kwd_occurrence['end_time'].toFixed(2);
@@ -615,30 +623,30 @@ function updateKeyword(keyword) {
     var foundBins = scene.findBins(start_time, end_time);
     var keywordFragments = [];
 
-    for(var binIndex = 0; binIndex < foundBins.length; binIndex++) {
+    for (var binIndex = 0; binIndex < foundBins.length; binIndex++) {
       var bin = foundBins[binIndex];
       var wordAlternatives = bin._wordAlternatives;
-      for(var waIndex = 0; waIndex < wordAlternatives.length; waIndex++) {
+      for (var waIndex = 0; waIndex < wordAlternatives.length; waIndex++) {
         var wordAlternative = wordAlternatives[waIndex];
         var isKeyword = set[wordAlternative._text];
-        if(isKeyword) {
+        if (isKeyword) {
           var coordinate = [bin._index, waIndex];
           keywordFragments.push(coordinate);
         }
       }
     }
 
-    var onClick = "\"onKeywordOccurrenceSelected(" + start_time + "," + JSON.stringify(keywordFragments) + ")\"";
-    var $tr = $("<tr class='selectable' onClick=" + onClick + "/>"); 
-    var $td_index = $("<td class='index'>" + (index + 1) + ".</td>");
-    var $td_start_label = $("<td class='bold'>Start:</td>");
-    var $td_start = $("<td/>");
+    var onClick = '"onKeywordOccurrenceSelected(' + start_time + ',' + JSON.stringify(keywordFragments) + ')"';
+    var $tr = $('<tr class=\'selectable\' onClick=' + onClick + '/>');
+    var $td_index = $('<td class=\'index\'>' + (index + 1) + '.</td>');
+    var $td_start_label = $('<td class=\'bold\'>Start:</td>');
+    var $td_start = $('<td/>');
     $td_start.append(document.createTextNode(start_time));
-    var $td_end_label = $("<td class='bold'>End:</td>");
-    var $td_end = $("<td/>");
+    var $td_end_label = $('<td class=\'bold\'>End:</td>');
+    var $td_end = $('<td/>');
     $td_end.append(document.createTextNode(end_time));
-    var $td_confidence_label = $("<td class='bold'>Confidence:</td>");
-    var $td_confidence = $("<td/>");
+    var $td_confidence_label = $('<td class=\'bold\'>Confidence:</td>');
+    var $td_confidence = $('<td/>');
     $td_confidence.append(document.createTextNode(confidence + '%'));
     $tr.append([$td_index, $td_start_label, $td_start, $td_end_label, $td_end, $td_confidence_label, $td_confidence]);
     $table.append($tr);
@@ -649,10 +657,10 @@ function updateKeyword(keyword) {
 
 function updateDetectedKeywords() {
   $('#keywords ul').empty();
-  keywords_to_search.forEach(function(element, index, array) { 
-    var keyword = element; 
-    if(keyword in detected_keywords) {
-      updateKeyword(keyword); 
+  keywords_to_search.forEach(function(element/*, index, array*/) {
+    var keyword = element;
+    if (keyword in detected_keywords) {
+      updateKeyword(keyword);
     }
     else {
       keywordNotFound(keyword);
@@ -661,8 +669,8 @@ function updateDetectedKeywords() {
 }
 
 function toggleAlternateWords() {
-  if(showAllHypotheses == false) {
-    if(vslider.min < 0) {
+  if (showAllHypotheses == false) {
+    if (vslider.min < 0) {
       $('#vslider').css('display', 'block');
     }
     $('#show_alternate_words').text('Hide alternate words');
@@ -676,7 +684,7 @@ function toggleAlternateWords() {
   draw();
 }
 
-$('#show_alternate_words').click(function(e) {
+$('#show_alternate_words').click(function(/*e*/) {
   toggleAlternateWords();
 });
 
@@ -687,21 +695,21 @@ exports.showJSON = function(baseJSON) {
 };
 
 function updateTextScroll(){
-  if(!scrolled){
+  if (!scrolled){
     var element = $('#resultsText').get(0);
     element.scrollTop = element.scrollHeight;
   }
 }
 
 function initTextScroll() {
-  $('#resultsText').on('scroll', function(){
-      textScrolled = true;
-  });
-};
+  // $('#resultsText').on('scroll', function(){
+  //     textScrolled = true;
+  // });
+}
 
 function onResize() {
-  var x_ratio = $('#canvas').width()/canvas.width;
-  var y_ratio = $('#canvas').height()/canvas.height;
+  var x_ratio = $('#canvas').width() / canvas.width;
+  var y_ratio = $('#canvas').height() / canvas.height;
   canvas.width = $('#canvas').width();
   canvas.height = $('#canvas').height();
   ctx.setTransform(x_ratio, 0, 0, y_ratio, 0, 0);
@@ -743,30 +751,31 @@ exports.initDisplayMetadata = function() {
   onResize(); // to adjust the canvas size
 
   var workerScriptBody =
-    "var fifo = [];\n" +
-    "var onmessage = function(event) {\n" +
-    "  var payload = event.data;\n" +
-    "  var type = payload.type;\n" +
-    "  if(type == 'push') {\n" +
-    "    fifo.push(payload.msg);\n" +
-    "  }\n" +
-    "  else if(type == 'shift' && fifo.length > 0) {\n" +
-    "    var msg = fifo.shift();\n" +
-    "    postMessage({\n" + 
-    "     bins:msg.results[0].word_alternatives,\n" + 
-    "     kws:msg.results[0].keywords_result\n" + 
-    "    });\n" + 
-    "  }\n" +
-    "  else if(type == 'clear') {\n" +
-    "    fifo = [];\n" +
-    "    console.log('worker: fifo cleared');\n" +
-    "  }\n" +
-    "}\n";
+    'var fifo = [];\n' +
+    'var onmessage = function(event) {\n' +
+    '  var payload = event.data;\n' +
+    '  var type = payload.type;\n' +
+    '  if(type == \'push\') {\n' +
+    '    fifo.push(payload.msg);\n' +
+    '  }\n' +
+    '  else if(type == \'shift\' && fifo.length > 0) {\n' +
+    '    var msg = fifo.shift();\n' +
+    '    postMessage({\n' +
+    '     bins:msg.results[0].word_alternatives,\n' +
+    '     kws:msg.results[0].keywords_result\n' +
+    '    });\n' +
+    '  }\n' +
+    '  else if(type == \'clear\') {\n' +
+    '    fifo = [];\n' +
+    '    console.log(\'worker: fifo cleared\');\n' +
+    '  }\n' +
+    '}\n';
 
   var blobURL = window.URL.createObjectURL(new Blob([workerScriptBody]));
   worker = new Worker(blobURL);
   worker.onmessage = function(event) {
     var data = event.data;
+    // eslint-disable-next-line no-use-before-define
     showCNsKWS(data.bins, data.kws);
     popped++;
     console.log('----> popped', popped);
@@ -779,11 +788,11 @@ function showCNsKWS(bins, kws) {
   hslider.value = hslider.max;
   onHScroll();
 
-  if(vslider.min < 0 && showAllHypotheses) {
+  if (vslider.min < 0 && showAllHypotheses) {
     $('#vslider').css('display', 'block');
   }
   $('#hslider').css('display', 'block');
-  $('#show_alternate_words').css('display', 'inline-block'); 
+  $('#show_alternate_words').css('display', 'inline-block');
   $('#canvas').css('display', 'block');
   $('#canvas-placeholder').css('display', 'none');
   $('#left-arrow').css('display', 'inline-block');
@@ -798,14 +807,14 @@ function onTimer() {
   worker.postMessage({
     type:'shift'
   });
-  if(runTimer == true) {
+  if (runTimer == true) {
     setTimeout(onTimer, timeout);
   }
 }
 
 exports.showResult = function(msg, baseString, model) {
   if (msg.results && msg.results.length > 0) {
-    var alternatives = msg.results[0].alternatives;
+    //var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
 
     // apply mappings to beautify
@@ -820,7 +829,7 @@ exports.showResult = function(msg, baseString, model) {
       });
       pushed++;
       console.log('----> pushed', pushed);
-      if(runTimer == false) {
+      if (runTimer == false) {
         runTimer = true;
         setTimeout(onTimer, timeout);
       }
@@ -832,7 +841,7 @@ exports.showResult = function(msg, baseString, model) {
       return baseString;
     }
 
-    var japanese =  ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
+    var japanese = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
 
     // capitalize first word
     // if final results, append a new paragraph
@@ -842,15 +851,15 @@ exports.showResult = function(msg, baseString, model) {
       if (japanese) {
         text = text.trim() + '。';
         text = text.replace(/ /g,'');
-      } 
+      }
       else {
         text = text.trim() + '. ';
       }
       baseString += text;
       $('#resultsText').val(baseString);
-    } 
+    }
     else {
-      if(japanese) {
+      if (japanese) {
         text = text.replace(/ /g,''); // remove whitespaces
       } else {
           text = text.charAt(0).toUpperCase() + text.substring(1);
@@ -868,7 +877,7 @@ exports.getKeywordsToSearch = function() {
 
 $.subscribe('clearscreen', function() {
   clearScene();
-  clearDetectedKeywords(); 
+  clearDetectedKeywords();
   resetWorker();
 });
 

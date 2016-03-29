@@ -20,7 +20,7 @@
 exports.initSessionPermissions = function() {
   console.log('Initializing session permissions handler');
   // Radio buttons
-  var sessionPermissionsRadio = $("#sessionPermissionsRadioGroup input[type='radio']");
+  var sessionPermissionsRadio = $('#sessionPermissionsRadioGroup input[type=\'radio\']');
   sessionPermissionsRadio.click(function() {
     var checkedValue = sessionPermissionsRadio.filter(':checked').val();
     console.log('checkedValue', checkedValue);

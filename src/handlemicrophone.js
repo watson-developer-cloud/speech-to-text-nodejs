@@ -22,7 +22,7 @@ var display = require('./views/displaymetadata');
 exports.handleMicrophone = function(token, model, mic, callback) {
 
   if (model.indexOf('Narrowband') > -1) {
-    var err = new Error('Microphone transcription cannot accomodate narrowband models, '+
+    var err = new Error('Microphone transcription cannot accomodate narrowband models, ' +
       'please select another');
     callback(err, null);
     return false;
@@ -40,8 +40,8 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   });
 
   var keywords = display.getKeywordsToSearch();
-  var keywords_threshold = keywords.length == 0? null : 0.01;
-  
+  var keywords_threshold = keywords.length == 0 ? null : 0.01;
+
   var options = {};
   options.token = token;
   options.message = {
@@ -53,8 +53,8 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'timestamps': true,
     'max_alternatives': 3,
     'inactivity_timeout': 600,
-    'word_alternatives_threshold': 0.001, 
-    'keywords_threshold': keywords_threshold, 
+    'word_alternatives_threshold': 0.001,
+    'keywords_threshold': keywords_threshold,
     'keywords': keywords
   };
   options.model = model;

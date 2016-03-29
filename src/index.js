@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*global $:false, BUFFERSIZE */
+/* global $:false, BUFFERSIZE */
 
 'use strict';
 
@@ -41,7 +41,7 @@ $(document).ready(function() {
       console.error('Attempting to reconnect...');
 
       if (err && err.code)
-        showError('Server error ' + err.code + ': '+ err.error);
+        showError('Server error ' + err.code + ': ' + err.error);
       else
         showError('Server error ' + err.code + ': please refresh your browser and try again');
     }
@@ -57,14 +57,14 @@ $(document).ready(function() {
 
     // Save models to localstorage
     localStorage.setItem('models', JSON.stringify(models));
-    
-    //Check if playback functionality is invoked
+
+    // Check if playback functionality is invoked
     localStorage.setItem('playbackON', false);
     var query = window.location.search.substring(1);
     var vars = query.split('&');
-    for(var i=0; i< vars.length; i++) {
+    for (var i = 0; i < vars.length; i++) {
       var pair = vars[i].split('=');
-      if(decodeURIComponent(pair[0]) === 'debug') {   
+      if (decodeURIComponent(pair[0]) === 'debug') {
         localStorage.setItem('playbackON',decodeURIComponent(pair[1]));
       }
     }
@@ -72,9 +72,9 @@ $(document).ready(function() {
     // Set default current model
     localStorage.setItem('currentModel', 'en-US_BroadbandModel');
     localStorage.setItem('sessionPermissions', 'true');
-    
+
     getModels(token);
-    
+
     $.subscribe('clearscreen', function() {
       $('#resultsText').text('');
       $('#resultsJSON').text('');

@@ -32,15 +32,15 @@ exports.getModels = function(token) {
   sttRequest.onload = function() {
     var response = JSON.parse(sttRequest.responseText);
     var sorted = response.models.sort(function(a,b) {
-    if(a.name > b.name) {
-      return 1;
-    }
-    if( a.name < b.name) {
-      return -1;
-    }
-    return 0;
+      if (a.name > b.name) {
+        return 1;
+      }
+      if (a.name < b.name) {
+        return -1;
+      }
+      return 0;
     });
-    response.models=sorted;
+    response.models = sorted;
     localStorage.setItem('models', JSON.stringify(response.models));
     viewContext.models = response.models;
     selectModel(viewContext);

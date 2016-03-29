@@ -22,21 +22,25 @@ exports.initDragDrop = function(ctx) {
 
   var dragAndDropTarget = $(document);
 
-  dragAndDropTarget.on('dragenter', function (e) {
+  dragAndDropTarget.on('dragenter', function(e) {
     e.stopPropagation();
     e.preventDefault();
   });
 
-  dragAndDropTarget.on('dragover', function (e) {
+  dragAndDropTarget.on('dragover', function(e) {
     e.stopPropagation();
     e.preventDefault();
   });
 
-  dragAndDropTarget.on('drop', function (e) {
+  function handleFileUploadEvent(file) {
+    handleSelectedFile(ctx.token, file);
+  }
+
+  dragAndDropTarget.on('drop', function(e) {
     e.preventDefault();
     var evt = e.originalEvent;
 
-    if(evt.dataTransfer.files.length == 0)
+    if (evt.dataTransfer.files.length == 0)
       return;
 
     var file = evt.dataTransfer.files[0];
@@ -46,8 +50,5 @@ exports.initDragDrop = function(ctx) {
     handleFileUploadEvent(file);
   });
 
-  function handleFileUploadEvent(file) {
-    handleSelectedFile(ctx.token, file);
-  }
 
 };

@@ -38,7 +38,7 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   });
 
   var keywords = display.getKeywordsToSearch();
-  var keywords_threshold = keywords.length == 0? null : 0.01;
+  var keywords_threshold = keywords.length == 0 ? null : 0.01;
 
   var options = {};
   options.token = token;
@@ -52,8 +52,8 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     'max_alternatives': 3,
     'inactivity_timeout': 600,
     'word_alternatives_threshold': 0.001,
-    'keywords_threshold': keywords_threshold, 
-    'keywords': keywords 
+    'keywords_threshold': keywords_threshold,
+    'keywords': keywords
   };
   options.model = model;
 

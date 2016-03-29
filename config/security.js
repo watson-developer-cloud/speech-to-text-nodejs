@@ -17,14 +17,13 @@
 'use strict';
 
 // security.js
-var secure     = require('express-secure-only'),
-  rateLimit    = require('express-rate-limit'),
-  csrf         = require('csurf'),
+var secure = require('express-secure-only'),
+  rateLimit = require('express-rate-limit'),
+  csrf = require('csurf'),
   cookieParser = require('cookie-parser'),
-  helmet       = require('helmet'),
-  fs           = require('fs');
+  helmet = require('helmet');
 
-module.exports = function (app) {
+module.exports = function(app) {
   app.enable('trust proxy');
 
   // 1. redirects http to https
@@ -38,7 +37,7 @@ module.exports = function (app) {
   app.use(cookieParser(secret));
 
   // 4. csrf
-  var csrfProtection = csrf({ cookie: true });
+  var csrfProtection = csrf({cookie: true});
   app.get('/', csrfProtection, function(req, res, next) {
     req._csrfToken = req.csrfToken();
     next();

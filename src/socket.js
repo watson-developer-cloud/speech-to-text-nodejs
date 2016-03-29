@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*global $:false */
+/* global $:false */
 
 'use strict';
 
@@ -30,25 +30,25 @@ var tokenGenerator = utils.createTokenGenerator();
 
 var initSocket = exports.initSocket = function(options, onopen, onlistening, onmessage, onerror, onclose) {
   var listening;
-  function withDefault(val, defaultVal) {
-    return typeof val === 'undefined' ? defaultVal : val;
-  }
+  // function withDefault(val, defaultVal) {
+  //   return typeof val === 'undefined' ? defaultVal : val;
+  // }
   var socket;
   var token = options.token;
   var model = options.model || localStorage.getItem('currentModel');
   var message = options.message || {'action': 'start'};
-  var sessionPermissions = withDefault(options.sessionPermissions,
-    JSON.parse(localStorage.getItem('sessionPermissions')));
-  //var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';
+  // var sessionPermissions = withDefault(options.sessionPermissions,
+  //   JSON.parse(localStorage.getItem('sessionPermissions')));
+  // var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';
   // TODO: add '&X-Watson-Learning-Opt-Out=' + sessionPermissionsQueryParam once
   // we find why it's not accepted as query parameter
   // var url = options.serviceURI || 'wss://stream-d.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token=';
   var url = options.serviceURI || 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token=';
-  url+= token + '&model=' + model;
+  url += token + '&model=' + model;
   console.log('URL model', model);
   try {
     socket = new WebSocket(url);
-  } catch(err) {
+  } catch (err) {
     console.error('WS connection error: ', err);
   }
   socket.onopen = function() {

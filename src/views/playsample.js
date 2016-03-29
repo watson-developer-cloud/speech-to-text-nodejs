@@ -30,7 +30,7 @@ var LOOKUP_TABLE = {
   'en-US_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav', 'sense of pride, watson, technology, changing the world', 'round, whirling velocity, unwanted emotion'],
   'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav', 'course online, four hours, help', 'ibm, customer experience, media data'],
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav', 'quiero preguntarle, existen productos', 'preparando, regalos para la familia, sobrinos'],
-  'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav', 'QUIERO PREGUNTARLE, EXISTEN PRODUCTOS', 'PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS'],  
+  'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav', 'QUIERO PREGUNTARLE, EXISTEN PRODUCTOS', 'PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS'],
   'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav', '場所 , 今日', '変更 , 給与 , コード'],
   'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav', 'お客様 , お手数', '申し込み , 今回 , 通帳'],
   'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav', 'sistema da ibm, setor bancário, qualidade, necessidades dos clientes', 'médicos, informações, planos de tratamento'],
@@ -56,7 +56,7 @@ var playSample = (function() {
       $.publish('socketstop');
       localStorage.setItem('currentlyDisplaying', 'false');
       localStorage.setItem('samplePlaying', 'false');
-      effects.stopToggleImage(timer, imageTag, iconName);
+      effects.stopToggleImage(timer, imageTag, iconName); // eslint-disable-line no-use-before-define
       effects.restoreImage(imageTag, iconName);
       running = false;
       return;
@@ -103,23 +103,23 @@ var playSample = (function() {
           audio.currentTime = 0;
         });
 
-        if(getKeywordsToSearch().length == 0) {
-          $("#tb_keywords").focus();
-          $("#tb_keywords").val(keywords);
-          $("#tb_keywords").change();
+        if (getKeywordsToSearch().length == 0) {
+          $('#tb_keywords').focus();
+          $('#tb_keywords').val(keywords);
+          $('#tb_keywords').change();
         }
         handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {
           var parseOptions = {
             file: blob
           };
-          var samplingRate = (currentModel.indexOf('Broadband') !== -1) ? 16000 : 8000;
+          // var samplingRate = (currentModel.indexOf('Broadband') !== -1) ? 16000 : 8000;
           onFileProgress(parseOptions,
             // On data chunk
             function onData(chunk) {
               socket.send(chunk);
             },
             function isRunning() {
-              if(running)
+              if (running)
                 return true;
               else
                 return false;
@@ -132,7 +132,7 @@ var playSample = (function() {
             // On load end
             function() {
               socket.send(JSON.stringify({'action': 'stop'}));
-            }/*,
+            }/* ,
             samplingRate*/
             );
         },
@@ -151,22 +151,25 @@ var playSample = (function() {
 })();
 
 exports.initPlaySample = function(ctx) {
-  var keywords1 = LOOKUP_TABLE[ctx.currentModel][2].split(",");
-  var keywords2 = LOOKUP_TABLE[ctx.currentModel][3].split(",");
+  var keywords1 = LOOKUP_TABLE[ctx.currentModel][2].split(',');
+  var keywords2 = LOOKUP_TABLE[ctx.currentModel][3].split(',');
   var set = {};
 
-  for(var i = keywords1.length - 1; i >= 0; --i) {
+  for (var i = keywords1.length - 1; i >= 0; --i) {
     var word = keywords1[i].trim();
     set[word] = word;
   }
 
-  for(var i = keywords2.length - 1; i >= 0; --i) {
+  // eslint-disable-next-line no-redeclare
+  for (var i = keywords2.length - 1; i >= 0; --i) {
+    // eslint-disable-next-line no-redeclare
     var word = keywords2[i].trim();
     set[word] = word;
   }
 
   var keywords = [];
-  for(var word in set) {
+  // eslint-disable-next-line no-redeclare
+  for (var word in set) { // eslint-disable-line guard-for-in
     keywords.push(set[word]);
   }
   keywords.sort();
@@ -178,7 +181,7 @@ exports.initPlaySample = function(ctx) {
     el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
-    el.click( function() {
+    el.click(function() {
       playSample(ctx.token, imageTag, 'sample-1', iconName, fileName, keywords, function(result) {
         console.log('Play sample result', result);
       });
@@ -192,7 +195,7 @@ exports.initPlaySample = function(ctx) {
     el.off('click');
     var iconName = 'play';
     var imageTag = el.find('img');
-    el.click( function() {
+    el.click(function() {
       playSample(ctx.token, imageTag, 'sample-2', iconName, fileName, keywords, function(result) {
         console.log('Play sample result', result);
       });

@@ -16,11 +16,11 @@
 
 'use strict';
 
-var express      = require('express'),
-    app          = express(),
-    vcapServices = require('vcap_services'),
-    extend       = require('util')._extend,
-    watson       = require('watson-developer-cloud');
+var express = require('express'),
+  app = express(),
+  vcapServices = require('vcap_services'),
+  extend = require('util')._extend,
+  watson = require('watson-developer-cloud');
 
 // load environment properties from a .env file for local development
 require('dotenv').load({silent: true});
@@ -39,8 +39,8 @@ var config = extend({
 var authService = watson.authorization(config);
 
 app.get('/', function(req, res) {
-  res.render('index', { 
-    ct: req._csrfToken, 
+  res.render('index', {
+    ct: req._csrfToken,
     GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID
   });
 });

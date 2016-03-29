@@ -15,7 +15,7 @@
  */
 
 'use strict';
-module.exports = function (app) {
+module.exports = function(app) {
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
@@ -26,7 +26,7 @@ module.exports = function (app) {
   });
 
   // error handler
-  app.use(function(err, req, res, next) {
+  app.use(function(err, req, res, next) { // eslint-disable-line no-unused-vars
     var error = {
       code: err.code || 500,
       error: err.error || err.message

@@ -25,14 +25,14 @@ var utils = require('../utils');
 // Need to remove the view logic here and move this out to the handlefileupload controller
 var handleSelectedFile = exports.handleSelectedFile = (function() {
 
-    var running = false;
-    localStorage.setItem('currentlyDisplaying', 'false');
+  var running = false;
+  localStorage.setItem('currentlyDisplaying', 'false');
 
-    return function(token, file) {
+  return function(token, file) {
 
     $.publish('clearscreen');
 
-    
+
     localStorage.setItem('currentlyDisplaying', 'fileupload');
     running = true;
 
@@ -43,16 +43,16 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     uploadText.text('Stop Transcribing');
 
     function restoreUploadTab() {
-      clearInterval(timer);
-      effects.restoreImage(uploadImageTag, 'upload');
-      uploadText.text('Select Audio File');
-    }
+        clearInterval(timer);
+        effects.restoreImage(uploadImageTag, 'upload');
+        uploadText.text('Select Audio File');
+      }
 
     // Clear flashing if socket upload is stopped
     $.subscribe('hardsocketstop', function() {
-      restoreUploadTab();
-      running = false;
-    });
+        restoreUploadTab();
+        running = false;
+      });
 
     // Get current model
     var currentModel = localStorage.getItem('currentModel');
@@ -62,14 +62,15 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     var blobToText = new Blob([file]).slice(0, 4);
     var r = new FileReader();
     r.readAsText(blobToText);
+    var audio;
     r.onload = function() {
-      var contentType;
-      if (r.result === 'fLaC') {
+        var contentType;
+        if (r.result === 'fLaC') {
         contentType = 'audio/flac';
         showNotice('Notice: This browser does not support playing FLAC audio, so no audio will accompany the transcription.');
       } else if (r.result === 'RIFF') {
         contentType = 'audio/wav';
-        var audio = new Audio();
+        audio = new Audio();
         var wavBlob = new Blob([file], {type: 'audio/wav'});
         var wavURL = URL.createObjectURL(wavBlob);
         audio.src = wavURL;
@@ -80,14 +81,14 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         });
       } else if (r.result === 'OggS') {
         contentType = 'audio/ogg; codecs=opus';
-        var audio = new Audio();
+        audio = new Audio();
         var opusBlob = new Blob([file], {type: 'audio/ogg; codecs=opus'});
         var opusURL = URL.createObjectURL(opusBlob);
-        audio.src=opusURL;
+        audio.src = opusURL;
         audio.play();
         $.subscribe('hardsocketstop', function() {
-            audio.pause();
-            audio.currentTime = 0;
+          audio.pause();
+          audio.currentTime = 0;
         });
       } else {
         restoreUploadTab();
@@ -95,7 +96,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         localStorage.setItem('currentlyDisplaying', 'false');
         return;
       }
-      handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
+        handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
         var blob = new Blob([file]);
         var parseOptions = {
           file: blob
@@ -106,8 +107,8 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
             socket.send(chunk);
           },
           function isRunning() {
-            if(running)
-                return true;
+            if (running)
+              return true;
             else
                 return false;
           },
@@ -127,7 +128,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
           localStorage.setItem('currentlyDisplaying', 'false');
         }
       );
-    };
+      };
   };
 })();
 
@@ -145,15 +146,15 @@ exports.initFileUpload = function(ctx) {
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
-    if (currentlyDisplaying=='fileupload') {
+    if (currentlyDisplaying == 'fileupload') {
       console.log('HARD SOCKET STOP');
       $.publish('hardsocketstop');
       localStorage.setItem('currentlyDisplaying', 'false');
       return;
-    } else if (currentlyDisplaying=='sample') {
-      showError('Currently another file is playing, please stop the file or wait until it finishes'); 
+    } else if (currentlyDisplaying == 'sample') {
+      showError('Currently another file is playing, please stop the file or wait until it finishes');
       return;
-    } else if (currentlyDisplaying=='record') {
+    } else if (currentlyDisplaying == 'record') {
       showError('Currently audio is being recorded, please stop recording before playing a sample');
       return;
     }

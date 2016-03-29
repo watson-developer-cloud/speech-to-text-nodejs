@@ -17,10 +17,10 @@
 'use strict';
 
 // Module dependencies
-var express    = require('express'),
-  bodyParser   = require('body-parser');
+var express = require('express'),
+  bodyParser = require('body-parser');
 
-module.exports = function (app) {
+module.exports = function(app) {
   app.set('view engine', 'ejs');
   app.enable('trust proxy');
 
@@ -29,7 +29,7 @@ module.exports = function (app) {
     require('./security')(app);
 
   // Configure Express
-  app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
-  app.use(bodyParser.json({ limit: '1mb' }));
+  app.use(bodyParser.urlencoded({extended: true, limit: '1mb'}));
+  app.use(bodyParser.json({limit: '1mb'}));
   app.use(express.static(__dirname + '/../public'));
 };

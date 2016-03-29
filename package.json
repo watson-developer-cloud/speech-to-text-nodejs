@@ -53,12 +53,16 @@
   "scripts": {
     "start": "node app.js",
     "build": "browserify src/index.js | uglifyjs -nc > public/js/index.js",
-    "watch": "watchify -v -d -o public/js/index.js src/index.js"
+    "watch": "watchify -v -d -o public/js/index.js src/index.js",
+    "test": "npm run lint",
+    "lint": "eslint .",
+    "autofix": "eslint . --fix"
   },
   "devDependencies": {
     "browserify": "^12.0.1",
     "browserify-shim": "^3.8.12",
-    "watchify": "^3.6.1",
-    "uglifyjs": "^2.4.10"
+    "eslint": "^2.5.3",
+    "uglifyjs": "^2.4.10",
+    "watchify": "^3.6.1"
   }
 }

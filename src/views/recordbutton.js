@@ -36,11 +36,11 @@ exports.initRecordButton = function(ctx) {
     return function(evt) {
       // Prevent default anchor behavior
       evt.preventDefault();
-        
+
       var currentModel = localStorage.getItem('currentModel');
       var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
-      if (currentlyDisplaying=='sample'||currentlyDisplaying=='fileupload') {
+      if (currentlyDisplaying == 'sample' || currentlyDisplaying == 'fileupload') {
         showError('Currently another file is playing, please stop the file or wait until it finishes');
         return;
       }
