@@ -4,6 +4,7 @@
   "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
   "dependencies": {
     "body-parser": "~1.14.1",
+    "cf-deployment-tracker-client": "0.0.8",
     "cookie-parser": "^1.4.1",
     "csurf": "^1.8.3",
     "dotenv": "^2.0.0",
