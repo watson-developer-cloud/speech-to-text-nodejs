@@ -51,17 +51,21 @@
     "url": "https://github.com/watson-developer-cloud/speech-to-text-nodejs/issues"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node server.js",
     "build": "browserify src/index.js | uglifyjs -nc > public/js/index.js",
     "watch": "watchify -v -d -o public/js/index.js src/index.js",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run test-offline",
     "lint": "eslint .",
-    "autofix": "eslint . --fix"
+    "autofix": "eslint . --fix",
+    "test-offline": "mocha test/offline-test.js"
   },
   "devDependencies": {
     "browserify": "^12.0.1",
     "browserify-shim": "^3.8.12",
     "eslint": "^2.5.3",
+    "mocha": "^2.4.5",
+    "nock": "^7.7.2",
+    "supertest": "^1.2.0",
     "uglifyjs": "^2.4.10",
     "watchify": "^3.6.1"
   }

@@ -1,4 +1,8 @@
 language: node_js
 node_js:
 - 4
-
+before_install:
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] &&
+  openssl aes-256-cbc -K $encrypted_f8c8e47f2cf7_key -iv $encrypted_f8c8e47f2cf7_iv
+  -in .env.enc -out .env -d ||
+  true'
