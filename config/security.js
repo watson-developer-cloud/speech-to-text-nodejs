@@ -36,21 +36,24 @@ module.exports = function(app) {
   var secret = Math.random().toString(36).substring(7);
   app.use(cookieParser(secret));
 
-  // 4. csrf
+  // 4. csrf 
+  // part 1: generate a csrf token for homepage views
   var csrfProtection = csrf({cookie: true});
   app.get('/', csrfProtection, function(req, res, next) {
     req._csrfToken = req.csrfToken();
     next();
   });
+  // part 2: require token on /api/* requests
+  app.use('/api/', csrfProtection);
 
   // 5. rate limiting.
-  app.use('/api/', csrfProtection, rateLimit({
+  app.use('/api/', rateLimit({
     windowMs: 30 * 1000, // seconds
     delayMs: 0,
     max: 3,
     message: JSON.stringify({
       error:'Too many requests, please try again in 30 seconds.',
       code: 429
-    }),
+    })
   }));
 };

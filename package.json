@@ -44,6 +44,11 @@
     {
       "name": "Eric S. Bullington",
       "email": "esbullin@us.ibm.com"
+    },
+    {
+      "name": "Nathan Friedly",
+      "email": "nfriedly@us.ibm.com",
+      "website": "http://nfriedly.com/"
     }
   ],
   "license": "Apache-2.0",
