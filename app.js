@@ -39,7 +39,10 @@ var config = extend({
 var authService = watson.authorization(config);
 
 app.get('/', function(req, res) {
-  res.render('index', { ct: req._csrfToken });
+  res.render('index', { 
+    ct: req._csrfToken, 
+    GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID
+  });
 });
 
 // Get token using your credentials
