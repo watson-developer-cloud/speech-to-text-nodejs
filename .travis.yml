@@ -6,3 +6,18 @@ before_install:
   openssl aes-256-cbc -K $encrypted_f8c8e47f2cf7_key -iv $encrypted_f8c8e47f2cf7_iv
   -in .env.enc -out .env -d ||
   true'
+sudo: true
+env:
+  global:
+  - CF_APP=speech-to-text-demo
+  - CF_API=https://api.ng.bluemix.net
+  - CF_USERNAME=nfriedly@us.ibm.com
+  - CF_ORGANIZATION=WatsonPlatformServices
+  - CF_SPACE=demos
+  - secure: "JAwo5MjGbyw3+EgzrwU//1jd+jQnBQnhaMvh7VrEi5bs2y7ldFRdWUTo/aoc3J0uClY7ljkA4U3O4w5tAu/74hbjXMmareJYQ1CzGOoQmK45MacnDL6J74LJInOdJU7r0swVuuA1QQfivaMTAgoqQ1LU5QUG8XFE2xEmzTHJ/F0="
+before_deploy: npm install -g cf-blue-green
+deploy:
+  provider: script
+  script: cf-blue-green-travis
+  on:
+    branch: master
