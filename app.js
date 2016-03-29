@@ -22,6 +22,9 @@ var express      = require('express'),
     extend       = require('util')._extend,
     watson       = require('watson-developer-cloud');
 
+// load environment properties from a .env file for local development
+require('dotenv').load({silent: true});
+
 // Bootstrap application settings
 require('./config/express')(app);
 
@@ -29,8 +32,8 @@ require('./config/express')(app);
 var config = extend({
   version: 'v1',
   url: 'https://stream.watsonplatform.net/speech-to-text/api',
-  username: '<username>',
-  password: '<password>'
+  username: process.env.STT_USERNAME || '<username>',
+  password: process.env.STT_PASSWORD || '<password>'
 }, vcapServices.getCredentials('speech_to_text'));
 
 var authService = watson.authorization(config);

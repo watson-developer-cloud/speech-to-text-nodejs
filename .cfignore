@@ -1,3 +1,5 @@
 node_modules
 uploads/
 logs/access.log
+.env
+npm-debug.log
