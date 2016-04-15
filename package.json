@@ -4,12 +4,14 @@
   "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
   "dependencies": {
     "body-parser": "~1.14.1",
+    "browserify-shim": "^3.8.12",
     "cf-deployment-tracker-client": "0.0.8",
     "cookie-parser": "^1.4.1",
     "csurf": "^1.8.3",
     "dotenv": "^2.0.0",
     "ejs": "^2.3.4",
     "express": "~4.13.3",
+    "express-browserify": "^1.0.2",
     "express-rate-limit": "^2.1.0",
     "express-secure-only": "^0.2.1",
     "helmet": "^1.3.0",
@@ -58,21 +60,15 @@
   },
   "scripts": {
     "start": "node server.js",
-    "build": "browserify src/index.js | uglifyjs -nc > public/js/index.js",
-    "watch": "watchify -v -d -o public/js/index.js src/index.js",
     "test": "npm run lint && npm run test-offline",
     "lint": "eslint .",
     "autofix": "eslint . --fix",
     "test-offline": "mocha test/offline-test.js"
   },
   "devDependencies": {
-    "browserify": "^12.0.1",
-    "browserify-shim": "^3.8.12",
     "eslint": "^2.5.3",
     "mocha": "^2.4.5",
     "nock": "^7.7.2",
-    "supertest": "^1.2.0",
-    "uglifyjs": "^2.4.10",
-    "watchify": "^3.6.1"
+    "supertest": "^1.2.0"
   }
 }

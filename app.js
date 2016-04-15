@@ -21,12 +21,18 @@ var express = require('express'),
   vcapServices = require('vcap_services'),
   extend = require('util')._extend,
   watson = require('watson-developer-cloud');
+var expressBrowserify = require('express-browserify');
 
 // load environment properties from a .env file for local development
 require('dotenv').load({silent: true});
 
 // Bootstrap application settings
 require('./config/express')(app);
+
+// automatically compile and serve the front-end js
+app.get('/js/index.js', expressBrowserify('src/index.js', {
+  watch: process.env.NODE_ENV !== 'production'
+}));
 
 // For local development, replace username and password
 var config = extend({
