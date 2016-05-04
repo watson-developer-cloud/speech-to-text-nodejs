@@ -40,6 +40,7 @@ stages:
       application: ${CF_APP}
     script: |-
       #!/bin/bash
+      cf create-service speech_to_text standard speech-to-text-service-standard
       cf push "${CF_APP}"
 
       # View logs
