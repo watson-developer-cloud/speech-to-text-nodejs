@@ -32,11 +32,6 @@ Give it a try! Click the button below to fork into IBM DevOps Services and deplo
 
 4. Install [Node.js](http://nodejs.org/)
 
-5. Install project dependencies and build browser application:
-  ```sh
-  $ npm install && npm run build
-  ```
-
 6. Connect to Bluemix in the command line tool.
   ```sh
   $ cf api https://api.ng.bluemix.net
@@ -101,14 +96,9 @@ See the full [Getting Started][getting_started] documentation for more details, 
     $ npm install
     ```
 
-4. Then, build the browser application using [Browserify][browserify]:
-    ```sh
-    $ npm run build
-    ```
-
 5. Start the application:
     ```sh
-    $ node app.js
+    $ npm start
     ```
 
 6. Go to: [http://localhost:3000](http://localhost:3000)
