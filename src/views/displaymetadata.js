@@ -708,11 +708,19 @@ function initTextScroll() {
 }
 
 function onResize() {
-  var x_ratio = $('#canvas').width() / canvas.width;
-  var y_ratio = $('#canvas').height() / canvas.height;
-  canvas.width = $('#canvas').width();
-  canvas.height = $('#canvas').height();
-  ctx.setTransform(x_ratio, 0, 0, y_ratio, 0, 0);
+  var dpr = window.devicePixelRatio || 1;
+  var bsr = ctx.webkitBackingStorePixelRatio ||
+  ctx.mozBackingStorePixelRatio ||
+  ctx.msBackingStorePixelRatio ||
+  ctx.oBackingStorePixelRatio ||
+  ctx.backingStorePixelRatio || 1;
+  var ratio = dpr / bsr;
+  console.log('dpr/bsr =', ratio);
+  var w = $("#canvas").width();
+  var h = $("#canvas").height();
+  canvas.width = w * ratio;
+  canvas.height = h * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   draw();
 }
 
