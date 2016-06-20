@@ -716,8 +716,8 @@ function onResize() {
   ctx.backingStorePixelRatio || 1;
   var ratio = dpr / bsr;
   console.log('dpr/bsr =', ratio);
-  var w = $("#canvas").width();
-  var h = $("#canvas").height();
+  var w = $('#canvas').width();
+  var h = $('#canvas').height();
   canvas.width = w * ratio;
   canvas.height = h * ratio;
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
