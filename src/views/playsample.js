@@ -36,7 +36,8 @@ var LOOKUP_TABLE = {
   'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav', 'sistema da ibm, setor bancário, qualidade, necessidades dos clientes', 'médicos, informações, planos de tratamento'],
   'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav', 'cozinha, inovadoras receitas, criatividade', 'sistema, treinado por especialistas, setores diferentes'],
   'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav', '沃 森 是 认知 , 大 数据 分析 能力', '技术 , 语音 , 的 用户 体验 , 人们 , 手机'],
-  'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '公司 的 支持 , 理财 计划', '假期 , 安排']
+    'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '公司 的 支持 , 理财 计划', '假期 , 安排'],
+    'fr-FR_BroadbandModel': ['fr-FR_Broadband_sample1.wav', 'fr-FR_Broadband_sample2.wav', 'liberté d\'opinion , frontières , idées', 'loisirs , durée du travail']  
 };
 
 var playSample = (function() {
