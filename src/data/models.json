@@ -50,6 +50,13 @@
          "description": "Spanish narrowband model."
       },
       {
+         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel", 
+         "rate": 16000, 
+         "name": "fr-FR_BroadbandModel", 
+         "language": "fr-FR", 
+         "description": "French broadband model."
+      },
+      {
          "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_BroadbandModel", 
          "rate": 16000, 
          "name": "ja-JP_BroadbandModel", 

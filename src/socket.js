@@ -42,7 +42,6 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
   // var sessionPermissionsQueryParam = sessionPermissions ? '0' : '1';
   // TODO: add '&X-Watson-Learning-Opt-Out=' + sessionPermissionsQueryParam once
   // we find why it's not accepted as query parameter
-  // var url = options.serviceURI || 'wss://stream-d.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token=';
   var url = options.serviceURI || 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token=';
   url += token + '&model=' + model;
   console.log('URL model', model);
