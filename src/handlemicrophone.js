@@ -57,7 +57,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'keywords_threshold': keywords_threshold,
     'keywords': keywords
   };
-  //options.message["smart_formatting"]=true;
+  options.message["smart_formatting"]=true;
   options.model = model;
 
   function onOpen(socket) {
