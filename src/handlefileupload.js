@@ -53,9 +53,9 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     'inactivity_timeout': 600,
     'word_alternatives_threshold': 0.001,
     'keywords_threshold': keywords_threshold,
-    'keywords': keywords
+    'keywords': keywords,
+    'smart_formatting': true
   };
-  options.message["smart_formatting"]=true;
   options.model = model;
 
   function onOpen() {

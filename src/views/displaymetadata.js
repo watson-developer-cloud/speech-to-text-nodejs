@@ -827,7 +827,7 @@ exports.showResult = function(msg, baseString, model) {
 
     // apply mappings to beautify
     text = text.replace(/%HESITATION\s/g, '');
-    text = text.replace(/([^*])\1{2,}/g, '');
+    //text = text.replace(/([^*])\1{2,}/g, '');   // seems to be getting in the way of smart formatting, 1000101 is converted to 1101
 
     if (msg.results[0].final) {
       console.log('-> ' + text);
