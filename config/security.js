@@ -19,8 +19,6 @@
 // security.js
 var secure = require('express-secure-only'),
   rateLimit = require('express-rate-limit'),
-  csrf = require('csurf'),
-  cookieParser = require('cookie-parser'),
   helmet = require('helmet');
 
 module.exports = function(app) {
@@ -31,20 +29,6 @@ module.exports = function(app) {
 
   // 2. helmet with defaults
   app.use(helmet());
-
-  // 3. setup cookies
-  var secret = Math.random().toString(36).substring(7);
-  app.use(cookieParser(secret));
-
-  // 4. csrf
-  // part 1: generate a csrf token for homepage views
-  var csrfProtection = csrf({cookie: true});
-  app.get('/', csrfProtection, function(req, res, next) {
-    req._csrfToken = req.csrfToken();
-    next();
-  });
-  // part 2: require token on /api/* requests
-  app.use('/api/', csrfProtection);
 
   // 5. rate limiting.
   app.use('/api/', rateLimit({

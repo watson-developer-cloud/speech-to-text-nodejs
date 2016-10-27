@@ -26,19 +26,13 @@ module.exports = function(app) {
   });
 
   // error handler
-  app.use(function(err, req, res, next) { // eslint-disable-line no-unused-vars
-    var error = {
-      code: err.code || 500,
-      error: err.error || err.message
-    };
-    console.log('error:', error);
-
-    if (err.code === 'EBADCSRFTOKEN') {
-      error = {
-        code: 403,
-        error: 'http://goo.gl/mGOksD'
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, req, res, next) => {
+      const error = {
+        // node.js will throw if the http status code is invalid
+        code: typeof err.code === 'number' && err.code >= 100 && err.code <= 999 ? err.code : 500,
+        error: err.error || err.message,
       };
-    }
     res.status(error.code).json(error);
   });
 

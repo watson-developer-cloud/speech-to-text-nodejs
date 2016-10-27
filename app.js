@@ -29,11 +29,6 @@ require('dotenv').load({silent: true});
 // Bootstrap application settings
 require('./config/express')(app);
 
-// automatically compile and serve the front-end js
-app.get('/js/index.js', expressBrowserify('src/index.js', {
-  watch: process.env.NODE_ENV !== 'production'
-}));
-
 // For local development, replace username and password
 var config = extend({
   version: 'v1',
@@ -45,10 +40,7 @@ var config = extend({
 var authService = watson.authorization(config);
 
 app.get('/', function(req, res) {
-  res.render('index', {
-    ct: req._csrfToken,
-    GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID
-  });
+  res.render('index');
 });
 
 // Get token using your credentials

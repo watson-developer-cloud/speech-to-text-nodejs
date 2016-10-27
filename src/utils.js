@@ -17,7 +17,6 @@
 'use strict';
 
 // For non-view logic
-var $ = require('jquery');
 
 var fileBlock = function(_offset, length, _file, readChunk) {
   var r = new FileReader();
