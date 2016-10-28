@@ -30,13 +30,24 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   $.publish('clearscreen');
 
-  // Test out websocket
-  var baseString = '';
+  var result = {};
+  result.text = '';
+  result.speakers = '';
   var baseJSON = '';
 
+  $.subscribe('showtext', function() {
+    var $results = $('#resultsText');
+    $results.html(result.text);
+  });
+  
+  $.subscribe('showspeakers', function() {
+    var $results = $('#resultsText');
+    $results.html(result.speakers);
+  });
+  
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.val(baseJSON);
+    $resultsJSON.text(baseJSON);
   });
 
   var keywords = display.getKeywordsToSearch();
@@ -76,7 +87,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   function onMessage(msg) {
     if (msg.results) {
       // Convert to closure approach
-      baseString = display.showResult(msg, baseString, model);
+      result = display.showResult(msg, result, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
     }

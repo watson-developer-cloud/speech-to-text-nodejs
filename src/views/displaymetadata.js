@@ -690,7 +690,7 @@ $('#show_alternate_words').click(function(/*e*/) {
 
 exports.showJSON = function(baseJSON) {
   if ($('.nav-tabs .active').text() == 'JSON') {
-    $('#resultsJSON').val(baseJSON);
+    $('#resultsJSON').text(baseJSON);
   }
 };
 
@@ -820,7 +820,7 @@ function onTimer() {
   }
 }
 
-exports.showResult = function(msg, baseString, model) {
+exports.showResult = function(msg, result, model) {
   if (msg.results && msg.results.length > 0) {
     //var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
@@ -846,13 +846,12 @@ exports.showResult = function(msg, baseString, model) {
 
     // if all words are mapped to nothing then there is nothing else to do
     if ((text.length == 0) || (/^\s+$/.test(text))) {
-      return baseString;
+      return result;
     }
 
     var japanese = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
 
-    // capitalize first word
-    // if final results, append a new paragraph
+    // capitalize first word if final results, append a new paragraph
     if (msg.results && msg.results[0] && msg.results[0].final) {
       text = text.slice(0, -1);
       text = text.charAt(0).toUpperCase() + text.substring(1);
@@ -863,20 +862,35 @@ exports.showResult = function(msg, baseString, model) {
       else {
         text = text.trim() + '. ';
       }
-      baseString += text;
-      $('#resultsText').val(baseString);
+      
+      result.text += text;
+      result.speakers += "<div class='speakerInfo'><img src='images/speaker.svg'/><span>speaker #:</div>" + text;
+      
+      if ($('.nav-tabs .active').text() == 'Text') {
+        $('#resultsText').html(result.text);
+      }
+      else if($('.nav-tabs .active').text() == 'Speakers')  {
+        $('#resultsText').html(result.speakers);
+      }
     }
     else {
       if (japanese) {
         text = text.replace(/ /g,''); // remove whitespaces
-      } else {
-          text = text.charAt(0).toUpperCase() + text.substring(1);
+      } 
+      else {
+        text = text.charAt(0).toUpperCase() + text.substring(1);
       }
-      $('#resultsText').val(baseString + text);
+
+      if ($('.nav-tabs .active').text() == 'Text') {
+        $('#resultsText').html(result.text + text);
+      }
+      else if($('.nav-tabs .active').text() == 'Speakers')  {
+        $('#resultsText').html(result.speakers + text);
+      }
     }
   }
   updateTextScroll();
-  return baseString;
+  return result;
 };
 
 exports.getKeywordsToSearch = function() {

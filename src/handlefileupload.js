@@ -22,19 +22,31 @@ var initSocket = require('./socket').initSocket;
 exports.handleFileUpload = function(type, token, model, file, contentType, callback, onend) {
   // Set currentlyDisplaying to prevent other sockets from opening
   localStorage.setItem('currentlyDisplaying', type);
-
+  
   $.subscribe('progress', function(evt, data) {
     console.log('progress: ', data);
   });
 
   console.log('contentType', contentType);
 
-  var baseString = '';
+  var result = {};
+  result.text = '';
+  result.speakers = '';
   var baseJSON = '';
 
+  $.subscribe('showtext', function() {
+    var $results = $('#resultsText');
+    $results.html(result.text);
+  });
+  
+  $.subscribe('showspeakers', function() {
+    var $results = $('#resultsText');
+    $results.html(result.speakers);
+  });
+  
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.val(baseJSON);
+    $resultsJSON.text(baseJSON);
   });
 
   var keywords = display.getKeywordsToSearch();
@@ -70,7 +82,7 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   function onMessage(msg) {
     if (msg.results) {
       // Convert to closure approach
-      baseString = display.showResult(msg, baseString, model);
+      result = display.showResult(msg, result, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
     }
