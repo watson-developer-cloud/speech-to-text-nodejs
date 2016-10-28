@@ -820,7 +820,12 @@ function onTimer() {
   }
 }
 
-exports.showResult = function(msg, result, model) {
+exports.showResult = function(msg, result, speaker_labels, model) {
+  if(speaker_labels) {
+    console.log('speaker_labels=', speaker_labels);
+    console.log('result=', result);
+  }
+
   if (msg.results && msg.results.length > 0) {
     //var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';

@@ -66,7 +66,8 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     'word_alternatives_threshold': 0.001,
     'keywords_threshold': keywords_threshold,
     'keywords': keywords,
-    'smart_formatting': true
+    'smart_formatting': true,
+    'speaker_labels': true
   };
   options.model = model;
 
@@ -82,9 +83,12 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   function onMessage(msg) {
     if (msg.results) {
       // Convert to closure approach
-      result = display.showResult(msg, result, model);
+      result = display.showResult(msg, result, null, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
+    }
+    else if(msg.speaker_labels) {
+      result = display.showResult(msg, result, msg.speaker_labels, model);
     }
   }
 
