@@ -18,8 +18,6 @@
 
 var express = require('express'),
   app = express(),
-  vcapServices = require('vcap_services'),
-  extend = require('util')._extend,
   watson = require('watson-developer-cloud');
 var expressBrowserify = require('express-browserify');
 
@@ -29,31 +27,27 @@ require('dotenv').load({silent: true});
 // Bootstrap application settings
 require('./config/express')(app);
 
-// For local development, replace username and password
-var config = extend({
-  version: 'v1',
-  url: 'https://stream.watsonplatform.net/speech-to-text/api',
-  username: process.env.STT_USERNAME || '<username>',
-  password: process.env.STT_PASSWORD || '<password>'
-}, vcapServices.getCredentials('speech_to_text'));
+var stt = new watson.SpeechToTextV1({
+  // if left undefined, username and password to fall back to the SPEECH_TO_TEXT_USERNAME and
+  // SPEECH_TO_TEXT_PASSWORD environment properties, and then to VCAP_SERVICES (on Bluemix)
+  // username: '',
+  // password: ''
+});
 
-var authService = watson.authorization(config);
+var authService = new watson.AuthorizationV1(stt.getCredentials());
 
 app.get('/', function(req, res) {
   res.render('index');
 });
 
 // Get token using your credentials
-app.post('/api/token', function(req, res, next) {
-  authService.getToken({url: config.url}, function(err, token) {
+app.get('/api/token', function(req, res, next) {
+  authService.getToken(function(err, token) {
     if (err)
       next(err);
     else
       res.send(token);
   });
 });
-
-// error-handler settings
-require('./config/error-handler')(app);
 
 module.exports = app;
