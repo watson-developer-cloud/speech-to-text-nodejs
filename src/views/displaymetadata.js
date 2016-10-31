@@ -43,7 +43,6 @@ var rightArrowEnabled = false;
 var worker = null;
 var runTimer = false;
 var scrolled = false;
-// var textScrolled = false;
 var pushed = 0;
 var popped = 0;
 
@@ -820,12 +819,7 @@ function onTimer() {
   }
 }
 
-exports.showResult = function(msg, result, speaker_labels, model) {
-  if(speaker_labels) {
-    console.log('speaker_labels=', speaker_labels);
-    console.log('result=', result);
-  }
-
+exports.showResult = function(msg, result, model) {
   if (msg.results && msg.results.length > 0) {
     //var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
@@ -868,14 +862,11 @@ exports.showResult = function(msg, result, speaker_labels, model) {
         text = text.trim() + '. ';
       }
       
-      result.text += text;
-      result.speakers += "<div class='speakerInfo'><img src='images/speaker.svg'/><span>speaker #:</div>" + text;
-      
+      result.timestamps = msg.results[0].alternatives[0].timestamps;
+      result.transcript += text;
+        
       if ($('.nav-tabs .active').text() == 'Text') {
-        $('#resultsText').html(result.text);
-      }
-      else if($('.nav-tabs .active').text() == 'Speakers')  {
-        $('#resultsText').html(result.speakers);
+        $('#resultsText').html(result.transcript);
       }
     }
     else {
@@ -887,13 +878,51 @@ exports.showResult = function(msg, result, speaker_labels, model) {
       }
 
       if ($('.nav-tabs .active').text() == 'Text') {
-        $('#resultsText').html(result.text + text);
-      }
-      else if($('.nav-tabs .active').text() == 'Speakers')  {
-        $('#resultsText').html(result.speakers + text);
+        $('#resultsText').html(result.transcript + text);
       }
     }
   }
+  
+  if(result.speaker_labels) {
+    // console.log('result=', result);
+    var speakers = '';
+    var activeSpeakerLabel = -1;
+    var j_start = 0;
+    for(var i = 0; i < result.speaker_labels.length; i++) {
+      var sl_item = result.speaker_labels[i];
+      var sl_from = sl_item.from;
+      var sl_to = sl_item.to;
+      var sl_final = sl_item.final;
+      var speakerLabel = sl_item.speaker_label;
+      if(speakerLabel != -1 && activeSpeakerLabel != speakerLabel) {
+        if(activeSpeakerLabel != -1) {
+          speakers += '</div>';
+        }
+        activeSpeakerLabel = speakerLabel;
+        speakers += require('util').format("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
+      }
+
+      for(var j = j_start; j < result.timestamps.length; j++) {
+        var t_item = result.timestamps[j];
+        var token = t_item[0];
+        var t_from = t_item[1];
+        var t_to = t_item[2];
+        if(sl_from == t_from && sl_to == t_to) {
+          speakers += token + ' ';
+          j_start = j + 1;
+          break;
+        }
+      }
+      if(sl_final) {
+        speakers += '</div>';
+      }
+    }
+    result.speakers += speakers;
+    if($('.nav-tabs .active').text() == 'Speakers')  {
+      $('#resultsText').html(result.speakers);
+    }
+  }
+  
   updateTextScroll();
   return result;
 };

@@ -30,13 +30,15 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   console.log('contentType', contentType);
 
   var result = {};
-  result.text = '';
+  result.speaker_labels = null;
+  result.timestamps = [];
+  result.transcript = '';
   result.speakers = '';
   var baseJSON = '';
 
   $.subscribe('showtext', function() {
     var $results = $('#resultsText');
-    $results.html(result.text);
+    $results.html(result.transcript);
   });
   
   $.subscribe('showspeakers', function() {
@@ -82,13 +84,14 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
 
   function onMessage(msg) {
     if (msg.results) {
-      // Convert to closure approach
-      result = display.showResult(msg, result, null, model);
+      result.speaker_labels = null;
+      result = display.showResult(msg, result, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
     }
     else if(msg.speaker_labels) {
-      result = display.showResult(msg, result, msg.speaker_labels, model);
+      result.speaker_labels = msg.speaker_labels;
+      result = display.showResult(msg, result, model);
     }
   }
 
