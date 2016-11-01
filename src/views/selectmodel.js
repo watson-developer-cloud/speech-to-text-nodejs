@@ -20,7 +20,6 @@ var initPlaySample = require('./playsample').initPlaySample;
 
 exports.initSelectModel = function(ctx) {
 
-
   ctx.models.forEach(function(model) {
     $('#dropdownMenuList').append(
       $('<li>')
@@ -29,10 +28,13 @@ exports.initSelectModel = function(ctx) {
           $('<a>').attr('role', 'menu-item')
             .attr('href', '/')
             .attr('data-model', model.name)
-            .append(model.description.substring(0, model.description.length - 1), model.rate == 8000 ? ' (8KHz)' : ' (16KHz)'))
-          );
+            .append(model.description.substring(0, model.description.length - 1), model.rate == 8000 ? ' (8KHz)' : ' (16KHz)')
+        )
+    );
   });
-
+  
+  var m = getModelDetails(ctx, ctx.currentModel);
+  console.log(m);
 
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
@@ -40,6 +42,10 @@ exports.initSelectModel = function(ctx) {
     console.log('Change view', $(evt.target).text());
     var newModelDescription = $(evt.target).text();
     var newModel = $(evt.target).data('model');
+
+    var m = getModelDetails(ctx, newModel);
+    console.log(m);
+
     $('#dropdownMenuDefault').empty().text(newModelDescription);
     $('#dropdownMenu1').dropdown('toggle');
     localStorage.setItem('currentModel', newModel);
@@ -50,5 +56,14 @@ exports.initSelectModel = function(ctx) {
     $('#tb_keywords').change();
     $.publish('clearscreen');
   });
-
+  
+  function getModelDetails(ctx, name) {
+    for(var i = 0; i < ctx.models.length; i++) {
+      var model = ctx.models[i];
+      if(model.name == name) {
+        return model;
+      }
+    }
+    return null;
+  }
 };

@@ -899,7 +899,8 @@ exports.showResult = function(msg, result, model) {
           speakers += '</div>';
         }
         activeSpeakerLabel = speakerLabel;
-        speakers += require('util').format("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
+        speakers += require('util').format("<div><span class='speakerInfo'>Speaker %d:</span>", activeSpeakerLabel);
+  //    speakers += require('util').format("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
       }
 
       for(var j = j_start; j < result.timestamps.length; j++) {
