@@ -35,6 +35,9 @@ exports.initSelectModel = function(ctx) {
   
   var m = getModelDetails(ctx, ctx.currentModel);
   console.log(m);
+//  if(m.name != 'en-US_NarrowbandModel') {
+//    $('li.speakersTab').hide();
+//  }
 
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
@@ -43,7 +46,14 @@ exports.initSelectModel = function(ctx) {
     var newModelDescription = $(evt.target).text();
     var newModel = $(evt.target).data('model');
 
+    resetTabs();
     var m = getModelDetails(ctx, newModel);
+    if(m.name == 'en-US_NarrowbandModel') {
+      $('li.speakersTab').show();
+    }
+    else {
+      $('li.speakersTab').hide();
+    }
     console.log(m);
 
     $('#dropdownMenuDefault').empty().text(newModelDescription);
@@ -65,5 +75,11 @@ exports.initSelectModel = function(ctx) {
       }
     }
     return null;
+  }
+  
+  function resetTabs() {
+    $("#transcription_text > form > div > ul > li:eq(0)").addClass('active');
+    $("#transcription_text > form > div > ul > li:eq(1)").removeClass('active');
+    $("#transcription_text > form > div > ul > li:eq(2)").removeClass('active');
   }
 };

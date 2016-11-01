@@ -443,3 +443,7 @@ table.kws_occurrences {
   padding-right:5px;
 }
 
+li.speakersTab {
+  display:none;
+}
+

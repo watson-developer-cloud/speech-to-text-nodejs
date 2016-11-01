@@ -54,6 +54,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   var keywords = display.getKeywordsToSearch();
   var keywords_threshold = keywords.length == 0 ? null : 0.01;
+  var speaker_labels = $('li.speakersTab').is(':visible'); 
 
   var options = {};
   options.token = token;
@@ -70,7 +71,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'keywords_threshold': keywords_threshold,
     'keywords': keywords,
     'smart_formatting': true,
-    'speaker_labels': true
+    'speaker_labels': speaker_labels
   };
   options.model = model;
 
