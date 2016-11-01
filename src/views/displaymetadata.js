@@ -45,6 +45,7 @@ var runTimer = false;
 var scrolled = false;
 var pushed = 0;
 var popped = 0;
+var activeSpeakerLabel = -1;
 
 ctx.font = defaultFont;
 
@@ -720,6 +721,7 @@ function onResize() {
   canvas.width = w * ratio;
   canvas.height = h * ratio;
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  hslider.max = scene.width() - w + INITIAL_OFFSET_X;
   draw();
 }
 
@@ -791,7 +793,8 @@ exports.initDisplayMetadata = function() {
 
 function showCNsKWS(bins, kws) {
   bins.forEach(parseBin);
-  hslider.max = scene.width() - canvas.width + INITIAL_OFFSET_X;
+  var w = $('#canvas').width();
+  hslider.max = scene.width() - w + INITIAL_OFFSET_X;
   hslider.value = hslider.max;
   onHScroll();
 
@@ -886,21 +889,19 @@ exports.showResult = function(msg, result, model) {
   if(result.speaker_labels) {
     // console.log('result=', result);
     var speakers = '';
-    var activeSpeakerLabel = -1;
     var j_start = 0;
     for(var i = 0; i < result.speaker_labels.length; i++) {
       var sl_item = result.speaker_labels[i];
       var sl_from = sl_item.from;
       var sl_to = sl_item.to;
-      var sl_final = sl_item.final;
       var speakerLabel = sl_item.speaker_label;
       if(speakerLabel != -1 && activeSpeakerLabel != speakerLabel) {
         if(activeSpeakerLabel != -1) {
           speakers += '</div>';
         }
         activeSpeakerLabel = speakerLabel;
-        speakers += require('util').format("<div><span class='speakerInfo'>Speaker %d:</span>", activeSpeakerLabel);
-  //    speakers += require('util').format("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
+   //     speakers += require('util').format("<div><span class='speakerInfo'>Speaker %d:</span>", activeSpeakerLabel);
+        speakers += require('util').format("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
       }
 
       for(var j = j_start; j < result.timestamps.length; j++) {
@@ -914,7 +915,8 @@ exports.showResult = function(msg, result, model) {
           break;
         }
       }
-      if(sl_final) {
+
+      if(i == result.speaker_labels.length - 1) {
         speakers += '</div>';
       }
     }
@@ -936,6 +938,7 @@ $.subscribe('clearscreen', function() {
   clearScene();
   clearDetectedKeywords();
   resetWorker();
+  activeSpeakerLabel = -1;
 });
 
 $(window).resize(function() {
