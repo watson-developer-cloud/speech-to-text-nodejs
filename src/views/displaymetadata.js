@@ -896,7 +896,7 @@ exports.showResult = function(msg, result, model) {
     }
   }
   else if(msg.speaker_labels && msg.speaker_labels.length > 0) {
-    console.log(msg.speaker_labels, msg.speaker_labels);
+    console.log('msg.speaker_labels=', msg.speaker_labels);
 
     var speakers = '';
     var isFinal = false;
