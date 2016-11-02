@@ -17,6 +17,8 @@
 /* eslint no-invalid-this: 0, brace-style: 0, dot-notation: 0, spaced-comment:0 */
 'use strict';
 
+var printf = require('util').format;
+
 const INITIAL_OFFSET_X = 30;
 const INITIAL_OFFSET_Y = 30;
 const fontSize = 16;
@@ -900,8 +902,11 @@ exports.showResult = function(msg, result, model) {
           speakers += '</div>';
         }
         activeSpeakerLabel = speakerLabel;
-   //     speakers += require('util').format("<div><span class='speakerInfo'>Speaker %d:</span>", activeSpeakerLabel);
-        speakers += require('util').format("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
+        var colorClass = printf('speakerColor_%d', activeSpeakerLabel);
+   //   speakers += printf("<div class='%s'><span class='speakerInfo'>Speaker %d:</span>", colorClass, activeSpeakerLabel);
+        speakers += printf("<div><span class='speakerInfo %s'>Speaker %d:</span>", colorClass, activeSpeakerLabel);
+   //   speakers += printf("<div><span class='speakerInfo'>Speaker %d:</span>", activeSpeakerLabel);
+   //   speakers += printf("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
       }
 
       for(var j = j_start; j < result.timestamps.length; j++) {

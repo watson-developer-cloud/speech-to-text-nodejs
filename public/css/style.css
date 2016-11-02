@@ -431,10 +431,25 @@ table.kws_occurrences {
 }
 
 .speakerInfo {
-  /*display:block;*/
   display:inline;
   font-weight:bold;
   padding-right:5px;
+}
+
+.speakerColor_0 {
+  color:#5e9911;
+}
+
+.speakerColor_1 {
+  color:#6537f0;
+}
+
+.speakerColor_2 {
+  color:#ed37f0;
+}
+
+.speakerColor_3 {
+  color:#f19027;
 }
 
 .speakerInfo img {
