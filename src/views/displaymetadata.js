@@ -48,6 +48,7 @@ var scrolled = false;
 var pushed = 0;
 var popped = 0;
 var activeSpeakerLabel = -1;
+var transcribedTokens = {}; // key: 'from' time stamp, value: recognized token
 
 ctx.font = defaultFont;
 
@@ -698,8 +699,10 @@ exports.showJSON = function(baseJSON) {
 
 function updateTextScroll(){
   if (!scrolled){
-    var element = $('#resultsText').get(0);
-    element.scrollTop = element.scrollHeight;
+    var elementTranscript = $('#resultsText').get(0);
+    elementTranscript.scrollTop = elementTranscript.scrollHeight;
+    var elementSpeakers = $('#resultsSpeakers').get(0);
+    elementSpeakers.scrollTop = elementSpeakers.scrollHeight;
   }
 }
 
@@ -867,9 +870,15 @@ exports.showResult = function(msg, result, model) {
         text = text.trim() + '. ';
       }
       
-      result.timestamps = msg.results[0].alternatives[0].timestamps;
       result.transcript += text;
-        
+
+      var timestamps = msg.results[0].alternatives[0].timestamps;
+      for(var i = 0; i < timestamps.length; i++) {
+        var timestamp = timestamps[i];
+        var token = timestamp[0];
+        var from = timestamp[1];
+        transcribedTokens[from] = token;
+      }
       if ($('.nav-tabs .active').text() == 'Text') {
         $('#resultsText').html(result.transcript);
       }
@@ -881,56 +890,51 @@ exports.showResult = function(msg, result, model) {
       else {
         text = text.charAt(0).toUpperCase() + text.substring(1);
       }
-
       if ($('.nav-tabs .active').text() == 'Text') {
         $('#resultsText').html(result.transcript + text);
       }
     }
   }
-  
-  if(result.speaker_labels) {
-    // console.log('result=', result);
+  else if(msg.speaker_labels && msg.speaker_labels.length > 0) {
+    console.log(msg.speaker_labels, msg.speaker_labels);
+
     var speakers = '';
-    var j_start = 0;
-    for(var i = 0; i < result.speaker_labels.length; i++) {
-      var sl_item = result.speaker_labels[i];
-      var sl_from = sl_item.from;
-      var sl_to = sl_item.to;
-      var speakerLabel = sl_item.speaker_label;
+    var isFinal = false;
+
+    for(var i = 0; i < msg.speaker_labels.length; i++) {
+      var item = msg.speaker_labels[i];
+      var from = item.from;
+      isFinal = item.final;
+      var speakerLabel = item.speaker_label;
       if(speakerLabel != -1 && activeSpeakerLabel != speakerLabel) {
         if(activeSpeakerLabel != -1) {
           speakers += '</div>';
         }
         activeSpeakerLabel = speakerLabel;
         var colorClass = printf('speakerColor_%d', activeSpeakerLabel);
-   //   speakers += printf("<div class='%s'><span class='speakerInfo'>Speaker %d:</span>", colorClass, activeSpeakerLabel);
         speakers += printf("<div><span class='speakerInfo %s'>Speaker %d:</span>", colorClass, activeSpeakerLabel);
-   //   speakers += printf("<div><span class='speakerInfo'>Speaker %d:</span>", activeSpeakerLabel);
-   //   speakers += printf("<div><span class='speakerInfo'><img src='images/speaker.svg'/>Speaker %d:</span>", activeSpeakerLabel);
       }
-
-      for(var j = j_start; j < result.timestamps.length; j++) {
-        var t_item = result.timestamps[j];
-        var token = t_item[0];
-        var t_from = t_item[1];
-        var t_to = t_item[2];
-        if(sl_from == t_from && sl_to == t_to) {
-          speakers += token + ' ';
-          j_start = j + 1;
-          break;
-        }
+      if(from in transcribedTokens) {
+        var token = transcribedTokens[from];
+        speakers += token + ' ';
       }
-
-      if(i == result.speaker_labels.length - 1) {
+      if(i == msg.speaker_labels.length - 1) {
         speakers += '</div>';
       }
     }
-    result.speakers += speakers;
-    if($('.nav-tabs .active').text() == 'Speakers')  {
-      $('#resultsText').html(result.speakers);
+    
+    if(isFinal) {
+      result.speakers += speakers;
+      $('#resultsSpeakers').html(result.speakers);
     }
+    else {
+      if($('.nav-tabs .active').text() == 'Speakers')  {
+        $('#resultsSpeakers').html(result.speakers + speakers);
+      }
+    }
+
   }
-  
+
   updateTextScroll();
   return result;
 };

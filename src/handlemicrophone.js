@@ -31,8 +31,6 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   $.publish('clearscreen');
 
   var result = {};
-  result.speaker_labels = null;
-  result.timestamps = [];
   result.transcript = '';
   result.speakers = '';
   var baseJSON = '';
@@ -89,15 +87,10 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onMessage(msg) {
-    if (msg.results) {
-      result.speaker_labels = null;
+    if (msg.results || msg.speaker_labels) {
       result = display.showResult(msg, result, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
-    }
-    else if(msg.speaker_labels) {
-      result.speaker_labels = msg.speaker_labels;
-      result = display.showResult(msg, result, model);
     }
   }
 

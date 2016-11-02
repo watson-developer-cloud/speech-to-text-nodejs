@@ -419,7 +419,7 @@ table.kws_occurrences {
   text-decoration:none;
 }
 
-#resultsText, .codeJSON
+#resultsText, #resultsSpeakers, .codeJSON
 {
   padding:1em;
   background:#fff;
@@ -450,6 +450,14 @@ table.kws_occurrences {
 
 .speakerColor_3 {
   color:#f19027;
+}
+
+.speakerColor_4 {
+  color:#f03737;
+}
+
+.speakerColor_5 {
+  color:#a4d917;
 }
 
 .speakerInfo img {
