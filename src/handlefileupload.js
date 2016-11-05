@@ -49,10 +49,6 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     $resultsJSON.text(baseJSON);
   });
 
-  var keywords = display.getKeywordsToSearch();
-  var keywords_threshold = keywords.length == 0 ? null : 0.01;
-  var speaker_labels = $('li.speakersTab').is(':visible'); 
-  
   var options = {};
   options.token = token;
   options.message = {
@@ -65,11 +61,18 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     'max_alternatives': 3,
     'inactivity_timeout': 600,
     'word_alternatives_threshold': 0.001,
-    'keywords_threshold': keywords_threshold,
-    'keywords': keywords,
     'smart_formatting': true,
-    'speaker_labels': speaker_labels
   };
+  
+  var keywords = display.getKeywordsToSearch();
+  if(keywords.length > 0) {
+    var keywords_threshold = 0.01;
+    options.message.keywords_threshold = keywords_threshold;
+    options.message.keywords = keywords;
+  }
+  var speaker_labels = $('li.speakersTab').is(':visible');
+  options.message.speaker_labels = speaker_labels;
+ 
   options.model = model;
 
   function onOpen() {

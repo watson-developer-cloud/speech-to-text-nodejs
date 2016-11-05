@@ -827,6 +827,11 @@ function onTimer() {
   }
 }
 
+// TODO: remove elements of transcribedTokens, which have 'from' value smaller than passed time. 
+function removeOldTranscribedTokens(time) {
+  console.log('removeOldTranscribedTokens invoked with time=', time);
+}
+
 exports.showResult = function(msg, result, model) {
   if (msg.results && msg.results.length > 0) {
     //var alternatives = msg.results[0].alternatives;
@@ -899,12 +904,11 @@ exports.showResult = function(msg, result, model) {
     console.log('msg.speaker_labels=', msg.speaker_labels);
 
     var speakers = '';
-    var isFinal = false;
-
+    var item = null;
+    
     for(var i = 0; i < msg.speaker_labels.length; i++) {
-      var item = msg.speaker_labels[i];
+      item = msg.speaker_labels[i];
       var from = item.from;
-      isFinal = item.final;
       var speakerLabel = item.speaker_label;
       if(speakerLabel != -1 && activeSpeakerLabel != speakerLabel) {
         if(activeSpeakerLabel != -1) {
@@ -923,13 +927,16 @@ exports.showResult = function(msg, result, model) {
       }
     }
     
-    if(isFinal) {
-      result.speakers += speakers;
-      $('#resultsSpeakers').html(result.speakers);
-    }
-    else {
-      if($('.nav-tabs .active').text() == 'Speakers')  {
-        $('#resultsSpeakers').html(result.speakers + speakers);
+    if(item) {
+      if(item.final) {
+        result.speakers += speakers;
+        $('#resultsSpeakers').html(result.speakers);
+        removeOldTranscribedTokens(item.from);
+      }
+      else {
+        if($('.nav-tabs .active').text() == 'Speakers')  {
+          $('#resultsSpeakers').html(result.speakers + speakers);
+        }
       }
     }
 
@@ -948,6 +955,15 @@ $.subscribe('clearscreen', function() {
   clearDetectedKeywords();
   resetWorker();
   activeSpeakerLabel = -1;
+  transcribedTokens = {};
+  if($('#diarization > input[type="checkbox"]').prop('checked') == false) {
+    $('.nav-tabs a[data-toggle="tab"]').first().click();
+  }
+});
+
+$('#diarization > input[type="checkbox"]').click(function() {
+  $('li.speakersTab').toggle(this.checked);
+  $('.nav-tabs a[data-toggle="tab"]').first().click();
 });
 
 $(window).resize(function() {

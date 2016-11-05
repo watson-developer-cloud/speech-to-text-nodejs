@@ -63,7 +63,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
           <h2>Transcribe Audio</h2>
           <div class="col-lg-8 col-md-12 col-sm-12">
-            <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only with <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a> and <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>). Upload pre-recorded audio (WAV for uncompressed audio, FLAC or OPUS) file formats. Drag and drop recorded audio onto the page, or use the audio samples provided. The returned result includes the recognized text, word alternatives (aka confusion networks), and spotted keywords. You may choose to spot your keywords by entering them (separated by commas) in the text box.</p>
+            <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only with <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a> and <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>). Upload pre-recorded audio (WAV for uncompressed audio, FLAC or OPUS) file formats. Drag and drop recorded audio onto the page, or use the audio samples provided. The returned result includes the recognized text, word alternatives, and spotted keywords. Additionally, for some models, you may request diarization (text per speaker) by selecting the &apos;Enable Diarization&apos; check box. Keep in mind: obtaining diarization usually increases computation time.</p>
           </div><!-- .col-lg-8 -->
           <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="opt-box">
@@ -95,7 +95,6 @@
           </div> 
         </div><!-- row -->
 
-
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="audioParent">
@@ -105,7 +104,6 @@
             </div>
           </div>
         </div><!-- row -->
-
 
         <div class="row">
           <nav class="navbar navbar-inverse">
@@ -129,7 +127,6 @@
             <span class="nav-label">Play  Sample 2</span>
             </li>
           </ul>
-
           </nav>
         </div>
         <!-- Tab panes -->
@@ -142,8 +139,9 @@
                   <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
                     <li class="speakersTab" role="presentation"><a href="#home3" aria-controls="home" role="tab" data-toggle="tab">Speakers</a></li>
-					<li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
-				  </ul>
+                    <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
+                    <li><div id="diarization"><input type="checkbox" >Enable Diarization</input></div></li>
+                  </ul>
                   <div class="hr-tab"></div>
                   <fieldset>
                     <div class="row error-row">
@@ -167,15 +165,15 @@
                       <div class="col-lg-12">
                         <div class="tab-content">
                           <div role="tabpanel" class="tab-pane active" id="home2">
-							<div id="resultsText"></div>
+                            <div id="resultsText"></div>
                           </div>
-						  <div role="tabpanel" class="tab-pane" id="home3">
-							<div id="resultsSpeakers"></div>
+                          <div role="tabpanel" class="tab-pane" id="home3">
+                            <div id="resultsSpeakers"></div>
                           </div>
                           <div role="tabpanel" class="tab-pane" id="profile2">
-							<pre class="codeJSON">
-							  <code id="resultsJSON"></code>
-							</pre>
+                            <pre class="codeJSON">
+                              <code id="resultsJSON"></code>
+                            </pre>
                           </div>
                         </div>
                       </div><!-- .col-lg-12 -->

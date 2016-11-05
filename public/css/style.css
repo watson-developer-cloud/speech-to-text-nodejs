@@ -398,6 +398,21 @@ table.kws_occurrences {
   display:none;
 }
 
+#diarization {
+  color: #A53725;
+  text-decoration:none; 
+  cursor:pointer;
+  -webkit-user-select: none;       
+  -moz-user-select: none;
+  display:none;
+  margin-left: 1.0em;
+  margin-top: -0.75em;
+}
+
+#diarization:hover {
+  color: #70120f;  
+}
+
 #btnLoadKWS {
   padding-left:1em;
   width:12em;

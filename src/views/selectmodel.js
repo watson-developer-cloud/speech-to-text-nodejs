@@ -32,34 +32,23 @@ exports.initSelectModel = function(ctx) {
         )
     );
   });
-  
-  var m = getModelDetails(ctx, ctx.currentModel);
-  console.log(m);
-//  if(m.name != 'en-US_NarrowbandModel') {
-//    $('li.speakersTab').hide();
-//  }
 
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
     evt.stopPropagation();
     console.log('Change view', $(evt.target).text());
-    var newModelDescription = $(evt.target).text();
-    var newModel = $(evt.target).data('model');
+    var description = $(evt.target).text();
+    var name = $(evt.target).data('model');
+ 
+    var model = getModel(ctx, name);
+    $('#diarization').toggle(isDiarizationSupported(model));
+    $('#diarization > input[type="checkbox"]').prop('checked', false);
+    $('li.speakersTab').hide();
 
-    resetTabs();
-    var m = getModelDetails(ctx, newModel);
-    if(m.name == 'en-US_NarrowbandModel') {
-      $('li.speakersTab').show();
-    }
-    else {
-      $('li.speakersTab').hide();
-    }
-    console.log(m);
-
-    $('#dropdownMenuDefault').empty().text(newModelDescription);
+    $('#dropdownMenuDefault').empty().text(description);
     $('#dropdownMenu1').dropdown('toggle');
-    localStorage.setItem('currentModel', newModel);
-    ctx.currentModel = newModel;
+    localStorage.setItem('currentModel', name);
+    ctx.currentModel = name;
     initPlaySample(ctx);
     $('#tb_keywords').focus();
     $('#tb_keywords').val('');
@@ -67,7 +56,7 @@ exports.initSelectModel = function(ctx) {
     $.publish('clearscreen');
   });
   
-  function getModelDetails(ctx, name) {
+  function getModel(ctx, name) {
     for(var i = 0; i < ctx.models.length; i++) {
       var model = ctx.models[i];
       if(model.name == name) {
@@ -77,9 +66,13 @@ exports.initSelectModel = function(ctx) {
     return null;
   }
   
-  function resetTabs() {
-    $("#transcription_text > form > div > ul > li:eq(0)").addClass('active');
-    $("#transcription_text > form > div > ul > li:eq(1)").removeClass('active');
-    $("#transcription_text > form > div > ul > li:eq(2)").removeClass('active');
+  // TODO: use supported_features 
+  function isDiarizationSupported(model) {
+    if(model.name == 'en-US_NarrowbandModel') {
+      return true;
+    }
+    return false;
   }
+  
+  
 };
