@@ -47,8 +47,10 @@ var runTimer = false;
 var scrolled = false;
 var pushed = 0;
 var popped = 0;
-var activeSpeakerLabel = -1;
-var transcribedTokens = {}; // key: 'from' time stamp, value: recognized token
+// key: 'from' time stamp, 
+// value: object {'token':text, 'speaker':speaker}
+var tokensPerSpeaker = {};
+var tokenStartTimes = [];
 
 ctx.font = defaultFont;
 
@@ -774,10 +776,12 @@ exports.initDisplayMetadata = function() {
     '  }\n' +
     '  else if(type == \'shift\' && fifo.length > 0) {\n' +
     '    var msg = fifo.shift();\n' +
-    '    postMessage({\n' +
-    '     bins:msg.results[0].word_alternatives,\n' +
-    '     kws:msg.results[0].keywords_result\n' +
-    '    });\n' +
+    '    if(msg.results[0].word_alternatives && msg.results[0].keywords_result) {\n' +
+    '      postMessage({\n' +
+    '        bins:msg.results[0].word_alternatives,\n' +
+    '        kws:msg.results[0].keywords_result\n' +
+    '      });\n' +
+    '    }\n' +
     '  }\n' +
     '  else if(type == \'clear\') {\n' +
     '    fifo = [];\n' +
@@ -827,9 +831,36 @@ function onTimer() {
   }
 }
 
-// TODO: remove elements of transcribedTokens, which have 'from' value smaller than passed time. 
-function removeOldTranscribedTokens(time) {
-  console.log('removeOldTranscribedTokens invoked with time=', time);
+function createDiarization() {
+  var currentSpeaker = -1;
+  var speakers = '';
+  for(var i = 0; i < tokenStartTimes.length; i++) {
+    var from = tokenStartTimes[i];
+    var tokenPerSpeaker = tokensPerSpeaker[from];
+    var token = tokenPerSpeaker.token;
+    var speaker = tokenPerSpeaker.speaker;
+    
+    if(speaker != currentSpeaker) {
+      var colorClass = printf('speakerColor_%d', speaker);
+      speakers += printf("<div></div><div class='speakerInfo %s'>Speaker %d:</div>", colorClass, speaker);
+      currentSpeaker = speaker;
+    }
+    speakers += token + ' ';
+  }
+  
+  // console.log(speakers);
+
+  return speakers;
+}
+
+function removeOldTokensPerSpeaker(time) {
+  for(var i = 0; i < tokenStartTimes.length; i++) {
+    var from = tokenStartTimes[i];
+    if(from >= time) return;
+    if(from in tokensPerSpeaker) {
+      delete tokensPerSpeaker[from];
+    }
+  }
 }
 
 exports.showResult = function(msg, result, model) {
@@ -882,7 +913,8 @@ exports.showResult = function(msg, result, model) {
         var timestamp = timestamps[i];
         var token = timestamp[0];
         var from = timestamp[1];
-        transcribedTokens[from] = token;
+        tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
+        tokenStartTimes.push(from);
       }
       if ($('.nav-tabs .active').text() == 'Text') {
         $('#resultsText').html(result.transcript);
@@ -900,48 +932,42 @@ exports.showResult = function(msg, result, model) {
       }
     }
   }
-  else if(msg.speaker_labels && msg.speaker_labels.length > 0) {
-    console.log('msg.speaker_labels=', msg.speaker_labels);
+  
+  if(msg.speaker_labels && msg.speaker_labels.length > 0) {
+   // console.log('msg.speaker_labels=', msg.speaker_labels);
 
-    var speakers = '';
     var item = null;
     
     for(var i = 0; i < msg.speaker_labels.length; i++) {
-      item = msg.speaker_labels[i];
-      var from = item.from;
-      var speakerLabel = item.speaker_label;
-      if(speakerLabel != -1 && activeSpeakerLabel != speakerLabel) {
-        if(activeSpeakerLabel != -1) {
-          speakers += '</div>';
-        }
-        activeSpeakerLabel = speakerLabel;
-        var colorClass = printf('speakerColor_%d', activeSpeakerLabel);
-        speakers += printf("<div><span class='speakerInfo %s'>Speaker %d:</span>", colorClass, activeSpeakerLabel);
-      }
-      if(from in transcribedTokens) {
-        var token = transcribedTokens[from];
-        speakers += token + ' ';
-      }
-      if(i == msg.speaker_labels.length - 1) {
-        speakers += '</div>';
+      var item = msg.speaker_labels[i];
+      from = item.from;
+      var speaker = item.speaker;
+      if(from in tokensPerSpeaker) {
+        var tokenPerSpeaker = tokensPerSpeaker[from];
+        tokenPerSpeaker.speaker = speaker;
       }
     }
-    
+
+    var diarization = createDiarization();
+
     if(item) {
       if(item.final) {
-        result.speakers += speakers;
-        $('#resultsSpeakers').html(result.speakers);
-        removeOldTranscribedTokens(item.from);
+        result.speakers += diarization;
+        if($('.nav-tabs .active').text() == 'Speakers')  {
+          $('#resultsSpeakers').html(result.speakers);
+        }
+        console.log('size of tokensPerSpeaker BEFORE removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
+        removeOldTokensPerSpeaker(item.from);
+        console.log('size of tokensPerSpeaker.length AFTER removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
       }
       else {
         if($('.nav-tabs .active').text() == 'Speakers')  {
-          $('#resultsSpeakers').html(result.speakers + speakers);
+          $('#resultsSpeakers').html(result.speakers + diarization);
         }
       }
     }
-
-  }
-
+  }   
+  
   updateTextScroll();
   return result;
 };
@@ -954,8 +980,8 @@ $.subscribe('clearscreen', function() {
   clearScene();
   clearDetectedKeywords();
   resetWorker();
-  activeSpeakerLabel = -1;
-  transcribedTokens = {};
+  tokensPerSpeaker = {};
+  tokenStartTimes = [];
   if($('#diarization > input[type="checkbox"]').prop('checked') == false) {
     $('.nav-tabs a[data-toggle="tab"]').first().click();
   }
