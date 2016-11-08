@@ -33,6 +33,11 @@ exports.initSelectModel = function(ctx) {
     );
   });
 
+  var model = getModel(ctx, ctx.currentModel);
+  $('#diarization').toggle(isDiarizationSupported(model));
+  $('#diarization > input[type="checkbox"]').prop('checked', false);
+  $('li.speakersTab').hide();
+
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
     evt.stopPropagation();
@@ -66,13 +71,8 @@ exports.initSelectModel = function(ctx) {
     return null;
   }
   
-  // TODO: use supported_features 
   function isDiarizationSupported(model) {
-    if(model.name == 'en-US_NarrowbandModel') {
-      return true;
-    }
-    return false;
+    var supported_features = model.supported_features;
+    return supported_features.speaker_labels;
   }
-  
-  
 };

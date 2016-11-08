@@ -25,7 +25,6 @@ exports.getModels = function(token) {
   };
   
   var host = require('../config/host').host;
-  // var modelUrl = require('util').format('https://%s/speech-to-text/api/v1/models?debug=true', host);
   var modelUrl = require('util').format('https://%s/speech-to-text/api/v1/models', host);
   var sttRequest = new XMLHttpRequest();
   sttRequest.open('GET', modelUrl, true);
@@ -34,12 +33,6 @@ exports.getModels = function(token) {
   sttRequest.setRequestHeader('X-Watson-Authorization-Token', token);
   sttRequest.onload = function() {
     var response = JSON.parse(sttRequest.responseText);
-    //var models = [];
-    //for (var key in response) {
-    //  var value = response[key];
-    //  models.push(value);
-    //}
-    //var sorted = models.sort(function(a,b) {
     var sorted = response.models.sort(function(a,b) {
       if (a.name > b.name) {
         return 1;
