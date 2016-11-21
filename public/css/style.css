@@ -399,6 +399,7 @@ table.kws_occurrences {
 }
 
 #diarization {
+  position:relative;
   color: #A53725;
   text-decoration:none; 
   cursor:pointer;
@@ -406,11 +407,11 @@ table.kws_occurrences {
   -moz-user-select: none;
   display:none;
   margin-left: 1.0em;
-  margin-top: -0.75em;
+  margin-top:-2.0em;
 }
 
 #diarization:hover {
-  color: #70120f;  
+  color: #70120f; 
 }
 
 #btnLoadKWS {
