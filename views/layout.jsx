@@ -28,7 +28,7 @@ export default function(props) {
                 <div id="root">
                 {props.children}
                 </div>
-            <script type="text/javascript" src="scripts/vendors/google-analytics.js" defer async></script>
+            <script type="text/javascript" src="scripts/vendor/google-analytics.js" defer async></script>
             </body>
     </html>
     );

@@ -1,19 +1,68 @@
 import React from 'react';
-import { ButtonsGroup } from 'watson-react-components';
-import ModelDropdown from './ModelDropdown.jsx';
+import { ButtonsGroup, Tabs, Pane } from 'watson-react-components';
 import SpeechToText from 'watson-speech/speech-to-text';
+import ModelDropdown from './ModelDropdown.jsx';
+import { Transcript } from './transcript.jsx'
 
 
 export default React.createClass({
 
     getInitialState() {
         return {
-            model: 'en-US_BroadbandModel'
+            model: 'en-US_BroadbandModel',
+            results: [],
+            interimResult: null,
+            audioSource: null
         };
     },
 
     handleSourceClick(e) {
-        console.log(e.target.value)
+        const source = e.target.value;
+        if (this.state.audioSource) {
+            return this.stopTranscription();
+        }
+        switch (source) {
+            case 'mic':
+                return this.handleMicClick();
+            default:
+                console.log('Unhandled source: ', source);
+        }
+    },
+
+    stopTranscription() {
+        this.stream && this.stream.stop();
+        this.setState({audioSource: null});
+    },
+
+    handleMicClick() {
+        console.log('handling mic click');
+        this.setState({audioSource: 'mic'});
+        this.stream = SpeechToText.recognizeMicrophone({
+            token: this.state.token,
+            format: false, // so that we can show the correct output on the JSON tab. Formatting will be applied by the Transcript element
+            model: this.state.model,
+            objectMode: true
+        })
+            .on('data', this.handleResult)
+            .on('end', this.handleTranscriptEnd)
+            .on('error', e => console.log(e));
+    },
+
+    handleResult(result) {
+        if(result.final) {
+            this.setState({
+                results: this.state.results.concat(result), // concat = new array = immutable state
+                interimResult: null
+            });
+        } else {
+            this.setState({
+                interimResult: result
+            });
+        }
+    },
+
+    handleTranscriptEnd() {
+        this.setState({audioSource: null});
     },
 
     componentDidMount() {
@@ -21,7 +70,7 @@ export default React.createClass({
         // tokens expire after 60 minutes, so automatcally fetch a new one ever 50 minutes
         // Not sure if this will work properly if a computer goes to sleep for > 50 minutes and then wakes back up
         // react automatically binds the call to this
-        this.state.tokenInterval = setInterval(this.fetchToken, 50*1000);
+        this.state.tokenInterval = setInterval(this.fetchToken, 50*60*1000);
     },
 
     componentWillUnmount() {
@@ -81,6 +130,11 @@ export default React.createClass({
                 }]}
             />
 
+            <Tabs selected={0}>
+                <Pane label="Text">
+                    <Transcript results={this.state.results} interimResult={this.state.interimResult} model={this.state.model} />
+                </Pane>
+            </Tabs>
 
         </div>);
     }
