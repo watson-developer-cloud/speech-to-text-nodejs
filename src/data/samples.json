@@ -1,0 +1,177 @@
+{
+  "ar-AR_BroadbandModel": {
+    "files": [
+      "ar-AR_Broadband_sample1.wav",
+      "ar-AR_Broadband_sample2.wav"
+    ],
+    "keywords": [
+      "الطقس",
+      "رياح معتدلةاحلامنا",
+      "نستلهم"
+    ]
+  },
+  "en-UK_BroadbandModel": {
+    "files": [
+      "en-UK_Broadband_sample1.wav",
+      "en-UK_Broadband_sample2.wav"
+    ],
+    "keywords": [
+      "affordable travel",
+      "best practice",
+      "businessconsumer",
+      "important industry",
+      "quality"
+    ]
+  },
+  "en-UK_NarrowbandModel": {
+    "files": [
+      "en-UK_Narrowband_sample1.wav",
+      "en-UK_Narrowband_sample2.wav"
+    ],
+    "keywords": [
+      "UKWatson",
+      "heavy rain",
+      "northwest",
+      "sources across social media"
+    ]
+  },
+  "en-US_BroadbandModel": {
+    "files": [
+      "Us_English_Broadband_Sample_1.wav",
+      "Us_English_Broadband_Sample_2.wav"
+    ],
+    "keywords": [
+      "changing the worldround",
+      "sense of pride",
+      "technology",
+      "unwanted emotion",
+      "watson",
+      "whirling velocity"
+    ]
+  },
+  "en-US_NarrowbandModel": {
+    "files": [
+      "Us_English_Narrowband_Sample_1.wav",
+      "Us_English_Narrowband_Sample_2.wav"
+    ],
+    "keywords": [
+      "course online",
+      "customer experience",
+      "four hours",
+      "helpibm",
+      "media data"
+    ]
+  },
+  "es-ES_BroadbandModel": {
+    "files": [
+      "Es_ES_spk24_16khz.wav",
+      "Es_ES_spk19_16khz.wav"
+    ],
+    "keywords": [
+      "existen productospreparando",
+      "quiero preguntarle",
+      "regalos para la familia",
+      "sobrinos"
+    ]
+  },
+  "es-ES_NarrowbandModel": {
+    "files": [
+      "Es_ES_spk24_8khz.wav",
+      "Es_ES_spk19_8khz.wav"
+    ],
+    "keywords": [
+      "EXISTEN PRODUCTOSPREPARANDO",
+      "QUIERO PREGUNTARLE",
+      "REGALOS PARA LA FAMILIA",
+      "SOBRINOS"
+    ]
+  },
+  "ja-JP_BroadbandModel": {
+    "files": [
+      "sample-Ja_JP-wide1.wav",
+      "sample-Ja_JP-wide2.wav"
+    ],
+    "keywords": [
+      "コード",
+      "今日変更",
+      "場所",
+      "給与"
+    ]
+  },
+  "ja-JP_NarrowbandModel": {
+    "files": [
+      "sample-Ja_JP-narrow3.wav",
+      "sample-Ja_JP-narrow4.wav"
+    ],
+    "keywords": [
+      "お客様",
+      "お手数申し込み",
+      "今回",
+      "通帳"
+    ]
+  },
+  "pt-BR_BroadbandModel": {
+    "files": [
+      "pt-BR_Sample1-16KHz.wav",
+      "pt-BR_Sample2-16KHz.wav"
+    ],
+    "keywords": [
+      "informações",
+      "necessidades dos clientesmédicos",
+      "planos de tratamento",
+      "qualidade",
+      "setor bancário",
+      "sistema da ibm"
+    ]
+  },
+  "pt-BR_NarrowbandModel": {
+    "files": [
+      "pt-BR_Sample1-8KHz.wav",
+      "pt-BR_Sample2-8KHz.wav"
+    ],
+    "keywords": [
+      "cozinha",
+      "criatividadesistema",
+      "inovadoras receitas",
+      "setores diferentes",
+      "treinado por especialistas"
+    ]
+  },
+  "zh-CN_BroadbandModel": {
+    "files": [
+      "zh-CN_sample1_for_16k.wav",
+      "zh-CN_sample2_for_16k.wav"
+    ],
+    "keywords": [
+      "人们",
+      "大 数据 分析 能力技术",
+      "手机",
+      "沃 森 是 认知",
+      "的 用户 体验",
+      "语音"
+    ]
+  },
+  "zh-CN_NarrowbandModel": {
+    "files": [
+      "zh-CN_sample1_for_8k.wav",
+      "zh-CN_sample2_for_8k.wav"
+    ],
+    "keywords": [
+      "公司 的 支持",
+      "安排",
+      "理财 计划假期"
+    ]
+  },
+  "fr-FR_BroadbandModel": {
+    "files": [
+      "fr-FR_Broadband_sample1.wav",
+      "fr-FR_Broadband_sample2.wav"
+    ],
+    "keywords": [
+      "durée du travail",
+      "frontières",
+      "idéesloisirs",
+      "liberté d'opinion"
+    ]
+  }
+}
