@@ -63,7 +63,14 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
           <h2>Transcribe Audio</h2>
           <div class="col-lg-8 col-md-12 col-sm-12">
-            <p class="help-block" style="padding-right: 3em;">Use your microphone (compatible only with <a href="https://www.google.com/intl/en/chrome/browser/desktop/">Google Chrome</a> and <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>). Upload pre-recorded audio (WAV for uncompressed audio, FLAC or OPUS) file formats. Drag and drop recorded audio onto the page, or use the audio samples provided. The returned result includes the recognized text, word alternatives, and spotted keywords. Additionally, for some models, you may request text per speaker by selecting the &apos;Detect multiple speakers&apos; check box. Keep in mind: obtaining text per speaker information usually increases computation time.</p>
+            <ul class="help-block">
+              <li>Use your microphone to record audio (Chrome or Firefox only).</li>
+              <li>Upload pre-recorded audio (.wav, .flac, or .opus only).</li>
+              <li>Play one of the sample audio files.</li>
+            </ul>
+            <div class="help-block" style="padding-right: 3em; padding-bottom: 2em;">
+              The returned result includes the recognized text, word alternatives, and spotted keywords. Some models can detect multiple speakers. This may slow down performance.
+            </div>
           </div><!-- .col-lg-8 -->
           <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="opt-box">
@@ -142,7 +149,7 @@
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
-                    <li class="speakersTab" role="presentation"><a href="#home3" aria-controls="home" role="tab" data-toggle="tab">Speakers</a></li>
+                    <li role="presentation" class="speakersTab"><a href="#home3" aria-controls="home" role="tab" data-toggle="tab">Speakers</a></li>
                     <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">JSON</a></li>
                    </ul>
                   <div class="hr-tab"></div>
