@@ -400,14 +400,14 @@ table.kws_occurrences {
 
 #diarization {
   position:relative;
+  top:-1.0em;
+  left: 1.0em;
   color: #A53725;
   text-decoration:none; 
   cursor:pointer;
   -webkit-user-select: none;       
   -moz-user-select: none;
   display:none;
-  margin-left: 1.0em;
-  margin-top:-2.0em;
 }
 
 #diarization:hover {

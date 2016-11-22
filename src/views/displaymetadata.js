@@ -989,7 +989,14 @@ $.subscribe('clearscreen', function() {
 
 $('#diarization > input[type="checkbox"]').click(function() {
   $('li.speakersTab').toggle(this.checked);
-  $('.nav-tabs a[data-toggle="tab"]').first().click();
+//$('.nav-tabs a[data-toggle="tab"]').first().click();
+  var tabs = $(".nav-tabs > li").children();
+  if(this.checked) {
+    tabs[1].click(); // selects 'Speakers' tab
+  }
+  else {
+    tabs[0].click(); // selects 'Text' tab
+  }
 });
 
 $(window).resize(function() {
