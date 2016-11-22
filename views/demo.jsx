@@ -59,8 +59,27 @@ export default React.createClass({
     },
 
     handleUploadClick() {
-        // todo: stick a hidden file input in the dom, have this trigger a click on it, when the value changes, send it to SpeechToText.recognizeFile();
-        alert('File upload is not yet implemented :(');
+        const file = this.fileInput.files[0];
+        if (!file) {
+            return;
+        }
+        this.setState({audioSource: 'upload'});
+
+        // todo: show a warning if browser cannot play filetype (flac)
+
+        this.stream = SpeechToText.recognizeFile({
+            // todo: keywords, timing, etc
+            token: this.state.token,
+            data: file,
+            play: true, // play the audio out loud
+            format: false, // so that we can show the correct output on the JSON tab. Formatting will be applied by the Transcript element
+            model: this.state.model,
+            objectMode: true
+        })
+            .on('data', this.handleResult)
+            .on('end', this.handleTranscriptEnd)
+            .on('error', e => console.log(e));
+
     },
 
     handleSampleClick(which) {
@@ -158,6 +177,11 @@ export default React.createClass({
             <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} />
 
             <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/>
+
+
+            <label className="base--button">Select Audio File
+                <input type="file" ref={ r => this.fileInput = r } onChange={this.handleUploadClick} style={{display:'none'}} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"/>
+            </label>
 
             <ButtonsGroup
                 type="button"
