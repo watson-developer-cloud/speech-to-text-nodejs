@@ -845,16 +845,18 @@ function createDiarization() {
     var token = tokenPerSpeaker.token;
     var speaker = tokenPerSpeaker.speaker;
     
-    if(speaker != currentSpeaker) {
+    if(speaker != currentSpeaker && speaker != -1) {
       var colorClass = printf('speakerColor_%d', speaker);
       speakers += printf("<div></div><div class='speakerInfo %s'>Speaker %d:</div>", colorClass, speaker);
       currentSpeaker = speaker;
     }
-    speakers += token + ' ';
+    
+    if(token != '%HESITATION' && token != '~NS' && token != '~VP') {
+      speakers += token + ' ';
+    }
   }
-  
-  // console.log(speakers);
 
+  console.log('*** SPEAKERS ***', speakers);
   return speakers;
 }
 
@@ -918,12 +920,10 @@ exports.showResult = function(msg, result, model) {
         var timestamp = timestamps[i];
         var token = timestamp[0];
         var from = timestamp[1];
-        if(token == '%HESITATION' || token == '~NS' || token == '~VP') {
-          console.log('diarization:', token, 'at', from, 'removed');
-          continue;
+        if(from in tokensPerSpeaker == false) {
+          tokenStartTimes.push(from);
+          tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
         }
-        tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
-        tokenStartTimes.push(from);
       }
       if ($('.nav-tabs .active').text() == 'Text') {
         $('#resultsText').html(result.transcript);
@@ -957,6 +957,8 @@ exports.showResult = function(msg, result, model) {
       }
     }
 
+	console.log(tokensPerSpeaker);
+	
     var diarization = createDiarization();
 
     if(item) {
