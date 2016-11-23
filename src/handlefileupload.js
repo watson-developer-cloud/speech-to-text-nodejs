@@ -20,6 +20,8 @@ var display = require('./views/displaymetadata');
 var initSocket = require('./socket').initSocket;
 
 exports.handleFileUpload = function(type, token, model, file, contentType, callback, onend) {
+  console.log('handleFileUpload, type=', type);
+  
   // Set currentlyDisplaying to prevent other sockets from opening
   localStorage.setItem('currentlyDisplaying', type);
   

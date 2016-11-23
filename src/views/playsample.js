@@ -52,6 +52,14 @@ var playSample = (function() {
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
     var samplePlaying = localStorage.getItem('samplePlaying');
 
+    if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample' || samplePlaying !== 'false') {
+      showError('Currently another file is playing, please stop the file or wait until it finishes');
+      return;
+    } else if (currentlyDisplaying == 'record') {
+      showError('Currently audio is being recorded, please stop recording before playing a sample');
+      return;
+    }
+
     if (samplePlaying === sampleNumber) {
       console.log('HARD SOCKET STOP');
       $.publish('socketstop');
@@ -60,14 +68,6 @@ var playSample = (function() {
       effects.stopToggleImage(timer, imageTag, iconName); // eslint-disable-line no-use-before-define
       effects.restoreImage(imageTag, iconName);
       running = false;
-      return;
-    }
-
-    if (currentlyDisplaying === 'record') {
-      showError('Currently audio is being recorded, please stop recording before playing a sample');
-      return;
-    } else if (currentlyDisplaying === 'fileupload' || samplePlaying !== 'false') {
-      showError('Currently another file is playing, please stop the file or wait until it finishes');
       return;
     }
 

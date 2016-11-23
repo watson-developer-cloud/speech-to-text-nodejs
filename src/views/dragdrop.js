@@ -17,6 +17,7 @@
 'use strict';
 
 var handleSelectedFile = require('./fileupload').handleSelectedFile;
+var showError = require('./showerror').showError;
 
 exports.initDragDrop = function(ctx) {
 
@@ -46,7 +47,15 @@ exports.initDragDrop = function(ctx) {
     var file = evt.dataTransfer.files[0];
     console.log('File dropped');
 
-    // Handle dragged file event
+    var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
+    if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample') {
+      showError('Currently another file is playing, please stop the file or wait until it finishes');
+      return;
+    } else if (currentlyDisplaying == 'record') {
+      showError('Currently audio is being recorded, please stop recording before playing a sample');
+      return;
+    }
+
     handleFileUploadEvent(file);
   });
 

@@ -913,6 +913,11 @@ exports.showResult = function(msg, result, model) {
         var timestamp = timestamps[i];
         var token = timestamp[0];
         var from = timestamp[1];
+        if(token == '%HESITATION' || token == '~NS' || token == '~VP') {
+          console.log('diarization:', token, 'at', from, 'removed');
+          continue;
+        }
+  
         tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
         tokenStartTimes.push(from);
       }
