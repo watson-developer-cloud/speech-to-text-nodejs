@@ -776,7 +776,7 @@ exports.initDisplayMetadata = function() {
     '  }\n' +
     '  else if(type == \'shift\' && fifo.length > 0) {\n' +
     '    var msg = fifo.shift();\n' +
-    '    if(msg.results[0].word_alternatives && msg.results[0].keywords_result) {\n' +
+    '    if(msg.results[0].word_alternatives || msg.results[0].keywords_result) {\n' +
     '      postMessage({\n' +
     '        bins:msg.results[0].word_alternatives,\n' +
     '        kws:msg.results[0].keywords_result\n' +
@@ -793,14 +793,18 @@ exports.initDisplayMetadata = function() {
   worker = new Worker(blobURL);
   worker.onmessage = function(event) {
     var data = event.data;
-    // eslint-disable-next-line no-use-before-define
-    showCNsKWS(data.bins, data.kws);
+    if(data.bins) {
+      showCNs(data.bins);
+    }
+    if(data.kws) {
+      showKWS(data.kws);
+    }
     popped++;
     console.log('----> popped', popped);
   };
 };
 
-function showCNsKWS(bins, kws) {
+function showCNs(bins) {
   bins.forEach(parseBin);
   var w = $('#canvas').width();
   hslider.max = scene.width() - w + INITIAL_OFFSET_X;
@@ -816,8 +820,9 @@ function showCNsKWS(bins, kws) {
   $('#canvas-placeholder').css('display', 'none');
   $('#left-arrow').css('display', 'inline-block');
   $('#right-arrow').css('display', 'inline-block');
+}
 
-  // KWS
+function showKWS(kws) {
   parseKeywords(kws);
   updateDetectedKeywords();
 }
@@ -917,7 +922,6 @@ exports.showResult = function(msg, result, model) {
           console.log('diarization:', token, 'at', from, 'removed');
           continue;
         }
-  
         tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
         tokenStartTimes.push(from);
       }
