@@ -896,7 +896,7 @@ exports.showResult = function(msg, result, model) {
 
     // if all words are mapped to nothing then there is nothing else to do
     if ((text.length == 0) || (/^\s+$/.test(text))) {
-      return result;
+      return;
     }
 
     var japanese = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
@@ -913,7 +913,9 @@ exports.showResult = function(msg, result, model) {
         text = text.trim() + '. ';
       }
       
-      result.transcript += text;
+      if(result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
+        result.transcript += text;
+      }
 
       var timestamps = msg.results[0].alternatives[0].timestamps;
       for(var i = 0; i < timestamps.length; i++) {
@@ -937,50 +939,45 @@ exports.showResult = function(msg, result, model) {
         text = text.charAt(0).toUpperCase() + text.substring(1);
       }
       if ($('.nav-tabs .active').text() == 'Text') {
-        $('#resultsText').html(result.transcript + text);
+        if(result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
+          $('#resultsText').html(result.transcript + text);
+        }
+      }
+    }
+
+    if(msg.speaker_labels && msg.speaker_labels.length > 0) {
+      var item = null;
+      for(var i = 0; i < msg.speaker_labels.length; i++) {
+        var item = msg.speaker_labels[i];
+        from = item.from;
+        var speaker = item.speaker;
+        if(from in tokensPerSpeaker) {
+          var tokenPerSpeaker = tokensPerSpeaker[from];
+          tokenPerSpeaker.speaker = speaker;
+        }
+      }
+      var diarization = createDiarization();
+
+      if(item) {
+        if(item.final) {
+          result.speakers += diarization;
+          if($('.nav-tabs .active').text() == 'Speakers')  {
+            $('#resultsSpeakers').html(result.speakers);
+          }
+          console.log('size of tokensPerSpeaker BEFORE removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
+          removeOldTokensPerSpeaker(item.from);
+          console.log('size of tokensPerSpeaker.length AFTER removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
+        }
+        else {
+          if($('.nav-tabs .active').text() == 'Speakers')  {
+            $('#resultsSpeakers').html(result.speakers + diarization);
+          }
+        }
       }
     }
   }
   
-  if(msg.speaker_labels && msg.speaker_labels.length > 0) {
-   // console.log('msg.speaker_labels=', msg.speaker_labels);
-
-    var item = null;
-    
-    for(var i = 0; i < msg.speaker_labels.length; i++) {
-      var item = msg.speaker_labels[i];
-      from = item.from;
-      var speaker = item.speaker;
-      if(from in tokensPerSpeaker) {
-        var tokenPerSpeaker = tokensPerSpeaker[from];
-        tokenPerSpeaker.speaker = speaker;
-      }
-    }
-
-	console.log(tokensPerSpeaker);
-	
-    var diarization = createDiarization();
-
-    if(item) {
-      if(item.final) {
-        result.speakers += diarization;
-        if($('.nav-tabs .active').text() == 'Speakers')  {
-          $('#resultsSpeakers').html(result.speakers);
-        }
-        console.log('size of tokensPerSpeaker BEFORE removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
-        removeOldTokensPerSpeaker(item.from);
-        console.log('size of tokensPerSpeaker.length AFTER removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
-      }
-      else {
-        if($('.nav-tabs .active').text() == 'Speakers')  {
-          $('#resultsSpeakers').html(result.speakers + diarization);
-        }
-      }
-    }
-  }   
-  
   updateTextScroll();
-  return result;
 };
 
 exports.getKeywordsToSearch = function() {

@@ -41,7 +41,7 @@ exports.initRecordButton = function(ctx) {
       var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
 
       if (currentlyDisplaying == 'sample' || currentlyDisplaying == 'fileupload') {
-        showError('Currently another file is playing, please stop the file or wait until it finishes');
+        showError('Currently another file is being transcribed, please stop the file or wait until it finishes');
         return;
       }
       localStorage.setItem('currentlyDisplaying', 'record');

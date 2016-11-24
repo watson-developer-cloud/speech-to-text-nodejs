@@ -49,10 +49,11 @@ exports.initDragDrop = function(ctx) {
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
     if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample') {
-      showError('Currently another file is playing, please stop the file or wait until it finishes');
+      showError('Currently another file is being transcribed, please stop the file or wait until it finishes');
       return;
-    } else if (currentlyDisplaying == 'record') {
-      showError('Currently audio is being recorded, please stop recording before playing a sample');
+    } 
+    else if (currentlyDisplaying == 'record') {
+      showError('Currently audio is being recorded, please stop recording before transcribing a sample');
       return;
     }
 

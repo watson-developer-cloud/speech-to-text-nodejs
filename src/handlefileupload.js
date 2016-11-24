@@ -20,8 +20,6 @@ var display = require('./views/displaymetadata');
 var initSocket = require('./socket').initSocket;
 
 exports.handleFileUpload = function(type, token, model, file, contentType, callback, onend) {
-  console.log('handleFileUpload, type=', type);
-  
   // Set currentlyDisplaying to prevent other sockets from opening
   localStorage.setItem('currentlyDisplaying', type);
   
@@ -33,6 +31,7 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
 
   var result = {};
   result.transcript = '';
+  result.showSpeakers = false;
   result.speakers = '';
   var baseJSON = '';
 
@@ -87,8 +86,9 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   }
 
   function onMessage(msg) {
+    result.showSpeakers = options.message.speaker_labels;
     if (msg.results || msg.speaker_labels) {
-      result = display.showResult(msg, result, model);
+      display.showResult(msg, result, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
     }

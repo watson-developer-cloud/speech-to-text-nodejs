@@ -32,6 +32,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   var result = {};
   result.transcript = '';
+  result.showSpeakers = false;
   result.speakers = '';
   var baseJSON = '';
 
@@ -90,8 +91,9 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onMessage(msg) {
+    result.showSpeakers = options.message.speaker_labels;
     if (msg.results || msg.speaker_labels) {
-      result = display.showResult(msg, result, model);
+      display.showResult(msg, result, model);
       baseJSON = JSON.stringify(msg, null, 2);
       display.showJSON(baseJSON);
     }

@@ -29,6 +29,8 @@ var LOOKUP_TABLE = {
   'en-UK_NarrowbandModel': ['en-UK_Narrowband_sample1.wav', 'en-UK_Narrowband_sample2.wav', 'heavy rain, northwest, UK', 'Watson, sources across social media'],
   'en-US_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav', 'sense of pride, watson, technology, changing the world', 'round, whirling velocity, unwanted emotion'],
   'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav', 'course online, four hours, help', 'ibm, customer experience, media data'],
+  'en-US_Geico_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav', 'sense of pride, watson, technology, changing the world', 'round, whirling velocity, unwanted emotion'],
+  'en-US_Geico_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav', 'course online, four hours, help', 'ibm, customer experience, media data'],
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav', 'quiero preguntarle, existen productos', 'preparando, regalos para la familia, sobrinos'],
   'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav', 'QUIERO PREGUNTARLE, EXISTEN PRODUCTOS', 'PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS'],
   'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav', '場所 , 今日', '変更 , 給与 , コード'],
@@ -36,8 +38,8 @@ var LOOKUP_TABLE = {
   'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav', 'sistema da ibm, setor bancário, qualidade, necessidades dos clientes', 'médicos, informações, planos de tratamento'],
   'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav', 'cozinha, inovadoras receitas, criatividade', 'sistema, treinado por especialistas, setores diferentes'],
   'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav', '沃 森 是 认知 , 大 数据 分析 能力', '技术 , 语音 , 的 用户 体验 , 人们 , 手机'],
-    'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '公司 的 支持 , 理财 计划', '假期 , 安排'],
-    'fr-FR_BroadbandModel': ['fr-FR_Broadband_sample1.wav', 'fr-FR_Broadband_sample2.wav', 'liberté d\'opinion , frontières , idées', 'loisirs , durée du travail']
+  'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '公司 的 支持 , 理财 计划', '假期 , 安排'],
+  'fr-FR_BroadbandModel': ['fr-FR_Broadband_sample1.wav', 'fr-FR_Broadband_sample2.wav', 'liberté d\'opinion , frontières , idées', 'loisirs , durée du travail']
 };
 
 var playSample = (function() {
@@ -52,22 +54,22 @@ var playSample = (function() {
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
     var samplePlaying = localStorage.getItem('samplePlaying');
 
-    if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample' || samplePlaying !== 'false') {
-      showError('Currently another file is playing, please stop the file or wait until it finishes');
-      return;
-    } else if (currentlyDisplaying == 'record') {
-      showError('Currently audio is being recorded, please stop recording before playing a sample');
-      return;
-    }
-
     if (samplePlaying === sampleNumber) {
       console.log('HARD SOCKET STOP');
       $.publish('socketstop');
       localStorage.setItem('currentlyDisplaying', 'false');
       localStorage.setItem('samplePlaying', 'false');
-      effects.stopToggleImage(timer, imageTag, iconName); // eslint-disable-line no-use-before-define
+      effects.stopToggleImage(timer, imageTag, iconName);
       effects.restoreImage(imageTag, iconName);
       running = false;
+      return;
+    }
+
+    if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample' || samplePlaying !== 'false') {
+      showError('Currently another file is being transcribed, please stop the file or wait until it finishes');
+      return;
+    } else if (currentlyDisplaying == 'record') {
+      showError('Currently audio is being recorded, please stop recording before transcribing a sample');
       return;
     }
 
