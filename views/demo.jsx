@@ -3,7 +3,7 @@ import { ButtonsGroup, Tabs, Pane } from 'watson-react-components';
 import SpeechToText from 'watson-speech/speech-to-text';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
-import { KeywordsSpotted } from './keywords.jsx';
+import { Keywords } from './keywords.jsx';
 import samples from '../src/data/samples.json';
 
 export default React.createClass({
@@ -11,10 +11,10 @@ export default React.createClass({
     getInitialState() {
         return {
             model: 'en-US_BroadbandModel',
-            results: [],
+            results: require('../src/data/temp-results.json'), // [],
             interimResult: null,
             audioSource: null,
-            keywords: samples['en-US_BroadbandModel'].keywords.join(',')
+            keywords: samples['en-US_BroadbandModel'].keywords.join(', ')
         };
     },
 
@@ -45,17 +45,22 @@ export default React.createClass({
 
     handleMicClick() {
         console.log('handling mic click');
-        this.setState({audioSource: 'mic'});
+        this.setState({audioSource: 'mic', results: []});
         this.stream = SpeechToText.recognizeMicrophone({
             // todo: keywords, timing, etc
             token: this.state.token,
-            format: false, // so that we can show the correct output on the JSON tab. Formatting will be applied by the Transcript element
+            smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
+            format: false, // formats sentences (client-side) - false here so that we can show the original JSON on that tab, but the Text tab does apply this.
             model: this.state.model,
-            objectMode: true
+            objectMode: true,
+            continuous: true,
+            keywords: this.getKeywordsArr(),
+            keywords_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
+            timestamps: true
         })
             .on('data', this.handleResult)
             .on('end', this.handleTranscriptEnd)
-            .on('error', e => console.log(e));
+            .on('error', e => console.log(e)); // todo: ui
     },
 
     handleUploadClick() {
@@ -63,51 +68,50 @@ export default React.createClass({
         if (!file) {
             return;
         }
-        this.setState({audioSource: 'upload'});
-
-        // todo: show a warning if browser cannot play filetype (flac)
-
-        this.stream = SpeechToText.recognizeFile({
-            // todo: keywords, timing, etc
-            token: this.state.token,
-            data: file,
-            play: true, // play the audio out loud
-            format: false, // so that we can show the correct output on the JSON tab. Formatting will be applied by the Transcript element
-            model: this.state.model,
-            objectMode: true
-        })
-            .on('data', this.handleResult)
-            .on('end', this.handleTranscriptEnd)
-            .on('error', e => console.log(e));
-
+        this.setState({audioSource: 'upload', results: []});
+        this.playFile(file);
     },
 
     handleSampleClick(which) {
+        // todo: icons: play arrow when not playing, spinner when loading, stop button when playing
+        // todo: use opus here for browsers that support it
         let filename = samples[this.state.model] && samples[this.state.model].files[which-1];
         if (!filename) {
+            // todo: ui
             return console.log(`No sample ${which} available for model ${this.state.model}`, samples[this.state.model]);
         }
-        this.setState({audioSource: 'sample-' + which});
+        this.setState({audioSource: 'sample-' + which, results: []});
         fetch('audio/' + filename).then(function(response) {
             // todo: see if there's a way to stream this data instead of downloading it and then processing it
             return response.blob();
         }).then(blob => {
-            this.stream = SpeechToText.recognizeFile({
-                // todo: keywords, timing, etc
-                token: this.state.token,
-                data: blob,
-                play: true, // play the audio out loud
-                format: false, // so that we can show the correct output on the JSON tab. Formatting will be applied by the Transcript element
-                model: this.state.model,
-                objectMode: true
-            })
+            this.playFile(blob);
+        }).catch(function(error) {
+            console.log(error); // todo: ui
+        });
+    },
+
+    playFile(file) {
+        // todo: show a warning if browser cannot play filetype (flac)
+        this.stream = SpeechToText.recognizeFile({
+            token: this.state.token,
+            data: file,
+            play: true, // play the audio out loud
+            realtime: true, // slows the results down to realtime if they come back faster than real-time (client-side)
+            smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
+            format: false, // formats sentences (client-side) - false here so that we can show the original JSON on that tab, but the Text tab does apply this.
+            model: this.state.model,
+            objectMode: true,
+            continuous: true,
+            keywords: this.getKeywordsArr(),
+            keywords_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
+            timestamps: true
+        })
             .on('data', this.handleResult)
             .on('end', this.handleTranscriptEnd)
-            .on('error', e => console.log(e));
-
-        }).catch(function(error) {
-            console.log(error);
-        });
+            .on('playback-error', e => console.log('unable to play file type in browser', e)) // todo: ui
+            .on('error', e => console.log(e)); // todo: ui
+        ['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
     },
 
     handleResult(result) {
@@ -156,6 +160,7 @@ export default React.createClass({
         this.setState({keywords: e.target.value});
     },
 
+    // cleans up the keywords string into an array of individual, trimmed, non-empty keywords/phrases
     getKeywordsArr() {
         return this.state.keywords.split(',').map(k=>k.trim()).filter(k=>k);
     },
@@ -211,7 +216,7 @@ export default React.createClass({
                     <Transcript results={this.state.results} interimResult={this.state.interimResult} model={this.state.model} />
                 </Pane>
                 <Pane label="Keywords">
-                    <KeywordsSpotted results={this.state.results} keywords={this.getKeywordsArr()} />
+                    <Keywords results={this.state.results} keywords={this.getKeywordsArr()} />
                 </Pane>
             </Tabs>
 
