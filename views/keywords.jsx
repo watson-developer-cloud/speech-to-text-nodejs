@@ -2,7 +2,6 @@ import React from 'react';
 
 
 function keywordReducer(keywords, result) {
-    console.log('reducing', result, keywords);
     Object.keys(result.keywords_result || {}).forEach(k => {
         keywords[k] = keywords[k] || [];
         keywords[k].push(...result.keywords_result[k]);

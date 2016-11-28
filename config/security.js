@@ -32,7 +32,7 @@ module.exports = function(app) {
 
   // 5. rate limiting.
   app.use('/api/', rateLimit({
-    windowMs: 30 * 1000, // seconds
+    windowMs: 30 * 1000, // 30 seconds
     delayMs: 0,
     max: 3,
     message: JSON.stringify({

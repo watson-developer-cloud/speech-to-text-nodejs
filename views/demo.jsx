@@ -4,6 +4,7 @@ import SpeechToText from 'watson-speech/speech-to-text';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
 import { Keywords } from './keywords.jsx';
+import { JSONView } from './json.jsx';
 import samples from '../src/data/samples.json';
 
 export default React.createClass({
@@ -11,8 +12,7 @@ export default React.createClass({
     getInitialState() {
         return {
             model: 'en-US_BroadbandModel',
-            results: require('../src/data/temp-results.json'), // [],
-            interimResult: null,
+            results: [],
             audioSource: null,
             keywords: samples['en-US_BroadbandModel'].keywords.join(', ')
         };
@@ -93,6 +93,7 @@ export default React.createClass({
 
     playFile(file) {
         // todo: show a warning if browser cannot play filetype (flac)
+        // todo: show a warning if browser cannot play filetype (flac)
         this.stream = SpeechToText.recognizeFile({
             token: this.state.token,
             data: file,
@@ -111,20 +112,13 @@ export default React.createClass({
             .on('end', this.handleTranscriptEnd)
             .on('playback-error', e => console.log('unable to play file type in browser', e)) // todo: ui
             .on('error', e => console.log(e)); // todo: ui
-        ['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
+        //['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
     },
 
     handleResult(result) {
-        if(result.final) {
-            this.setState({
-                results: this.state.results.concat(result), // concat = new array = immutable state
-                interimResult: null
-            });
-        } else {
-            this.setState({
-                interimResult: result
-            });
-        }
+        this.setState({
+            results: this.state.results.concat(result), // concat = new array = immutable state
+        });
     },
 
     handleTranscriptEnd() {
@@ -163,6 +157,18 @@ export default React.createClass({
     // cleans up the keywords string into an array of individual, trimmed, non-empty keywords/phrases
     getKeywordsArr() {
         return this.state.keywords.split(',').map(k=>k.trim()).filter(k=>k);
+    },
+
+    getFinalResults() {
+        return this.state.results.filter( r => r.final );
+    },
+
+    getCurrentInterimResult() {
+        const r = this.state.results[this.state.results.length-1];
+        if (!r || r.final) {
+            return null;
+        }
+        return r;
     },
 
     // todo: use classes instead of setting style to show/hide things, consider adding transitions
@@ -213,10 +219,13 @@ export default React.createClass({
 
             <Tabs selected={0}>
                 <Pane label="Text">
-                    <Transcript results={this.state.results} interimResult={this.state.interimResult} model={this.state.model} />
+                    <Transcript results={this.getFinalResults()} interimResult={this.getCurrentInterimResult()} model={this.state.model} />
                 </Pane>
                 <Pane label="Keywords">
-                    <Keywords results={this.state.results} keywords={this.getKeywordsArr()} />
+                    <Keywords results={this.getFinalResults().concat(this.getCurrentInterimResult())} keywords={this.getKeywordsArr()} />
+                </Pane>
+                <Pane label="JSON">
+                    <JSONView results={this.state.results} />
                 </Pane>
             </Tabs>
 
