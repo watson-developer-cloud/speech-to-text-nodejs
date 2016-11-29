@@ -171,6 +171,15 @@ export default React.createClass({
         return r;
     },
 
+    getFinalAndLatestInterimResult() {
+        const final = this.getFinalResults();
+        const interim = this.getCurrentInterimResult();
+        if (interim) {
+            final.push(interim);
+        }
+        return final;
+    },
+
     // todo: use classes instead of setting style to show/hide things, consider adding transitions
     render() {
         return (<div className="_container _container_large">
@@ -222,7 +231,7 @@ export default React.createClass({
                     <Transcript results={this.getFinalResults()} interimResult={this.getCurrentInterimResult()} model={this.state.model} />
                 </Pane>
                 <Pane label="Keywords">
-                    <Keywords results={this.getFinalResults().concat(this.getCurrentInterimResult())} keywords={this.getKeywordsArr()} />
+                    <Keywords results={this.getFinalAndLatestInterimResult()} keywords={this.getKeywordsArr()} />
                 </Pane>
                 <Pane label="JSON">
                     <JSONView results={this.state.results} />
