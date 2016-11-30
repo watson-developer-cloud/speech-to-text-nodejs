@@ -51,8 +51,7 @@ exports.initDragDrop = function(ctx) {
     if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample') {
       showError('Currently another file is being transcribed, please stop the file or wait until it finishes');
       return;
-    }
-    else if (currentlyDisplaying == 'record') {
+    } else if (currentlyDisplaying == 'record') {
       showError('Currently audio is being recorded, please stop recording before transcribing a sample');
       return;
     }

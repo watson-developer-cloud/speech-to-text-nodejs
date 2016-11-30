@@ -78,8 +78,7 @@ var initSocket = exports.initSocket = function(options, onopen, onlistening, onm
       if (!listening) {
         onlistening(socket);
         listening = true;
-      }
-      else {
+      } else {
         console.log('MICROPHONE: Closing socket.');
         socket.close();
       }

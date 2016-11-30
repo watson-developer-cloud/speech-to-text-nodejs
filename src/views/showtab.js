@@ -22,11 +22,9 @@ exports.initShowTab = function() {
     var target = $(e.target).text();
     if (target === 'Text') {
       $.publish('showtext');
-    }
-    else if (target === 'Speakers') {
+    } else if (target === 'Speakers') {
       $.publish('showspeakers');
-    }
-    else if (target === 'JSON') {
+    } else if (target === 'JSON') {
       $.publish('showjson');
     }
   });

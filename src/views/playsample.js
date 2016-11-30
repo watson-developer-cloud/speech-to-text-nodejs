@@ -51,6 +51,7 @@ var playSample = (function() {
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
     var samplePlaying = localStorage.getItem('samplePlaying');
+    var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
     if (samplePlaying === sampleNumber) {
       console.log('HARD SOCKET STOP');
@@ -76,8 +77,6 @@ var playSample = (function() {
     running = true;
 
     $('#resultsText').val('');   // clear hypotheses from previous runs
-
-    var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);

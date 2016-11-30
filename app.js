@@ -34,6 +34,9 @@ app.get('/js/index.js', expressBrowserify('src/index.js', {
   watch: process.env.NODE_ENV !== 'production'
 }));
 
+var username = '';
+var password = '';
+
 // For local development, replace username and password
 var config = extend({
   version: 'v1',

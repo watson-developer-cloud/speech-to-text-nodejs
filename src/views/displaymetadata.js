@@ -742,6 +742,29 @@ function resetWorker() {
   console.log('---> resetWorker called');
 }
 
+function showCNs(bins) {
+  bins.forEach(parseBin);
+  var w = $('#canvas').width();
+  hslider.max = scene.width() - w + INITIAL_OFFSET_X;
+  hslider.value = hslider.max;
+  onHScroll();
+
+  if (vslider.min < 0 && showAllHypotheses) {
+    $('#vslider').css('display', 'block');
+  }
+  $('#hslider').css('display', 'block');
+  $('#show_alternate_words').css('display', 'inline-block');
+  $('#canvas').css('display', 'block');
+  $('#canvas-placeholder').css('display', 'none');
+  $('#left-arrow').css('display', 'inline-block');
+  $('#right-arrow').css('display', 'inline-block');
+}
+
+function showKWS(kws) {
+  parseKeywords(kws);
+  updateDetectedKeywords();
+}
+
 exports.initDisplayMetadata = function() {
   initTextScroll();
   keywordsInputDirty = false;
@@ -804,29 +827,6 @@ exports.initDisplayMetadata = function() {
   };
 };
 
-function showCNs(bins) {
-  bins.forEach(parseBin);
-  var w = $('#canvas').width();
-  hslider.max = scene.width() - w + INITIAL_OFFSET_X;
-  hslider.value = hslider.max;
-  onHScroll();
-
-  if (vslider.min < 0 && showAllHypotheses) {
-    $('#vslider').css('display', 'block');
-  }
-  $('#hslider').css('display', 'block');
-  $('#show_alternate_words').css('display', 'inline-block');
-  $('#canvas').css('display', 'block');
-  $('#canvas-placeholder').css('display', 'none');
-  $('#left-arrow').css('display', 'inline-block');
-  $('#right-arrow').css('display', 'inline-block');
-}
-
-function showKWS(kws) {
-  parseKeywords(kws);
-  updateDetectedKeywords();
-}
-
 function onTimer() {
   worker.postMessage({
     type:'shift'
@@ -864,14 +864,87 @@ function removeOldTokensPerSpeaker(time) {
     var from = tokenStartTimes[i];
     if (from >= time) return;
     if (from in tokensPerSpeaker) {
-      delete tokensPerSpeaker[from];
+      // delete tokensPerSpeaker[from];
+      Reflect.deleteProperty(tokensPerSpeaker, from);
+    }
+  }
+}
+
+function showTranscript(payload) {
+  var updateTranscript = payload.result.showSpeakers == false || payload.result.showSpeakers && payload.msg.speaker_labels == null;
+
+  // capitalize first word if final results, append a new paragraph
+  if (payload.msg.results && payload.msg.results[0] && payload.msg.results[0].final) {
+    payload.text = payload.text.slice(0, -1);
+    payload.text = payload.text.charAt(0).toUpperCase() + payload.text.substring(1);
+    if (payload.ja_zn) {
+      payload.text = payload.text.trim() + '。';
+      payload.text = payload.text.replace(/ /g,'');
+    } else {
+      payload.text = payload.text.trim() + '. ';
+    }
+
+    if (updateTranscript) {
+      payload.result.transcript += payload.text;
+    }
+
+    var timestamps = payload.msg.results[0].alternatives[0].timestamps;
+    for (var i = 0; i < timestamps.length; i++) {
+      var timestamp = timestamps[i];
+      var token = timestamp[0];
+      var from = timestamp[1];
+      if (from in tokensPerSpeaker == false) {
+        tokenStartTimes.push(from);
+        tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
+      }
+    }
+    if ($('.nav-tabs .active').text() == 'Text') {
+      $('#resultsText').html(payload.result.transcript);
+    }
+  } else {
+    if (payload.ja_zn) {
+      payload.text = payload.text.replace(/ /g,''); // remove whitespaces
+    } else {
+      payload.text = payload.text.charAt(0).toUpperCase() + payload.text.substring(1);
+    }
+    if ($('.nav-tabs .active').text() == 'Text' && updateTranscript) {
+      $('#resultsText').html(payload.result.transcript + payload.text);
+    }
+  }
+}
+
+function showSpeakers(payload) {
+  if (payload.msg.speaker_labels && payload.msg.speaker_labels.length > 0) {
+    var item = null;
+
+    for (var i = 0; i < payload.msg.speaker_labels.length; i++) {
+      item = payload.msg.speaker_labels[i];
+      var from = item.from;
+      var speaker = item.speaker;
+      if (from in tokensPerSpeaker) {
+        var tokenPerSpeaker = tokensPerSpeaker[from];
+        tokenPerSpeaker.speaker = speaker;
+      }
+    }
+
+    var diarization = createDiarization();
+
+    if (item) {
+      if (item.final) {
+        payload.result.speakers += diarization;
+        if ($('.nav-tabs .active').text() == 'Speakers') {
+          $('#resultsSpeakers').html(payload.result.speakers);
+        }
+        removeOldTokensPerSpeaker(item.from);
+      } else if ($('.nav-tabs .active').text() == 'Speakers') {
+        $('#resultsSpeakers').html(payload.result.speakers + diarization);
+      }
     }
   }
 }
 
 exports.showResult = function(msg, result, model) {
   if (msg.results && msg.results.length > 0) {
-    //var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
 
     // apply mappings to beautify
@@ -898,80 +971,14 @@ exports.showResult = function(msg, result, model) {
       return;
     }
 
-    var japanese = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
+    var payload = {};
+    payload.msg = msg;
+    payload.result = result;
+    payload.text = text;
+    payload.ja_zn = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
 
-    // capitalize first word if final results, append a new paragraph
-    if (msg.results && msg.results[0] && msg.results[0].final) {
-      text = text.slice(0, -1);
-      text = text.charAt(0).toUpperCase() + text.substring(1);
-      if (japanese) {
-        text = text.trim() + '。';
-        text = text.replace(/ /g,'');
-      }
-      else {
-        text = text.trim() + '. ';
-      }
-
-      if (result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
-        result.transcript += text;
-      }
-
-      var timestamps = msg.results[0].alternatives[0].timestamps;
-      for (var i = 0; i < timestamps.length; i++) {
-        var timestamp = timestamps[i];
-        var token = timestamp[0];
-        var from = timestamp[1];
-        if (from in tokensPerSpeaker == false) {
-          tokenStartTimes.push(from);
-          tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
-        }
-      }
-      if ($('.nav-tabs .active').text() == 'Text') {
-        $('#resultsText').html(result.transcript);
-      }
-    }
-    else {
-      if (japanese) {
-        text = text.replace(/ /g,''); // remove whitespaces
-      }
-      else {
-        text = text.charAt(0).toUpperCase() + text.substring(1);
-      }
-      if ($('.nav-tabs .active').text() == 'Text') {
-        if (result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
-          $('#resultsText').html(result.transcript + text);
-        }
-      }
-    }
-
-    if (msg.speaker_labels && msg.speaker_labels.length > 0) {
-      var item = null;
-      for (var i = 0; i < msg.speaker_labels.length; i++) {
-        var item = msg.speaker_labels[i];
-        from = item.from;
-        var speaker = item.speaker;
-        if (from in tokensPerSpeaker) {
-          var tokenPerSpeaker = tokensPerSpeaker[from];
-          tokenPerSpeaker.speaker = speaker;
-        }
-      }
-      var diarization = createDiarization();
-
-      if (item) {
-        if (item.final) {
-          result.speakers += diarization;
-          if ($('.nav-tabs .active').text() == 'Speakers') {
-            $('#resultsSpeakers').html(result.speakers);
-          }
-          removeOldTokensPerSpeaker(item.from);
-        }
-        else {
-          if ($('.nav-tabs .active').text() == 'Speakers') {
-            $('#resultsSpeakers').html(result.speakers + diarization);
-          }
-        }
-      }
-    }
+    showTranscript(payload);
+    showSpeakers(payload);
   }
 
   updateTextScroll();
