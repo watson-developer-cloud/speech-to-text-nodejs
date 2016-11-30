@@ -28,11 +28,6 @@ require('dotenv').load({silent: true});
 
 // Bootstrap application settings
 require('./config/express')(app);
-var host = require('./config/host').host;
-var url = require('util').format('https://%s/speech-to-text/api', host);
-
-var username = '';
-var password = '';
 
 // automatically compile and serve the front-end js
 app.get('/js/index.js', expressBrowserify('src/index.js', {
@@ -42,7 +37,7 @@ app.get('/js/index.js', expressBrowserify('src/index.js', {
 // For local development, replace username and password
 var config = extend({
   version: 'v1',
-  url: url,
+  url: 'https://stream.watsonplatform.net/speech-to-text/api',
   username: process.env.STT_USERNAME || username,
   password: process.env.STT_PASSWORD || password
 }, vcapServices.getCredentials('speech_to_text'));

@@ -47,7 +47,7 @@ var runTimer = false;
 var scrolled = false;
 var pushed = 0;
 var popped = 0;
-// key: 'from' time stamp, 
+// key: 'from' time stamp,
 // value: object {'token':text, 'speaker':speaker}
 var tokensPerSpeaker = {};
 var tokenStartTimes = [];
@@ -793,10 +793,10 @@ exports.initDisplayMetadata = function() {
   worker = new Worker(blobURL);
   worker.onmessage = function(event) {
     var data = event.data;
-    if(data.bins) {
+    if (data.bins) {
       showCNs(data.bins);
     }
-    if(data.kws) {
+    if (data.kws) {
       showKWS(data.kws);
     }
     popped++;
@@ -839,19 +839,19 @@ function onTimer() {
 function createDiarization() {
   var currentSpeaker = -1;
   var speakers = '';
-  for(var i = 0; i < tokenStartTimes.length; i++) {
+  for (var i = 0; i < tokenStartTimes.length; i++) {
     var from = tokenStartTimes[i];
     var tokenPerSpeaker = tokensPerSpeaker[from];
     var token = tokenPerSpeaker.token;
     var speaker = tokenPerSpeaker.speaker;
-    
-    if(speaker != currentSpeaker && speaker != -1) {
+
+    if (speaker != currentSpeaker && speaker != -1) {
       var colorClass = printf('speakerColor_%d', speaker);
-      speakers += printf("<div></div><div class='speakerInfo %s'>Speaker %d:</div>", colorClass, speaker);
+      speakers += printf('<div></div><div class=\'speakerInfo %s\'>Speaker %d:</div>', colorClass, speaker);
       currentSpeaker = speaker;
     }
-    
-    if(token != '%HESITATION' && token != '~NS' && token != '~VP') {
+
+    if (token != '%HESITATION' && token != '~NS' && token != '~VP') {
       speakers += token + ' ';
     }
   }
@@ -860,10 +860,10 @@ function createDiarization() {
 }
 
 function removeOldTokensPerSpeaker(time) {
-  for(var i = 0; i < tokenStartTimes.length; i++) {
+  for (var i = 0; i < tokenStartTimes.length; i++) {
     var from = tokenStartTimes[i];
-    if(from >= time) return;
-    if(from in tokensPerSpeaker) {
+    if (from >= time) return;
+    if (from in tokensPerSpeaker) {
       delete tokensPerSpeaker[from];
     }
   }
@@ -911,17 +911,17 @@ exports.showResult = function(msg, result, model) {
       else {
         text = text.trim() + '. ';
       }
-      
-      if(result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
+
+      if (result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
         result.transcript += text;
       }
 
       var timestamps = msg.results[0].alternatives[0].timestamps;
-      for(var i = 0; i < timestamps.length; i++) {
+      for (var i = 0; i < timestamps.length; i++) {
         var timestamp = timestamps[i];
         var token = timestamp[0];
         var from = timestamp[1];
-        if(from in tokensPerSpeaker == false) {
+        if (from in tokensPerSpeaker == false) {
           tokenStartTimes.push(from);
           tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
         }
@@ -933,49 +933,47 @@ exports.showResult = function(msg, result, model) {
     else {
       if (japanese) {
         text = text.replace(/ /g,''); // remove whitespaces
-      } 
+      }
       else {
         text = text.charAt(0).toUpperCase() + text.substring(1);
       }
       if ($('.nav-tabs .active').text() == 'Text') {
-        if(result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
+        if (result.showSpeakers == false || result.showSpeakers && msg.speaker_labels == null) {
           $('#resultsText').html(result.transcript + text);
         }
       }
     }
 
-    if(msg.speaker_labels && msg.speaker_labels.length > 0) {
+    if (msg.speaker_labels && msg.speaker_labels.length > 0) {
       var item = null;
-      for(var i = 0; i < msg.speaker_labels.length; i++) {
+      for (var i = 0; i < msg.speaker_labels.length; i++) {
         var item = msg.speaker_labels[i];
         from = item.from;
         var speaker = item.speaker;
-        if(from in tokensPerSpeaker) {
+        if (from in tokensPerSpeaker) {
           var tokenPerSpeaker = tokensPerSpeaker[from];
           tokenPerSpeaker.speaker = speaker;
         }
       }
       var diarization = createDiarization();
 
-      if(item) {
-        if(item.final) {
+      if (item) {
+        if (item.final) {
           result.speakers += diarization;
-          if($('.nav-tabs .active').text() == 'Speakers')  {
+          if ($('.nav-tabs .active').text() == 'Speakers') {
             $('#resultsSpeakers').html(result.speakers);
           }
-          console.log('size of tokensPerSpeaker BEFORE removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
           removeOldTokensPerSpeaker(item.from);
-          console.log('size of tokensPerSpeaker.length AFTER removeOldTokensPerSpeaker', Object.keys(tokensPerSpeaker).length);
         }
         else {
-          if($('.nav-tabs .active').text() == 'Speakers')  {
+          if ($('.nav-tabs .active').text() == 'Speakers') {
             $('#resultsSpeakers').html(result.speakers + diarization);
           }
         }
       }
     }
   }
-  
+
   updateTextScroll();
 };
 
@@ -989,7 +987,7 @@ $.subscribe('clearscreen', function() {
   resetWorker();
   tokensPerSpeaker = {};
   tokenStartTimes = [];
-  if($('#diarization > input[type="checkbox"]').prop('checked') == false) {
+  if ($('#diarization > input[type="checkbox"]').prop('checked') == false) {
     $('.nav-tabs a[data-toggle="tab"]').first().click();
   }
 });
@@ -997,8 +995,8 @@ $.subscribe('clearscreen', function() {
 $('#diarization > input[type="checkbox"]').click(function() {
   $('li.speakersTab').toggle(this.checked);
 //$('.nav-tabs a[data-toggle="tab"]').first().click();
-  var tabs = $(".nav-tabs > li").children();
-  if(this.checked) {
+  var tabs = $('.nav-tabs > li').children();
+  if (this.checked) {
     tabs[1].click(); // selects 'Speakers' tab
   }
   else {

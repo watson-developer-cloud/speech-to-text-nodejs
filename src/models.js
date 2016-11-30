@@ -23,9 +23,8 @@ exports.getModels = function(token) {
     token: token,
     bufferSize: BUFFERSIZE
   };
-  
-  var host = require('../config/host').host;
-  var modelUrl = require('util').format('https://%s/speech-to-text/api/v1/models', host);
+
+  var modelUrl = 'https://stream.watsonplatform.net/speech-to-text/api/v1/models';
   var sttRequest = new XMLHttpRequest();
   sttRequest.open('GET', modelUrl, true);
   sttRequest.withCredentials = true;

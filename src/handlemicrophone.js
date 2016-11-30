@@ -40,17 +40,17 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     var $results = $('#resultsText');
     $results.html(result.transcript);
   });
-  
+
   $.subscribe('showspeakers', function() {
     var $results = $('#resultsText');
     $results.html(result.speakers);
   });
-  
+
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
     $resultsJSON.text(baseJSON);
   });
-  
+
   var options = {};
   options.token = token;
   options.message = {
@@ -65,16 +65,16 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'word_alternatives_threshold': 0.001,
     'smart_formatting': true,
   };
-  
+
   var keywords = display.getKeywordsToSearch();
-  if(keywords.length > 0) {
+  if (keywords.length > 0) {
     var keywords_threshold = 0.01;
     options.message.keywords_threshold = keywords_threshold;
     options.message.keywords = keywords;
   }
   var speaker_labels = $('li.speakersTab').is(':visible');
   options.message.speaker_labels = speaker_labels;
- 
+
   options.model = model;
 
   function onOpen(socket) {

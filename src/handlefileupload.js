@@ -22,7 +22,7 @@ var initSocket = require('./socket').initSocket;
 exports.handleFileUpload = function(type, token, model, file, contentType, callback, onend) {
   // Set currentlyDisplaying to prevent other sockets from opening
   localStorage.setItem('currentlyDisplaying', type);
-  
+
   $.subscribe('progress', function(evt, data) {
     console.log('progress: ', data);
   });
@@ -39,12 +39,12 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     var $resultsText = $('#resultsText');
     $resultsText.html(result.transcript);
   });
-  
+
   $.subscribe('showspeakers', function() {
     var $resultsSpeakers = $('#resultsSpeakers');
     $resultsSpeakers.html(result.speakers);
   });
-  
+
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
     $resultsJSON.text(baseJSON);
@@ -64,16 +64,16 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     'word_alternatives_threshold': 0.001,
     'smart_formatting': true,
   };
-  
+
   var keywords = display.getKeywordsToSearch();
-  if(keywords.length > 0) {
+  if (keywords.length > 0) {
     var keywords_threshold = 0.01;
     options.message.keywords_threshold = keywords_threshold;
     options.message.keywords = keywords;
   }
   var speaker_labels = $('li.speakersTab').is(':visible');
   options.message.speaker_labels = speaker_labels;
- 
+
   options.model = model;
 
   function onOpen() {

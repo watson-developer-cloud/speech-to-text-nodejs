@@ -151,7 +151,7 @@ exports.initFileUpload = function(ctx) {
       $.publish('hardsocketstop');
       localStorage.setItem('currentlyDisplaying', 'false');
       return;
-    } 
+    }
     else if (currentlyDisplaying == 'sample') {
       showError('Currently another file is being transcribed, please stop the file or wait until it finishes');
       return;

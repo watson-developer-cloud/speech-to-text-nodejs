@@ -44,7 +44,7 @@ exports.initSelectModel = function(ctx) {
     console.log('Change view', $(evt.target).text());
     var description = $(evt.target).text();
     var name = $(evt.target).data('model');
- 
+
     var model = getModel(ctx, name);
     $('#diarization').toggle(isDiarizationSupported(model));
     $('#diarization > input[type="checkbox"]').prop('checked', false);
@@ -60,17 +60,17 @@ exports.initSelectModel = function(ctx) {
     $('#tb_keywords').change();
     $.publish('clearscreen');
   });
-  
+
   function getModel(ctx, name) {
-    for(var i = 0; i < ctx.models.length; i++) {
+    for (var i = 0; i < ctx.models.length; i++) {
       var model = ctx.models[i];
-      if(model.name == name) {
+      if (model.name == name) {
         return model;
       }
     }
     return null;
   }
-  
+
   function isDiarizationSupported(model) {
     var supported_features = model.supported_features;
     return supported_features.speaker_labels;

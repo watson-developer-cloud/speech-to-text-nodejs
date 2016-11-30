@@ -372,3 +372,4 @@ Microphone.prototype.floatTo16BitPCM = function(output, offset, input){
     output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
   }
 };
+
