@@ -32,7 +32,7 @@ var LOOKUP_TABLE = {
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav', 'quiero preguntarle, existen productos', 'preparando, regalos para la familia, sobrinos'],
   'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav', 'QUIERO PREGUNTARLE, EXISTEN PRODUCTOS', 'PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS'],
   'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav', '場所 , 今日', '変更 , 給与 , コード'],
-  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav', 'お客様 , お手数', '申し込み , 今回 , 通帳'],
+  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow5.wav', 'sample-Ja_JP-narrow6.wav', 'お客様 , お手数', '申し込み , 今回 , 通帳'],
   'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav', 'sistema da ibm, setor bancário, qualidade, necessidades dos clientes', 'médicos, informações, planos de tratamento'],
   'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav', 'cozinha, inovadoras receitas, criatividade', 'sistema, treinado por especialistas, setores diferentes'],
   'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav', '沃 森 是 认知 , 大 数据 分析 能力', '技术 , 语音 , 的 用户 体验 , 人们 , 手机'],
