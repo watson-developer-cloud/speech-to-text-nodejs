@@ -856,7 +856,6 @@ function createDiarization() {
     }
   }
 
-  console.log('*** SPEAKERS ***', speakers);
   return speakers;
 }
 

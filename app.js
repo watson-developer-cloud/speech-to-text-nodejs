@@ -31,11 +31,6 @@ require('./config/express')(app);
 var host = require('./config/host').host;
 var url = require('util').format('https://%s/speech-to-text/api', host);
 
-// production
-//var username = '';
-//var password = '';
-
-// staging 
 var username = '';
 var password = '';
 
