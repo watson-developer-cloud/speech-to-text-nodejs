@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header, Jumbotron } from 'watson-react-components';
+import { Header, Jumbotron, Footer } from 'watson-react-components';
 
 export default function(props) {
     return (
@@ -28,6 +28,7 @@ export default function(props) {
                 <div id="root">
                 {props.children}
                 </div>
+                <Footer/>
             <script type="text/javascript" src="scripts/vendor/google-analytics.js" defer async></script>
             </body>
     </html>
