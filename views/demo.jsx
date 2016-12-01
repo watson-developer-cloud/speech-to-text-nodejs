@@ -3,7 +3,7 @@ import { ButtonsGroup, Tabs, Pane } from 'watson-react-components';
 import SpeechToText from 'watson-speech/speech-to-text';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
-import { Keywords } from './keywords.jsx';
+import { Keywords, getKeywordsSummary } from './keywords.jsx';
 import { JSONView } from './json.jsx';
 import samples from '../src/data/samples.json';
 
@@ -226,7 +226,7 @@ export default React.createClass({
                 <Pane label="Text">
                     <Transcript results={this.getFinalResults()} interimResult={this.getCurrentInterimResult()} model={this.state.settingsAtStreamStart.model} />
                 </Pane>
-                <Pane label="Keywords">
+                <Pane label={"Keywords " + getKeywordsSummary(this.state.settingsAtStreamStart.keywords, this.getFinalAndLatestInterimResult())}>
                     <Keywords results={this.getFinalAndLatestInterimResult()} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
                 </Pane>
                 <Pane label="JSON">

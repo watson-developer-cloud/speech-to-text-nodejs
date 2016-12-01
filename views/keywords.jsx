@@ -35,3 +35,9 @@ export function Keywords(props) {
         </div>
     );
 }
+
+export function getKeywordsSummary(keywords, results) {
+    const spotted = Object.keys(results.reduce(keywordReducer, {})).length;
+    const total = keywords.length;
+    return `(${spotted}/${total})`;
+}
