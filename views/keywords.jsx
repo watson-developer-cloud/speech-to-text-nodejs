@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from 'watson-react-components';
 
 
 function keywordReducer(keywords, result) {
@@ -9,28 +10,28 @@ function keywordReducer(keywords, result) {
     return keywords;
 }
 
-function renderSpottings(spottings) {
-    let list;
-    if (spottings) {
-        list = spottings.map(s => `${s.start_time}-${s.end_time}s (${Math.round(s.confidence * 100)}%)`).join(', ');
-    } else {
-        list = '(not spotted)';
-    }
-    return (<span>{list}</span>);
-}
-
-
 export function Keywords(props) {
+    const notSpotted = props.isInProgress ? 'Not yet spotted.' : 'Not spotted.';
+    const notSpottedIcon = props.isInProgress ? 'loader' : 'close';
     const spotted = props.results.reduce(keywordReducer, {});
-    const list = props.keywords.map(k => (<li key={k} className="base--li"><b>{k}</b>: {renderSpottings(spotted[k])}</li>));
-    // todo: Think about a better way of displaying this, perhaps in-line with the text and just highlight the appropriate word
-    // todo: figure out why some styles such as base--ul_no-bullets base--p_light don't seem to work
+    const list = props.keywords.map(k => {
+        const spottings = spotted[k];
+        return (
+            <li key={k} className="base--li">
+                <Icon type={spottings ? 'success-o' : notSpottedIcon} size="small"  />
+                {' '}
+                <b>{k}</b>: {spottings ? 'Spotted - ' : notSpotted}
+                <span className="base--p_light">
+                    {(spottings || []).map(s => `${s.start_time}-${s.end_time}s (${Math.round(s.confidence * 100)}%)`).join(', ')}
+                </span>
+            </li>
+        )
+    });
     return (
         <div>
             <ul className="base--ul base--ul_no-bullets">
                 {list}
             </ul>
-            <p className="base--p base--p_light">Format for each spotted keyword is start time-end time (% confidence).</p>
         </div>
     );
 }

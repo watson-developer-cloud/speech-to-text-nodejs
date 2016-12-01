@@ -14,28 +14,14 @@ export default React.createClass({
             model: 'en-US_BroadbandModel',
             results: [],
             audioSource: null,
-            keywords: samples['en-US_BroadbandModel'].keywords.join(', ')
+            keywords: samples['en-US_BroadbandModel'].keywords.join(', '),
+            // transcript model and keywords are the state that they were when the button was clicked.
+            // Changing them during a transcription would cause a mismatch between the setting sent to the service and what is displayed on the demo, and could cause bugs.
+            settingsAtStreamStart: {
+                model: '',
+                keywords: []
+            },
         };
-    },
-
-    handleSourceClick(e) {
-        const source = e.target.value;
-        if (this.state.audioSource) {
-            return this.stopTranscription();
-        }
-        // todo: reset results and interimResults
-        switch (source) {
-            case 'mic':
-                return this.handleMicClick();
-            case 'upload':
-                return this.handleUploadClick();
-            case 'sample-1':
-                return this.handleSampleClick(1);
-            case 'sample-2':
-                return this.handleSampleClick(2);
-            default:
-                console.log('Unhandled source: ', source);
-        }
     },
 
     stopTranscription() {
@@ -44,7 +30,9 @@ export default React.createClass({
     },
 
     handleMicClick() {
-        console.log('handling mic click');
+        if (this.state.audioSource) {
+            return this.stopTranscription();
+        }
         this.setState({audioSource: 'mic', results: []});
         this.stream = SpeechToText.recognizeMicrophone({
             // todo: keywords, timing, etc
@@ -61,9 +49,16 @@ export default React.createClass({
             .on('data', this.handleResult)
             .on('end', this.handleTranscriptEnd)
             .on('error', e => console.log(e)); // todo: ui
+        this.setState({settingsAtStreamStart: {
+            model: this.state.model,
+            keywords: this.getKeywordsArr()
+        }});
     },
 
     handleUploadClick() {
+        if (this.state.audioSource) {
+            return this.stopTranscription();
+        }
         const file = this.fileInput.files[0];
         if (!file) {
             return;
@@ -72,7 +67,17 @@ export default React.createClass({
         this.playFile(file);
     },
 
+    handleSample1Click() {
+        this.handleSampleClick(1);
+    },
+    handleSample2Click() {
+        this.handleSampleClick(2);
+    },
+
     handleSampleClick(which) {
+        if (this.state.audioSource) {
+            return this.stopTranscription();
+        }
         // todo: icons: play arrow when not playing, spinner when loading, stop button when playing
         // todo: use opus here for browsers that support it
         let filename = samples[this.state.model] && samples[this.state.model].files[which-1];
@@ -113,6 +118,10 @@ export default React.createClass({
             .on('playback-error', e => console.log('unable to play file type in browser', e)) // todo: ui
             .on('error', e => console.log(e)); // todo: ui
         //['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
+        this.setState({settingsAtStreamStart: {
+            model: this.state.model,
+            keywords: this.getKeywordsArr()
+        }});
     },
 
     handleResult(result) {
@@ -194,44 +203,31 @@ export default React.createClass({
                 spotted keywords.
                 You may choose to spot your keywords by entering them (separated by commas) in the text box.</p>
 
-            <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} />
+            <h3>Setup</h3>
 
-            <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/>
+            <p>Voice Model: <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} /></p>
+
+            <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
 
 
-            <label className="base--button">Select Audio File
+            <button className="base--button" onClick={this.handleMicClick}>Record Audio</button>
+            {' '}
+            <label className="base--button">Upload Audio File
                 <input type="file" ref={ r => this.fileInput = r } onChange={this.handleUploadClick} style={{display:'none'}} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"/>
             </label>
+            {' '}
+            <button className="base--button" onClick={this.handleSample1Click}>Play Sample 1</button>
+            {' '}
+            <button className="base--button" onClick={this.handleSample2Click}>Play Sample 2</button>
 
-            <ButtonsGroup
-                type="button"
-                name="button"
-                onClick={this.handleSourceClick}
-                buttons={[{
-                    value: 'mic',
-                    id: 'mic',
-                    text: 'Record Audio',
-                }, {
-                    value: 'upload',
-                    id: 'upload',
-                    text: 'Select Audio File',
-                }, {
-                    value: 'sample-1',
-                    id: 'sample-1',
-                    text: 'Play Sample 1',
-                }, {
-                    value: 'sample-2',
-                    id: 'sample-2',
-                    text: 'Play Sample 2',
-                }]}
-            />
 
+            <h3>Output</h3>
             <Tabs selected={0}>
                 <Pane label="Text">
-                    <Transcript results={this.getFinalResults()} interimResult={this.getCurrentInterimResult()} model={this.state.model} />
+                    <Transcript results={this.getFinalResults()} interimResult={this.getCurrentInterimResult()} model={this.state.settingsAtStreamStart.model} />
                 </Pane>
                 <Pane label="Keywords">
-                    <Keywords results={this.getFinalAndLatestInterimResult()} keywords={this.getKeywordsArr()} />
+                    <Keywords results={this.getFinalAndLatestInterimResult()} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
                 </Pane>
                 <Pane label="JSON">
                     <JSONView results={this.state.results} />
