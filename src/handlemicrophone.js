@@ -44,6 +44,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   var options = {};
   options.token = token;
+  
   options.message = {
     'action': 'start',
     'content-type': 'audio/l16;rate=16000',
@@ -54,10 +55,12 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'max_alternatives': 3,
     'inactivity_timeout': 600,
     'word_alternatives_threshold': 0.001,
-    'keywords_threshold': keywords_threshold,
-    'keywords': keywords,
     'smart_formatting': true
   };
+  if (keywords.length > 0) {
+    options.message['keywords_threshold'] = keywords_threshold;
+    options.message['keywords'] = keywords;
+  }    
   options.model = model;
 
   function onOpen(socket) {
