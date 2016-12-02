@@ -60,7 +60,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   if (keywords.length > 0) {
     options.message.keywords_threshold = keywords_threshold;
     options.message.keywords = keywords;
-  }    
+  }
   options.model = model;
 
   function onOpen(socket) {
