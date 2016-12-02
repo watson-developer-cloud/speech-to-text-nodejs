@@ -44,7 +44,6 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   var options = {};
   options.token = token;
-  
   options.message = {
     'action': 'start',
     'content-type': 'audio/l16;rate=16000',
