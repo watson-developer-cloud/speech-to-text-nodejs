@@ -20,6 +20,20 @@ var initPlaySample = require('./playsample').initPlaySample;
 
 exports.initSelectModel = function(ctx) {
 
+  function getModel(ctx, name) {
+    for (var i = 0; i < ctx.models.length; i++) {
+      var model = ctx.models[i];
+      if (model.name == name) {
+        return model;
+      }
+    }
+    return null;
+  }
+
+  function isDiarizationSupported(model) {
+    var supported_features = model.supported_features;
+    return supported_features.speaker_labels;
+  }
 
   ctx.models.forEach(function(model) {
     $('#dropdownMenuList').append(
@@ -29,26 +43,36 @@ exports.initSelectModel = function(ctx) {
           $('<a>').attr('role', 'menu-item')
             .attr('href', '/')
             .attr('data-model', model.name)
-            .append(model.description.substring(0, model.description.length - 1), model.rate == 8000 ? ' (8KHz)' : ' (16KHz)'))
-          );
+            .append(model.description.substring(0, model.description.length - 1), model.rate == 8000 ? ' (8KHz)' : ' (16KHz)')
+        )
+    );
   });
 
+  var model = getModel(ctx, ctx.currentModel);
+  $('#diarization').toggle(isDiarizationSupported(model));
+  $('#diarization > input[type="checkbox"]').prop('checked', false);
+  $('li.speakersTab').hide();
 
   $('#dropdownMenuList').click(function(evt) {
     evt.preventDefault();
     evt.stopPropagation();
     console.log('Change view', $(evt.target).text());
-    var newModelDescription = $(evt.target).text();
-    var newModel = $(evt.target).data('model');
-    $('#dropdownMenuDefault').empty().text(newModelDescription);
+    var description = $(evt.target).text();
+    var name = $(evt.target).data('model');
+
+    var model = getModel(ctx, name);
+    $('#diarization').toggle(isDiarizationSupported(model));
+    $('#diarization > input[type="checkbox"]').prop('checked', false);
+    $('li.speakersTab').hide();
+
+    $('#dropdownMenuDefault').empty().text(description);
     $('#dropdownMenu1').dropdown('toggle');
-    localStorage.setItem('currentModel', newModel);
-    ctx.currentModel = newModel;
+    localStorage.setItem('currentModel', name);
+    ctx.currentModel = name;
     initPlaySample(ctx);
     $('#tb_keywords').focus();
     $('#tb_keywords').val('');
     $('#tb_keywords').change();
     $.publish('clearscreen');
   });
-
 };

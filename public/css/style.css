@@ -398,6 +398,22 @@ table.kws_occurrences {
   display:none;
 }
 
+#diarization {
+  position:relative;
+  top:-1.0em;
+  left: 1.0em;
+  color: #A53725;
+  text-decoration:none; 
+  cursor:pointer;
+  -webkit-user-select: none;       
+  -moz-user-select: none;
+  display:none;
+}
+
+#diarization:hover {
+  color: #70120f; 
+}
+
 #btnLoadKWS {
   padding-left:1em;
   width:12em;
@@ -417,5 +433,56 @@ table.kws_occurrences {
 
 .dropdown-menu > li > a {
   text-decoration:none;
+}
+
+#resultsText, #resultsSpeakers, .codeJSON
+{
+  padding:1em;
+  background:#fff;
+  width: 100%;
+  height:200px;
+  overflow:auto;
+  word-wrap: break-word;
+  border: #fff;
+}
+
+.speakerInfo {
+  display:inline;
+  font-weight:bold;
+  padding-right:5px;
+}
+
+.speakerColor_0 {
+  color:#5e9911;
+}
+
+.speakerColor_1 {
+  color:#6537f0;
+}
+
+.speakerColor_2 {
+  color:#ed37f0;
+}
+
+.speakerColor_3 {
+  color:#f19027;
+}
+
+.speakerColor_4 {
+  color:#f03737;
+}
+
+.speakerColor_5 {
+  color:#a4d917;
+}
+
+.speakerInfo img {
+  width:30px;
+  height:30px;
+  padding-right:5px;
+}
+
+li.speakersTab {
+  display:none;
 }
 

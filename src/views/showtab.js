@@ -20,7 +20,11 @@ exports.initShowTab = function() {
   $('.nav-tabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
     // show selected tab / active
     var target = $(e.target).text();
-    if (target === 'JSON') {
+    if (target === 'Text') {
+      $.publish('showtext');
+    } else if (target === 'Speakers') {
+      $.publish('showspeakers');
+    } else if (target === 'JSON') {
       $.publish('showjson');
     }
   });

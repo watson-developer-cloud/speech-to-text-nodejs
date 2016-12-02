@@ -17,6 +17,8 @@
 /* eslint no-invalid-this: 0, brace-style: 0, dot-notation: 0, spaced-comment:0 */
 'use strict';
 
+var printf = require('util').format;
+
 const INITIAL_OFFSET_X = 30;
 const INITIAL_OFFSET_Y = 30;
 const fontSize = 16;
@@ -43,9 +45,12 @@ var rightArrowEnabled = false;
 var worker = null;
 var runTimer = false;
 var scrolled = false;
-// var textScrolled = false;
 var pushed = 0;
 var popped = 0;
+// key: 'from' time stamp,
+// value: object {'token':text, 'speaker':speaker}
+var tokensPerSpeaker = {};
+var tokenStartTimes = [];
 
 ctx.font = defaultFont;
 
@@ -690,14 +695,16 @@ $('#show_alternate_words').click(function(/*e*/) {
 
 exports.showJSON = function(baseJSON) {
   if ($('.nav-tabs .active').text() == 'JSON') {
-    $('#resultsJSON').val(baseJSON);
+    $('#resultsJSON').text(baseJSON);
   }
 };
 
 function updateTextScroll(){
   if (!scrolled){
-    var element = $('#resultsText').get(0);
-    element.scrollTop = element.scrollHeight;
+    var elementTranscript = $('#resultsText').get(0);
+    elementTranscript.scrollTop = elementTranscript.scrollHeight;
+    var elementSpeakers = $('#resultsSpeakers').get(0);
+    elementSpeakers.scrollTop = elementSpeakers.scrollHeight;
   }
 }
 
@@ -721,6 +728,7 @@ function onResize() {
   canvas.width = w * ratio;
   canvas.height = h * ratio;
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  hslider.max = scene.width() - w + INITIAL_OFFSET_X;
   draw();
 }
 
@@ -732,6 +740,29 @@ function resetWorker() {
   pushed = 0;
   popped = 0;
   console.log('---> resetWorker called');
+}
+
+function showCNs(bins) {
+  bins.forEach(parseBin);
+  var w = $('#canvas').width();
+  hslider.max = scene.width() - w + INITIAL_OFFSET_X;
+  hslider.value = hslider.max;
+  onHScroll();
+
+  if (vslider.min < 0 && showAllHypotheses) {
+    $('#vslider').css('display', 'block');
+  }
+  $('#hslider').css('display', 'block');
+  $('#show_alternate_words').css('display', 'inline-block');
+  $('#canvas').css('display', 'block');
+  $('#canvas-placeholder').css('display', 'none');
+  $('#left-arrow').css('display', 'inline-block');
+  $('#right-arrow').css('display', 'inline-block');
+}
+
+function showKWS(kws) {
+  parseKeywords(kws);
+  updateDetectedKeywords();
 }
 
 exports.initDisplayMetadata = function() {
@@ -768,10 +799,12 @@ exports.initDisplayMetadata = function() {
     '  }\n' +
     '  else if(type == \'shift\' && fifo.length > 0) {\n' +
     '    var msg = fifo.shift();\n' +
-    '    postMessage({\n' +
-    '     bins:msg.results[0].word_alternatives,\n' +
-    '     kws:msg.results[0].keywords_result\n' +
-    '    });\n' +
+    '    if(msg.results[0].word_alternatives || msg.results[0].keywords_result) {\n' +
+    '      postMessage({\n' +
+    '        bins:msg.results[0].word_alternatives,\n' +
+    '        kws:msg.results[0].keywords_result\n' +
+    '      });\n' +
+    '    }\n' +
     '  }\n' +
     '  else if(type == \'clear\') {\n' +
     '    fifo = [];\n' +
@@ -783,33 +816,16 @@ exports.initDisplayMetadata = function() {
   worker = new Worker(blobURL);
   worker.onmessage = function(event) {
     var data = event.data;
-    // eslint-disable-next-line no-use-before-define
-    showCNsKWS(data.bins, data.kws);
+    if (data.bins) {
+      showCNs(data.bins);
+    }
+    if (data.kws) {
+      showKWS(data.kws);
+    }
     popped++;
     console.log('----> popped', popped);
   };
 };
-
-function showCNsKWS(bins, kws) {
-  bins.forEach(parseBin);
-  hslider.max = scene.width() - canvas.width + INITIAL_OFFSET_X;
-  hslider.value = hslider.max;
-  onHScroll();
-
-  if (vslider.min < 0 && showAllHypotheses) {
-    $('#vslider').css('display', 'block');
-  }
-  $('#hslider').css('display', 'block');
-  $('#show_alternate_words').css('display', 'inline-block');
-  $('#canvas').css('display', 'block');
-  $('#canvas-placeholder').css('display', 'none');
-  $('#left-arrow').css('display', 'inline-block');
-  $('#right-arrow').css('display', 'inline-block');
-
-  // KWS
-  parseKeywords(kws);
-  updateDetectedKeywords();
-}
 
 function onTimer() {
   worker.postMessage({
@@ -820,9 +836,115 @@ function onTimer() {
   }
 }
 
-exports.showResult = function(msg, baseString, model) {
+function createDiarization() {
+  var currentSpeaker = -1;
+  var speakers = '';
+  for (var i = 0; i < tokenStartTimes.length; i++) {
+    var from = tokenStartTimes[i];
+    var tokenPerSpeaker = tokensPerSpeaker[from];
+    var token = tokenPerSpeaker.token;
+    var speaker = tokenPerSpeaker.speaker;
+
+    if (speaker != currentSpeaker && speaker != -1) {
+      var colorClass = printf('speakerColor_%d', speaker);
+      speakers += printf('<div></div><div class=\'speakerInfo %s\'>Speaker %d:</div>', colorClass, speaker);
+      currentSpeaker = speaker;
+    }
+
+    if (token != '%HESITATION' && token != '~NS' && token != '~VP') {
+      speakers += token + ' ';
+    }
+  }
+
+  return speakers;
+}
+
+function removeOldTokensPerSpeaker(time) {
+  for (var i = 0; i < tokenStartTimes.length; i++) {
+    var from = tokenStartTimes[i];
+    if (from >= time) return;
+    if (from in tokensPerSpeaker) {
+      // delete tokensPerSpeaker[from];
+      Reflect.deleteProperty(tokensPerSpeaker, from);
+    }
+  }
+}
+
+function showTranscript(payload) {
+  var updateTranscript = payload.result.showSpeakers == false || payload.result.showSpeakers && payload.msg.speaker_labels == null;
+
+  // capitalize first word if final results, append a new paragraph
+  if (payload.msg.results && payload.msg.results[0] && payload.msg.results[0].final) {
+    payload.text = payload.text.slice(0, -1);
+    payload.text = payload.text.charAt(0).toUpperCase() + payload.text.substring(1);
+    if (payload.ja_zn) {
+      payload.text = payload.text.trim() + '。';
+      payload.text = payload.text.replace(/ /g,'');
+    } else {
+      payload.text = payload.text.trim() + '. ';
+    }
+
+    if (updateTranscript) {
+      payload.result.transcript += payload.text;
+    }
+
+    var timestamps = payload.msg.results[0].alternatives[0].timestamps;
+    for (var i = 0; i < timestamps.length; i++) {
+      var timestamp = timestamps[i];
+      var token = timestamp[0];
+      var from = timestamp[1];
+      if (from in tokensPerSpeaker == false) {
+        tokenStartTimes.push(from);
+        tokensPerSpeaker[from] = {'token':token, 'speaker':-1};
+      }
+    }
+    if ($('.nav-tabs .active').text() == 'Text') {
+      $('#resultsText').html(payload.result.transcript);
+    }
+  } else {
+    if (payload.ja_zn) {
+      payload.text = payload.text.replace(/ /g,''); // remove whitespaces
+    } else {
+      payload.text = payload.text.charAt(0).toUpperCase() + payload.text.substring(1);
+    }
+    if ($('.nav-tabs .active').text() == 'Text' && updateTranscript) {
+      $('#resultsText').html(payload.result.transcript + payload.text);
+    }
+  }
+}
+
+function showSpeakers(payload) {
+  if (payload.msg.speaker_labels && payload.msg.speaker_labels.length > 0) {
+    var item = null;
+
+    for (var i = 0; i < payload.msg.speaker_labels.length; i++) {
+      item = payload.msg.speaker_labels[i];
+      var from = item.from;
+      var speaker = item.speaker;
+      if (from in tokensPerSpeaker) {
+        var tokenPerSpeaker = tokensPerSpeaker[from];
+        tokenPerSpeaker.speaker = speaker;
+      }
+    }
+
+    var diarization = createDiarization();
+
+    if (item) {
+      if (item.final) {
+        payload.result.speakers += diarization;
+        if ($('.nav-tabs .active').text() == 'Speakers') {
+          $('#resultsSpeakers').html(payload.result.speakers);
+        }
+        removeOldTokensPerSpeaker(item.from);
+      } else if ($('.nav-tabs .active').text() == 'Speakers') {
+        $('#resultsSpeakers').html(payload.result.speakers + diarization);
+      }
+    }
+  }
+}
+
+exports.showResult = function(msg, result, model) {
   if (msg.results && msg.results.length > 0) {
-    //var alternatives = msg.results[0].alternatives;
     var text = msg.results[0].alternatives[0].transcript || '';
 
     // apply mappings to beautify
@@ -846,37 +968,20 @@ exports.showResult = function(msg, baseString, model) {
 
     // if all words are mapped to nothing then there is nothing else to do
     if ((text.length == 0) || (/^\s+$/.test(text))) {
-      return baseString;
+      return;
     }
 
-    var japanese = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
+    var payload = {};
+    payload.msg = msg;
+    payload.result = result;
+    payload.text = text;
+    payload.ja_zn = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
 
-    // capitalize first word
-    // if final results, append a new paragraph
-    if (msg.results && msg.results[0] && msg.results[0].final) {
-      text = text.slice(0, -1);
-      text = text.charAt(0).toUpperCase() + text.substring(1);
-      if (japanese) {
-        text = text.trim() + '。';
-        text = text.replace(/ /g,'');
-      }
-      else {
-        text = text.trim() + '. ';
-      }
-      baseString += text;
-      $('#resultsText').val(baseString);
-    }
-    else {
-      if (japanese) {
-        text = text.replace(/ /g,''); // remove whitespaces
-      } else {
-          text = text.charAt(0).toUpperCase() + text.substring(1);
-      }
-      $('#resultsText').val(baseString + text);
-    }
+    showTranscript(payload);
+    showSpeakers(payload);
   }
+
   updateTextScroll();
-  return baseString;
 };
 
 exports.getKeywordsToSearch = function() {
@@ -887,6 +992,23 @@ $.subscribe('clearscreen', function() {
   clearScene();
   clearDetectedKeywords();
   resetWorker();
+  tokensPerSpeaker = {};
+  tokenStartTimes = [];
+  if ($('#diarization > input[type="checkbox"]').prop('checked') == false) {
+    $('.nav-tabs a[data-toggle="tab"]').first().click();
+  }
+});
+
+$('#diarization > input[type="checkbox"]').click(function() {
+  $('li.speakersTab').toggle(this.checked);
+//$('.nav-tabs a[data-toggle="tab"]').first().click();
+  var tabs = $('.nav-tabs > li').children();
+  if (this.checked) {
+    tabs[1].click(); // selects 'Speakers' tab
+  }
+  else {
+    tabs[0].click(); // selects 'Text' tab
+  }
 });
 
 $(window).resize(function() {
