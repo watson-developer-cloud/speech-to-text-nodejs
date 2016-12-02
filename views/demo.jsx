@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonsGroup, Tabs, Pane } from 'watson-react-components';
+import { Icon, Tabs, Pane } from 'watson-react-components';
 import SpeechToText from 'watson-speech/speech-to-text';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
@@ -210,15 +210,15 @@ export default React.createClass({
             <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
 
 
-            <button className="base--button" onClick={this.handleMicClick}>Record Audio</button>
+            <button className="base--button" onClick={this.handleMicClick}><Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} /> Record Audio</button>
             {' '}
-            <label className="base--button">Upload Audio File
+            <label className="base--button"><Icon type={this.state.audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
                 <input type="file" ref={ r => this.fileInput = r } onChange={this.handleUploadClick} style={{display:'none'}} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"/>
             </label>
+            {' ' /* todo: make these a loading icon while the file is downloading -- also use opus files when possible */}
+            <button className="base--button" onClick={this.handleSample1Click}><Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1</button>
             {' '}
-            <button className="base--button" onClick={this.handleSample1Click}>Play Sample 1</button>
-            {' '}
-            <button className="base--button" onClick={this.handleSample2Click}>Play Sample 2</button>
+            <button className="base--button" onClick={this.handleSample2Click}><Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2</button>
 
 
             <h3>Output</h3>
