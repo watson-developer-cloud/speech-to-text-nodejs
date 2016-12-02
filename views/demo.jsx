@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Tabs, Pane } from 'watson-react-components';
+import { Icon, Tabs, Pane, Alert } from 'watson-react-components';
 import SpeechToText from 'watson-speech/speech-to-text';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
@@ -21,6 +21,7 @@ export default React.createClass({
                 model: '',
                 keywords: []
             },
+            error: null
         };
     },
 
@@ -33,7 +34,7 @@ export default React.createClass({
         if (this.state.audioSource) {
             return this.stopTranscription();
         }
-        this.setState({audioSource: 'mic', results: []});
+        this.setState({audioSource: 'mic', results: [], error: null});
         this.stream = SpeechToText.recognizeMicrophone({
             // todo: keywords, timing, etc
             token: this.state.token,
@@ -48,7 +49,7 @@ export default React.createClass({
         })
             .on('data', this.handleResult)
             .on('end', this.handleTranscriptEnd)
-            .on('error', e => console.log(e)); // todo: ui
+            .on('error', this.handleError);
         this.setState({settingsAtStreamStart: {
             model: this.state.model,
             keywords: this.getKeywordsArr()
@@ -78,22 +79,19 @@ export default React.createClass({
         if (this.state.audioSource) {
             return this.stopTranscription();
         }
-        // todo: icons: play arrow when not playing, spinner when loading, stop button when playing
+        // todo: spinner icon while loading audio
         // todo: use opus here for browsers that support it
         let filename = samples[this.state.model] && samples[this.state.model].files[which-1];
         if (!filename) {
-            // todo: ui
-            return console.log(`No sample ${which} available for model ${this.state.model}`, samples[this.state.model]);
+            return this.handleError(`No sample ${which} available for model ${this.state.model}`, samples[this.state.model]);
         }
-        this.setState({audioSource: 'sample-' + which, results: []});
+        this.setState({audioSource: 'sample-' + which, results: [], error: null});
         fetch('audio/' + filename).then(function(response) {
             // todo: see if there's a way to stream this data instead of downloading it and then processing it
             return response.blob();
         }).then(blob => {
             this.playFile(blob);
-        }).catch(function(error) {
-            console.log(error); // todo: ui
-        });
+        }).catch(this.handleError);
     },
 
     playFile(file) {
@@ -115,8 +113,8 @@ export default React.createClass({
         })
             .on('data', this.handleResult)
             .on('end', this.handleTranscriptEnd)
-            .on('playback-error', e => console.log('unable to play file type in browser', e)) // todo: ui
-            .on('error', e => console.log(e)); // todo: ui
+            .on('playback-error', this.handleError)
+            .on('error', this.handleError);
         //['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
         this.setState({settingsAtStreamStart: {
             model: this.state.model,
@@ -148,10 +146,14 @@ export default React.createClass({
 
     fetchToken() {
         return fetch('/api/token')
-            .then(res => res.text())
+            .then(res => {
+                if (res.status != 200) {
+                    throw new Error(`Error retrieving auth token`);
+                }
+                return res.text()
+            }) // todo: throw here if non-200 status
             .then(token => this.setState({token}))
-            // eslint-disable-next-line no-console
-            .catch(err => console.log('error retrieving token', err));
+            .catch(this.handleError);
     },
 
     handleModelChange(model) {
@@ -189,8 +191,23 @@ export default React.createClass({
         return final;
     },
 
+    handleError(err, extra) {
+        console.error(err, extra);
+        // todo: catch specific errors here and provide a better UI
+        if (err instanceof Error) {
+            return this.setState({error: err.message})
+        } else {
+            this.setState({error: err});
+        }
+    },
+
     // todo: use classes instead of setting style to show/hide things, consider adding transitions
     render() {
+
+        const err = this.state.error ? (<Alert type="error" color="red">
+            <p className="base--p">{this.state.error}</p>
+        </Alert>) : null;
+
         return (<div className="_container _container_large">
             <h2>Transcribe Audio</h2>
             <p className="base--p">Use your microphone (compatible only with <a className="base--a"
@@ -220,6 +237,7 @@ export default React.createClass({
             {' '}
             <button className="base--button" onClick={this.handleSample2Click}><Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2</button>
 
+            {err}
 
             <h3>Output</h3>
             <Tabs selected={0}>
