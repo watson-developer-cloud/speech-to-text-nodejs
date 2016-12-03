@@ -915,12 +915,15 @@ function showTranscript(payload) {
 
 function showSpeakers(payload) {
   if (payload.msg.speaker_labels && payload.msg.speaker_labels.length > 0) {
-    var item = null;
+    var clearBefore = -1.0;
 
     for (var i = 0; i < payload.msg.speaker_labels.length; i++) {
-      item = payload.msg.speaker_labels[i];
+      var item = payload.msg.speaker_labels[i];
       var from = item.from;
       var speaker = item.speaker;
+      if (item.final) {
+        clearBefore = from;
+      }
       if (from in tokensPerSpeaker) {
         var tokenPerSpeaker = tokensPerSpeaker[from];
         tokenPerSpeaker.speaker = speaker;
@@ -929,21 +932,23 @@ function showSpeakers(payload) {
 
     var diarization = createDiarization();
 
-    if (item) {
-      if (item.final) {
-        payload.result.speakers += diarization;
-        if ($('.nav-tabs .active').text() == 'Speakers') {
-          $('#resultsSpeakers').html(payload.result.speakers);
-        }
-        removeOldTokensPerSpeaker(item.from);
-      } else if ($('.nav-tabs .active').text() == 'Speakers') {
-        $('#resultsSpeakers').html(payload.result.speakers + diarization);
+    if (clearBefore != -1.0) {
+      payload.result.speakers += diarization;
+      if ($('.nav-tabs .active').text() == 'Speakers') {
+        $('#resultsSpeakers').html(payload.result.speakers);
       }
+      removeOldTokensPerSpeaker(clearBefore);
+    } else if ($('.nav-tabs .active').text() == 'Speakers') {
+      $('#resultsSpeakers').html(payload.result.speakers + diarization);
     }
   }
 }
 
 exports.showResult = function(msg, result, model) {
+  var payload = {};
+  payload.msg = msg;
+  payload.result = result;
+
   if (msg.results && msg.results.length > 0) {
     var text = msg.results[0].alternatives[0].transcript || '';
 
@@ -971,15 +976,13 @@ exports.showResult = function(msg, result, model) {
       return;
     }
 
-    var payload = {};
-    payload.msg = msg;
-    payload.result = result;
     payload.text = text;
     payload.ja_zn = ((model.substring(0,5) == 'ja-JP') || (model.substring(0,5) == 'zh-CN'));
 
     showTranscript(payload);
-    showSpeakers(payload);
   }
+
+  showSpeakers(payload);
 
   updateTextScroll();
 };
