@@ -19,5 +19,6 @@ before_deploy: npm install -g cf-blue-green
 deploy:
   provider: script
   script: cf-blue-green-travis
+  skip_cleanup: true
   on:
     branch: master
