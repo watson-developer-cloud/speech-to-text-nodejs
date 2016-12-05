@@ -76,8 +76,6 @@ var playSample = (function() {
     localStorage.setItem('samplePlaying', sampleNumber);
     running = true;
 
-    $('#resultsText').val('');   // clear hypotheses from previous runs
-
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'blob';
