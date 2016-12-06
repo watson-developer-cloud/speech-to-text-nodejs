@@ -102,8 +102,13 @@ var playSample = (function() {
         });
 
         if (getKeywordsToSearch().length == 0) {
+          var v = '';
+          for (var i = 0; i < keywords.length; i++) {
+            var suffix = i < keywords.length - 1 ? ', ' : '';
+            v += keywords[i] + suffix;
+          }
           $('#tb_keywords').focus();
-          $('#tb_keywords').val(keywords);
+          $('#tb_keywords').val(v);
           $('#tb_keywords').change();
         }
         handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {

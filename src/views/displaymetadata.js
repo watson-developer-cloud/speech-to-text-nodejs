@@ -517,7 +517,7 @@ function addKeywordToSearch(element/*, index, array*/) {
   if (keyword.length == 0) return;
 
   if (keywords_to_search.indexOf(keyword) == -1) {
-    keywords_to_search.push(keyword);
+    keywords_to_search.push(keyword.trim());
   }
 }
 
