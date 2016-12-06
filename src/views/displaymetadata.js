@@ -517,7 +517,7 @@ function addKeywordToSearch(element/*, index, array*/) {
   if (keyword.length == 0) return;
 
   if (keywords_to_search.indexOf(keyword) == -1) {
-    keywords_to_search.push(keyword);
+    keywords_to_search.push(keyword.trim());
   }
 }
 
@@ -693,12 +693,6 @@ $('#show_alternate_words').click(function(/*e*/) {
   toggleAlternateWords();
 });
 
-exports.showJSON = function(baseJSON) {
-  if ($('.nav-tabs .active').text() == 'JSON') {
-    $('#resultsJSON').text(baseJSON);
-  }
-};
-
 function updateTextScroll(){
   if (!scrolled){
     var elementTranscript = $('#resultsText').get(0);
@@ -870,8 +864,16 @@ function removeOldTokensPerSpeaker(time) {
   }
 }
 
+var output = {};
+output.transcript = '';
+output.speakers = '';
+output.json = '';
+
+exports.output = output;
+
 function showTranscript(payload) {
-  var updateTranscript = payload.result.showSpeakers == false || payload.result.showSpeakers && payload.msg.speaker_labels == null;
+  var detectMultipleSpeakers = $('#diarization > input[type="checkbox"]').prop('checked');
+  var updateTranscript = detectMultipleSpeakers == false || detectMultipleSpeakers && payload.msg.speaker_labels == null;
 
   // capitalize first word if final results, append a new paragraph
   if (payload.msg.results && payload.msg.results[0] && payload.msg.results[0].final) {
@@ -885,7 +887,7 @@ function showTranscript(payload) {
     }
 
     if (updateTranscript) {
-      payload.result.transcript += payload.text;
+      output.transcript += payload.text;
     }
 
     var timestamps = payload.msg.results[0].alternatives[0].timestamps;
@@ -899,7 +901,7 @@ function showTranscript(payload) {
       }
     }
     if ($('.nav-tabs .active').text() == 'Text') {
-      $('#resultsText').html(payload.result.transcript);
+      $('#resultsText').html(output.transcript);
     }
   } else {
     if (payload.ja_zn) {
@@ -908,7 +910,7 @@ function showTranscript(payload) {
       payload.text = payload.text.charAt(0).toUpperCase() + payload.text.substring(1);
     }
     if ($('.nav-tabs .active').text() == 'Text' && updateTranscript) {
-      $('#resultsText').html(payload.result.transcript + payload.text);
+      $('#resultsText').html(output.transcript + payload.text);
     }
   }
 }
@@ -933,21 +935,26 @@ function showSpeakers(payload) {
     var diarization = createDiarization();
 
     if (clearBefore != -1.0) {
-      payload.result.speakers += diarization;
+      output.speakers += diarization;
       if ($('.nav-tabs .active').text() == 'Speakers') {
-        $('#resultsSpeakers').html(payload.result.speakers);
+        $('#resultsSpeakers').html(output.speakers);
       }
       removeOldTokensPerSpeaker(clearBefore);
     } else if ($('.nav-tabs .active').text() == 'Speakers') {
-      $('#resultsSpeakers').html(payload.result.speakers + diarization);
+      $('#resultsSpeakers').html(output.speakers + diarization);
     }
   }
 }
 
-exports.showResult = function(msg, result, model) {
+function showJSON() {
+  if ($('.nav-tabs .active').text() == 'JSON') {
+    $('#resultsJSON').text(output.json);
+  }
+}
+
+exports.showResult = function(msg, model) {
   var payload = {};
   payload.msg = msg;
-  payload.result = result;
 
   if (msg.results && msg.results.length > 0) {
     var text = msg.results[0].alternatives[0].transcript || '';
@@ -984,6 +991,8 @@ exports.showResult = function(msg, result, model) {
 
   showSpeakers(payload);
 
+  showJSON();
+
   updateTextScroll();
 };
 
@@ -1000,6 +1009,12 @@ $.subscribe('clearscreen', function() {
   if ($('#diarization > input[type="checkbox"]').prop('checked') == false) {
     $('.nav-tabs a[data-toggle="tab"]').first().click();
   }
+  output.transcript = '';
+  output.speakers = '';
+  output.json = '';
+  $('#resultsText').html('');
+  $('#resultsSpeakers').html('');
+  $('#resultsJSON').html('');
 });
 
 $('#diarization > input[type="checkbox"]').click(function() {

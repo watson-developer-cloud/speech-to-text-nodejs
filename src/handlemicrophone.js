@@ -30,25 +30,21 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   $.publish('clearscreen');
 
-  var result = {};
-  result.transcript = '';
-  result.showSpeakers = false;
-  result.speakers = '';
-  var baseJSON = '';
+  var output = display.output;
 
   $.subscribe('showtext', function() {
     var $results = $('#resultsText');
-    $results.html(result.transcript);
+    $results.html(output.transcript);
   });
 
   $.subscribe('showspeakers', function() {
     var $results = $('#resultsText');
-    $results.html(result.speakers);
+    $results.html(output.speakers);
   });
 
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.text(baseJSON);
+    $resultsJSON.text(output.json);
   });
 
   var options = {};
@@ -72,8 +68,7 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     options.message.keywords_threshold = keywords_threshold;
     options.message.keywords = keywords;
   }
-  var speaker_labels = $('li.speakersTab').is(':visible');
-  options.message.speaker_labels = speaker_labels;
+  options.message.speaker_labels = $('#diarization > input[type="checkbox"]').prop('checked');
 
   options.model = model;
 
@@ -91,11 +86,9 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onMessage(msg) {
-    result.showSpeakers = options.message.speaker_labels;
     if (msg.results || msg.speaker_labels) {
-      display.showResult(msg, result, model);
-      baseJSON = JSON.stringify(msg, null, 2);
-      display.showJSON(baseJSON);
+      output.json = JSON.stringify(msg, null, 2);
+      display.showResult(msg, model);
     }
   }
 

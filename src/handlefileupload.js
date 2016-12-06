@@ -29,25 +29,21 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
 
   console.log('contentType', contentType);
 
-  var result = {};
-  result.transcript = '';
-  result.showSpeakers = false;
-  result.speakers = '';
-  var baseJSON = '';
+  var output = display.output;
 
   $.subscribe('showtext', function() {
     var $resultsText = $('#resultsText');
-    $resultsText.html(result.transcript);
+    $resultsText.html(output.transcript);
   });
 
   $.subscribe('showspeakers', function() {
     var $resultsSpeakers = $('#resultsSpeakers');
-    $resultsSpeakers.html(result.speakers);
+    $resultsSpeakers.html(output.speakers);
   });
 
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.text(baseJSON);
+    $resultsJSON.text(output.json);
   });
 
   var options = {};
@@ -71,8 +67,7 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     options.message.keywords_threshold = keywords_threshold;
     options.message.keywords = keywords;
   }
-  var speaker_labels = $('li.speakersTab').is(':visible');
-  options.message.speaker_labels = speaker_labels;
+  options.message.speaker_labels = $('#diarization > input[type="checkbox"]').prop('checked');
 
   options.model = model;
 
@@ -86,11 +81,9 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   }
 
   function onMessage(msg) {
-    result.showSpeakers = options.message.speaker_labels;
     if (msg.results || msg.speaker_labels) {
-      display.showResult(msg, result, model);
-      baseJSON = JSON.stringify(msg, null, 2);
-      display.showJSON(baseJSON);
+      output.json = JSON.stringify(msg, null, 2);
+      display.showResult(msg, model);
     }
   }
 
