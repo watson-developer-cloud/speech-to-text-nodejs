@@ -46,13 +46,9 @@ export default React.createClass({
         this.setState({audioSource: null});
     },
 
-    handleMicClick() {
-        if (this.state.audioSource) {
-            return this.stopTranscription();
-        }
-        this.reset();
-        this.setState({audioSource: 'mic'});
-        this.stream = SpeechToText.recognizeMicrophone({
+    getBaseSettings() {
+        var keywords = this.getKeywordsArr();
+        return {
             // todo: keywords, timing, etc
             token: this.state.token,
             smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
@@ -60,10 +56,19 @@ export default React.createClass({
             model: this.state.model,
             objectMode: true,
             continuous: true,
-            keywords: this.getKeywordsArr(),
-            keywords_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
+            keywords: keywords,
+            keywords_threshold: keywords.length ? 0.01 : undefined, // note: in normal usage, you'd probably set this a bit higher
             timestamps: true
-        })
+        };
+    },
+
+    handleMicClick() {
+        if (this.state.audioSource) {
+            return this.stopTranscription();
+        }
+        this.reset();
+        this.setState({audioSource: 'mic'});
+        this.stream = SpeechToText.recognizeMicrophone(this.getBaseSettings())
             .on('data', this.handleMessage)
             .on('end', this.handleTranscriptEnd)
             .on('error', this.handleError);
@@ -112,19 +117,11 @@ export default React.createClass({
     playFile(file) {
         // todo: show a warning if browser cannot play filetype (flac)
         this.stream = SpeechToText.recognizeFile({
-            token: this.state.token,
+            ...this.getBaseSettings(),
             data: file,
             play: true, // play the audio out loud
             // todo: enable realtime results for transcript and keywords views, but keep the original results for the JSON view
             realtime: false, // slows the results down to realtime if they come back faster than real-time (client-side)
-            smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
-            format: false, // formats sentences (client-side) - false here so that we can show the original JSON on that tab, but the Text tab does apply this.
-            model: this.state.model,
-            objectMode: true,
-            continuous: true,
-            keywords: this.getKeywordsArr(),
-            keywords_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
-            timestamps: true
         })
             .on('data', this.handleMessage)
             .on('end', this.handleTranscriptEnd)
