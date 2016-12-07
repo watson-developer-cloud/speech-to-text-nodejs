@@ -157,7 +157,7 @@ export default React.createClass({
     },
 
     handleModelChange(model) {
-        const keywords = (samples[model] && samples[model].keywords) || '';
+        const keywords = ((samples[model] && samples[model].keywords) || []).join(', ');
         this.setState({model, keywords})
     },
 
