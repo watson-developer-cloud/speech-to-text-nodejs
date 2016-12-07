@@ -2,7 +2,8 @@ import React from 'react';
 import { Icon } from 'watson-react-components';
 
 
-function keywordReducer(keywords, result) {
+function keywordReducer(keywords, msg) {
+    const result = msg.results[0];
     Object.keys(result.keywords_result || {}).forEach(k => {
         keywords[k] = keywords[k] || [];
         keywords[k].push(...result.keywords_result[k]);

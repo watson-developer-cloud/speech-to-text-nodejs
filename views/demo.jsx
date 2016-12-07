@@ -13,6 +13,7 @@ export default React.createClass({
         return {
             model: 'en-US_BroadbandModel',
             results: [],
+            speaker_labels: [],
             audioSource: null,
             keywords: samples['en-US_BroadbandModel'].keywords.join(', '),
             // transcript model and keywords are the state that they were when the button was clicked.
@@ -25,6 +26,21 @@ export default React.createClass({
         };
     },
 
+    reset() {
+        this.setState({
+            results: [],
+            speaker_labels: [],
+            error: null
+        });
+    },
+
+    captureSettings() {
+        this.setState({settingsAtStreamStart: {
+            model: this.state.model,
+            keywords: this.getKeywordsArr()
+        }});
+    },
+
     stopTranscription() {
         this.stream && this.stream.stop();
         this.setState({audioSource: null});
@@ -34,7 +50,8 @@ export default React.createClass({
         if (this.state.audioSource) {
             return this.stopTranscription();
         }
-        this.setState({audioSource: 'mic', results: [], error: null});
+        this.reset();
+        this.setState({audioSource: 'mic'});
         this.stream = SpeechToText.recognizeMicrophone({
             // todo: keywords, timing, etc
             token: this.state.token,
@@ -47,13 +64,10 @@ export default React.createClass({
             keywords_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
             timestamps: true
         })
-            .on('data', this.handleResult)
+            .on('data', this.handleMessage)
             .on('end', this.handleTranscriptEnd)
             .on('error', this.handleError);
-        this.setState({settingsAtStreamStart: {
-            model: this.state.model,
-            keywords: this.getKeywordsArr()
-        }});
+        this.captureSettings();
     },
 
     handleUploadClick() {
@@ -85,7 +99,8 @@ export default React.createClass({
         if (!filename) {
             return this.handleError(`No sample ${which} available for model ${this.state.model}`, samples[this.state.model]);
         }
-        this.setState({audioSource: 'sample-' + which, results: [], error: null});
+        this.reset();
+        this.setState({audioSource: 'sample-' + which});
         fetch('audio/' + filename).then(function(response) {
             // todo: see if there's a way to stream this data instead of downloading it and then processing it
             return response.blob();
@@ -96,12 +111,12 @@ export default React.createClass({
 
     playFile(file) {
         // todo: show a warning if browser cannot play filetype (flac)
-        // todo: show a warning if browser cannot play filetype (flac)
         this.stream = SpeechToText.recognizeFile({
             token: this.state.token,
             data: file,
             play: true, // play the audio out loud
-            realtime: true, // slows the results down to realtime if they come back faster than real-time (client-side)
+            // todo: enable realtime results for transcript and keywords views, but keep the original results for the JSON view
+            realtime: false, // slows the results down to realtime if they come back faster than real-time (client-side)
             smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
             format: false, // formats sentences (client-side) - false here so that we can show the original JSON on that tab, but the Text tab does apply this.
             model: this.state.model,
@@ -111,21 +126,26 @@ export default React.createClass({
             keywords_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
             timestamps: true
         })
-            .on('data', this.handleResult)
+            .on('data', this.handleMessage)
             .on('end', this.handleTranscriptEnd)
             .on('playback-error', this.handleError)
             .on('error', this.handleError);
         //['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
-        this.setState({settingsAtStreamStart: {
-            model: this.state.model,
-            keywords: this.getKeywordsArr()
-        }});
+        this.captureSettings();
     },
 
-    handleResult(result) {
-        this.setState({
-            results: this.state.results.concat(result), // concat = new array = immutable state
-        });
+    handleMessage(msg) {
+        if (Array.isArray(msg.results) && msg.results.length) {
+            this.setState({
+                results: this.state.results.concat(msg), // concat = new array = immutable state
+            });
+        } else if (Array.isArray(msg.speaker_labels) && msg.speaker_labels.length) {
+            this.setState({
+                speaker_labels: this.state.speaker_labels.concat(msg), // concat = new array = immutable state
+            });
+        } else {
+            console.warn('unhandled message', msg);
+        }
     },
 
     handleTranscriptEnd() {
@@ -171,12 +191,12 @@ export default React.createClass({
     },
 
     getFinalResults() {
-        return this.state.results.filter( r => r.final );
+        return this.state.results.filter( r => r.results[0].final );
     },
 
     getCurrentInterimResult() {
         const r = this.state.results[this.state.results.length-1];
-        if (!r || r.final) {
+        if (!r || r.results[0].final) {
             return null;
         }
         return r;
