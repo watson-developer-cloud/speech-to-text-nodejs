@@ -116,7 +116,6 @@ export default React.createClass({
     playFile(file) {
         // todo: show a warning if browser cannot play filetype (flac)
         this.stream = SpeechToText.recognizeFile(this.getRecognizeOptions({
-            ...,
             data: file,
             play: true, // play the audio out loud
             // todo: enable realtime results for transcript and keywords views, but keep the original results for the JSON view
