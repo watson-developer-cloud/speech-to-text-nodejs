@@ -46,10 +46,9 @@ export default React.createClass({
         this.setState({audioSource: null});
     },
 
-    getBaseSettings() {
+    getRecognizeOptions(extra) {
         var keywords = this.getKeywordsArr();
-        return {
-            // todo: keywords, timing, etc
+        return Object.assign({
             token: this.state.token,
             smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
             format: false, // formats sentences (client-side) - false here so that we can show the original JSON on that tab, but the Text tab does apply this.
@@ -59,7 +58,7 @@ export default React.createClass({
             keywords: keywords,
             keywords_threshold: keywords.length ? 0.01 : undefined, // note: in normal usage, you'd probably set this a bit higher
             timestamps: true
-        };
+        }, extra);
     },
 
     handleMicClick() {
@@ -68,7 +67,7 @@ export default React.createClass({
         }
         this.reset();
         this.setState({audioSource: 'mic'});
-        this.stream = SpeechToText.recognizeMicrophone(this.getBaseSettings())
+        this.stream = SpeechToText.recognizeMicrophone(this.getRecognizeOptions())
             .on('data', this.handleMessage)
             .on('end', this.handleTranscriptEnd)
             .on('error', this.handleError);
@@ -116,16 +115,15 @@ export default React.createClass({
 
     playFile(file) {
         // todo: show a warning if browser cannot play filetype (flac)
-        this.stream = SpeechToText.recognizeFile({
-            ...this.getBaseSettings(),
+        this.stream = SpeechToText.recognizeFile(this.getRecognizeOptions({
+            ...,
             data: file,
             play: true, // play the audio out loud
             // todo: enable realtime results for transcript and keywords views, but keep the original results for the JSON view
             realtime: false, // slows the results down to realtime if they come back faster than real-time (client-side)
-        })
+        }))
             .on('data', this.handleMessage)
             .on('end', this.handleTranscriptEnd)
-            .on('playback-error', this.handleError)
             .on('error', this.handleError);
         //['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
         this.captureSettings();
