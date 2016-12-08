@@ -28,16 +28,16 @@ var LOOKUP_TABLE = {
   'en-UK_BroadbandModel': ['en-UK_Broadband_sample1.wav', 'en-UK_Broadband_sample2.wav', 'important industry, affordable travel, business', 'consumer, quality, best practice'],
   'en-UK_NarrowbandModel': ['en-UK_Narrowband_sample1.wav', 'en-UK_Narrowband_sample2.wav', 'heavy rain, northwest, UK', 'Watson, sources across social media'],
   'en-US_BroadbandModel': ['Us_English_Broadband_Sample_1.wav', 'Us_English_Broadband_Sample_2.wav', 'sense of pride, watson, technology, changing the world', 'round, whirling velocity, unwanted emotion'],
-  'en-US_NarrowbandModel': ['Us_English_Narrowband_Sample_1.wav', 'Us_English_Narrowband_Sample_2.wav', 'course online, four hours, help', 'ibm, customer experience, media data'],
+  'en-US_NarrowbandModel': ['english2.g712.wav', 'english3.g712.wav', 'twenty thousand dollars, filled out, car', 'new company, client, Chris'],
   'es-ES_BroadbandModel': ['Es_ES_spk24_16khz.wav', 'Es_ES_spk19_16khz.wav', 'quiero preguntarle, existen productos', 'preparando, regalos para la familia, sobrinos'],
-  'es-ES_NarrowbandModel': ['Es_ES_spk24_8khz.wav', 'Es_ES_spk19_8khz.wav', 'QUIERO PREGUNTARLE, EXISTEN PRODUCTOS', 'PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS'],
-  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav', '場所 , 今日', '変更 , 給与 , コード'],
-  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow3.wav', 'sample-Ja_JP-narrow4.wav', 'お客様 , お手数', '申し込み , 今回 , 通帳'],
+  'es-ES_NarrowbandModel': ['spanish2_60.g712.wav', 'spanish3_60.g712.wav', 'MÉXICO, GRECIA, DICIEMBRE', 'ROBERTO, MADRID, FIN DE SEMANA'],
+  'ja-JP_BroadbandModel': ['sample-Ja_JP-wide1.wav', 'sample-Ja_JP-wide2.wav', '今日, 六本木, ルノワール' , '桜並木, 制限'],
+  'ja-JP_NarrowbandModel': ['sample-Ja_JP-narrow5.wav', 'sample-Ja_JP-narrow6.wav', 'ご住所, ご本人, 生年月日', '東京都, お電話'],
   'pt-BR_BroadbandModel': ['pt-BR_Sample1-16KHz.wav', 'pt-BR_Sample2-16KHz.wav', 'sistema da ibm, setor bancário, qualidade, necessidades dos clientes', 'médicos, informações, planos de tratamento'],
   'pt-BR_NarrowbandModel': ['pt-BR_Sample1-8KHz.wav', 'pt-BR_Sample2-8KHz.wav', 'cozinha, inovadoras receitas, criatividade', 'sistema, treinado por especialistas, setores diferentes'],
   'zh-CN_BroadbandModel': ['zh-CN_sample1_for_16k.wav', 'zh-CN_sample2_for_16k.wav', '沃 森 是 认知 , 大 数据 分析 能力', '技术 , 语音 , 的 用户 体验 , 人们 , 手机'],
-    'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '公司 的 支持 , 理财 计划', '假期 , 安排'],
-    'fr-FR_BroadbandModel': ['fr-FR_Broadband_sample1.wav', 'fr-FR_Broadband_sample2.wav', 'liberté d\'opinion , frontières , idées', 'loisirs , durée du travail']
+  'zh-CN_NarrowbandModel': ['zh-CN_sample1_for_8k.wav', 'zh-CN_sample2_for_8k.wav', '公司 的 支持 , 理财 计划', '假期 , 安排'],
+  'fr-FR_BroadbandModel': ['fr-FR_Broadband_sample1.wav', 'fr-FR_Broadband_sample2.wav', 'durée du travail, loisirs' , 'conscience, esprit de fraternité, libres']
 };
 
 var playSample = (function() {
@@ -51,33 +51,30 @@ var playSample = (function() {
 
     var currentlyDisplaying = localStorage.getItem('currentlyDisplaying');
     var samplePlaying = localStorage.getItem('samplePlaying');
+    var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
     if (samplePlaying === sampleNumber) {
       console.log('HARD SOCKET STOP');
       $.publish('socketstop');
       localStorage.setItem('currentlyDisplaying', 'false');
       localStorage.setItem('samplePlaying', 'false');
-      effects.stopToggleImage(timer, imageTag, iconName); // eslint-disable-line no-use-before-define
+      effects.stopToggleImage(timer, imageTag, iconName);
       effects.restoreImage(imageTag, iconName);
       running = false;
       return;
     }
 
-    if (currentlyDisplaying === 'record') {
-      showError('Currently audio is being recorded, please stop recording before playing a sample');
+    if (currentlyDisplaying == 'fileupload' || currentlyDisplaying == 'sample' || samplePlaying !== 'false') {
+      showError('Currently another file is being transcribed, please stop the file or wait until it finishes');
       return;
-    } else if (currentlyDisplaying === 'fileupload' || samplePlaying !== 'false') {
-      showError('Currently another file is playing, please stop the file or wait until it finishes');
+    } else if (currentlyDisplaying == 'record') {
+      showError('Currently audio is being recorded, please stop recording before transcribing a sample');
       return;
     }
 
     localStorage.setItem('currentlyDisplaying', 'sample');
     localStorage.setItem('samplePlaying', sampleNumber);
     running = true;
-
-    $('#resultsText').val('');   // clear hypotheses from previous runs
-
-    var timer = setInterval(effects.toggleImage, 750, imageTag, iconName);
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -106,7 +103,7 @@ var playSample = (function() {
 
         if (getKeywordsToSearch().length == 0) {
           $('#tb_keywords').focus();
-          $('#tb_keywords').val(keywords);
+          $('#tb_keywords').val(keywords.join(', '));
           $('#tb_keywords').change();
         }
         handleFileUpload('sample', token, currentModel, blob, contentType, function(socket) {

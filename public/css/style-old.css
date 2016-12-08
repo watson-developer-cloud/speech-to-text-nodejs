@@ -178,8 +178,8 @@ ol ol li:last-child {margin-bottom:0;}
   width:100%;
   height:368px;
   position:absolute;
-  -webkit-user-select: none;       
-  -moz-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
   display:none;
 }
 
@@ -220,10 +220,10 @@ ol ol li:last-child {margin-bottom:0;}
 
 #vslider {
   -webkit-appearance:slider-vertical;
-  left:100%; 
-  width:16px; 
-  position:absolute; 
-  height:400px; 
+  left:100%;
+  width:16px;
+  position:absolute;
+  height:400px;
   display:none;
 }
 
@@ -247,11 +247,11 @@ ol ol li:last-child {margin-bottom:0;}
   background-color: transparent;
   border: 2px solid #c7c7c7; /*gray 20*/
   width: 23em;
-  height:3.6em; 
+  height:3.6em;
   text-align: left;
   padding: 0.2em;
-  margin-right: 1em; 
-  cursor:arrow; 
+  margin-right: 1em;
+  cursor:arrow;
   overflow:auto;
   float:left;
   display:none;
@@ -312,13 +312,13 @@ table.kws_occurrences {
 }
 
 #keywords ul li.keyword_expanded table tbody tr td  {
-    padding: 2px;
-    text-align: center;
+  padding: 2px;
+  text-align: center;
 }
 
 .keyword_icon {
-  -webkit-user-select: none;       
-  -moz-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
   background-color:#d3d3d3;
   padding-top: 1px;
   padding-bottom: 3px;
@@ -328,8 +328,8 @@ table.kws_occurrences {
 }
 
 .keyword_text {
-  -webkit-user-select: none;       
-  -moz-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
   background-color:#d3d3d3;
   margin-right:10px;
   margin-top:5px;
@@ -344,8 +344,8 @@ table.kws_occurrences {
 }
 
 .keyword_count {
-  -webkit-user-select: none;       
-  -moz-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .selectable {
@@ -369,10 +369,10 @@ table.kws_occurrences {
   background-color: #d74108;
   color: white;
   width: 21em;
-  height:3.6em; 
+  height:3.6em;
   text-align: left;
   padding: 0.2em;
-  margin-left: 10em; 
+  margin-left: 10em;
   margin-top:-40px;
   float:left;
 }
@@ -391,11 +391,27 @@ table.kws_occurrences {
 }
 
 #show_alternate_words {
-  text-decoration:none; 
+  text-decoration:none;
   cursor:pointer;
-  -webkit-user-select: none;       
+  -webkit-user-select: none;
   -moz-user-select: none;
   display:none;
+}
+
+#diarization {
+  position:relative;
+  top:-1.0em;
+  left: 1.0em;
+  color: #A53725;
+  text-decoration:none;
+  cursor:pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  display:none;
+}
+
+#diarization:hover {
+  color:#aeaeae;
 }
 
 #btnLoadKWS {
@@ -419,3 +435,53 @@ table.kws_occurrences {
   text-decoration:none;
 }
 
+#resultsText, #resultsSpeakers, .codeJSON
+{
+  padding:1em;
+  background:#fff;
+  width: 100%;
+  height:200px;
+  overflow:auto;
+  word-wrap: break-word;
+  border: #fff;
+}
+
+.speakerInfo {
+  display:inline;
+  font-weight:bold;
+  padding-right:5px;
+}
+
+.speakerColor_0 {
+  color:#5e9911;
+}
+
+.speakerColor_1 {
+  color:#6537f0;
+}
+
+.speakerColor_2 {
+  color:#ed37f0;
+}
+
+.speakerColor_3 {
+  color:#f19027;
+}
+
+.speakerColor_4 {
+  color:#f03737;
+}
+
+.speakerColor_5 {
+  color:#a4d917;
+}
+
+.speakerInfo img {
+  width:30px;
+  height:30px;
+  padding-right:5px;
+}
+
+li.speakersTab {
+  display:none;
+}

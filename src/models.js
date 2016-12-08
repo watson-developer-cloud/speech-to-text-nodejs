@@ -23,6 +23,7 @@ exports.getModels = function(token) {
     token: token,
     bufferSize: BUFFERSIZE
   };
+
   var modelUrl = 'https://stream.watsonplatform.net/speech-to-text/api/v1/models';
   var sttRequest = new XMLHttpRequest();
   sttRequest.open('GET', modelUrl, true);

@@ -29,16 +29,22 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
 
   console.log('contentType', contentType);
 
-  var baseString = '';
-  var baseJSON = '';
+  var output = display.output;
+
+  $.subscribe('showtext', function() {
+    var $resultsText = $('#resultsText');
+    $resultsText.html(output.transcript);
+  });
+
+  $.subscribe('showspeakers', function() {
+    var $resultsSpeakers = $('#resultsSpeakers');
+    $resultsSpeakers.html(output.speakers);
+  });
 
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.val(baseJSON);
+    $resultsJSON.text(output.json);
   });
-
-  var keywords = display.getKeywordsToSearch();
-  var keywords_threshold = keywords.length == 0 ? null : 0.01;
 
   var options = {};
   options.token = token;
@@ -52,10 +58,17 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
     'max_alternatives': 3,
     'inactivity_timeout': 600,
     'word_alternatives_threshold': 0.001,
-    'keywords_threshold': keywords_threshold,
-    'keywords': keywords,
-    'smart_formatting': true
+    'smart_formatting': true,
   };
+
+  var keywords = display.getKeywordsToSearch();
+  if (keywords.length > 0) {
+    var keywords_threshold = 0.01;
+    options.message.keywords_threshold = keywords_threshold;
+    options.message.keywords = keywords;
+  }
+  options.message.speaker_labels = $('#diarization > input[type="checkbox"]').prop('checked');
+
   options.model = model;
 
   function onOpen() {
@@ -68,11 +81,9 @@ exports.handleFileUpload = function(type, token, model, file, contentType, callb
   }
 
   function onMessage(msg) {
-    if (msg.results) {
-      // Convert to closure approach
-      baseString = display.showResult(msg, baseString, model);
-      baseJSON = JSON.stringify(msg, null, 2);
-      display.showJSON(baseJSON);
+    if (msg.results || msg.speaker_labels) {
+      output.json = JSON.stringify(msg, null, 2);
+      display.showResult(msg, model);
     }
   }
 
