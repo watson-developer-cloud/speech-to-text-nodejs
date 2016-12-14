@@ -22,7 +22,7 @@ var display = require('./views/displaymetadata');
 exports.handleMicrophone = function(token, model, mic, callback) {
 
   if (model.indexOf('Narrowband') > -1) {
-    var err = new Error('Microphone transcription cannot accomodate narrowband models, ' +
+    var err = new Error('Microphone transcription cannot accommodate narrowband models, ' +
       'please select another');
     callback(err, null);
     return false;
@@ -30,17 +30,22 @@ exports.handleMicrophone = function(token, model, mic, callback) {
 
   $.publish('clearscreen');
 
-  // Test out websocket
-  var baseString = '';
-  var baseJSON = '';
+  var output = display.output;
+
+  $.subscribe('showtext', function() {
+    var $results = $('#resultsText');
+    $results.html(output.transcript);
+  });
+
+  $.subscribe('showspeakers', function() {
+    var $results = $('#resultsText');
+    $results.html(output.speakers);
+  });
 
   $.subscribe('showjson', function() {
     var $resultsJSON = $('#resultsJSON');
-    $resultsJSON.val(baseJSON);
+    $resultsJSON.text(output.json);
   });
-
-  var keywords = display.getKeywordsToSearch();
-  var keywords_threshold = keywords.length == 0 ? null : 0.01;
 
   var options = {};
   options.token = token;
@@ -54,10 +59,17 @@ exports.handleMicrophone = function(token, model, mic, callback) {
     'max_alternatives': 3,
     'inactivity_timeout': 600,
     'word_alternatives_threshold': 0.001,
-    'keywords_threshold': keywords_threshold,
-    'keywords': keywords,
-    'smart_formatting': true
+    'smart_formatting': true,
   };
+
+  var keywords = display.getKeywordsToSearch();
+  if (keywords.length > 0) {
+    var keywords_threshold = 0.01;
+    options.message.keywords_threshold = keywords_threshold;
+    options.message.keywords = keywords;
+  }
+  options.message.speaker_labels = $('#diarization > input[type="checkbox"]').prop('checked');
+
   options.model = model;
 
   function onOpen(socket) {
@@ -74,11 +86,9 @@ exports.handleMicrophone = function(token, model, mic, callback) {
   }
 
   function onMessage(msg) {
-    if (msg.results) {
-      // Convert to closure approach
-      baseString = display.showResult(msg, baseString, model);
-      baseJSON = JSON.stringify(msg, null, 2);
-      display.showJSON(baseJSON);
+    if (msg.results || msg.speaker_labels) {
+      output.json = JSON.stringify(msg, null, 2);
+      display.showResult(msg, model);
     }
   }
 
