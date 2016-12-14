@@ -17,7 +17,7 @@
 'use strict';
 
 // Module dependencies
-var express = require('express');
+const express = require('express');
 const expressBrowserify = require('express-browserify');
 const path = require('path');
 

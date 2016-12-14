@@ -4,7 +4,7 @@ If you are having difficulties running the app or have a question about the serv
 
 # Issues
 
-If you encounter an issue with this sample app, you are welcome to submit a [bug report](https://github.com/watson-developer-cloud/speech-to-text-browser/issues). Before that, please search for similar issues. It's possible somebody has encountered this issue already.
+If you encounter an issue with this sample app, you are welcome to submit a [bug report](https://github.com/watson-developer-cloud/speech-to-text-nodejs/issues). Before that, please search for similar issues. It's possible somebody has encountered this issue already.
 
 # Pull Requests
 

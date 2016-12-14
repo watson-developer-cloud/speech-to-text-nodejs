@@ -43,16 +43,16 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     uploadText.text('Stop Transcribing');
 
     function restoreUploadTab() {
-        clearInterval(timer);
-        effects.restoreImage(uploadImageTag, 'upload');
-        uploadText.text('Select Audio File');
-      }
+      clearInterval(timer);
+      effects.restoreImage(uploadImageTag, 'upload');
+      uploadText.text('Select Audio File');
+    }
 
     // Clear flashing if socket upload is stopped
     $.subscribe('hardsocketstop', function() {
-        restoreUploadTab();
-        running = false;
-      });
+      restoreUploadTab();
+      running = false;
+    });
 
     // Get current model
     var currentModel = localStorage.getItem('currentModel');
@@ -64,8 +64,8 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
     r.readAsText(blobToText);
     var audio;
     r.onload = function() {
-        var contentType;
-        if (r.result === 'fLaC') {
+      var contentType;
+      if (r.result === 'fLaC') {
         contentType = 'audio/flac';
         showNotice('Notice: This browser does not support playing FLAC audio, so no audio will accompany the transcription.');
       } else if (r.result === 'RIFF') {
@@ -96,7 +96,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
         localStorage.setItem('currentlyDisplaying', 'false');
         return;
       }
-        handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
+      handleFileUpload('fileupload', token, currentModel, file, contentType, function(socket) {
         var blob = new Blob([file]);
         var parseOptions = {
           file: blob
@@ -128,7 +128,7 @@ var handleSelectedFile = exports.handleSelectedFile = (function() {
           localStorage.setItem('currentlyDisplaying', 'false');
         }
       );
-      };
+    };
   };
 })();
 
