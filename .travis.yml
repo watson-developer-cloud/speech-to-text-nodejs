@@ -22,6 +22,6 @@ deploy:
   - cf-blue-green-travis
   on:
     branch: react
-    repo: watson-developer-cloud/speech-to-text-
+    repo: watson-developer-cloud/speech-to-text-nodejs
 notifications:
   email: false
