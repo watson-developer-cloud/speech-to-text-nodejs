@@ -10,7 +10,7 @@ cache:
   - node_modules
 env:
   global:
-  - CF_APP=text-to-speech-react
+  - CF_APP=speech-to-text-react
   - CF_API=https://api.ng.bluemix.net
   - CF_ORGANIZATION=WatsonPlatformServices
   - CF_SPACE=demos
