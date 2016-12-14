@@ -6,6 +6,10 @@
     "type": "git",
     "url": "https://github.com/watson-developer-cloud/speech-to-text-nodejs.git"
   },
+  "engines": {
+    "node": ">=6.0",
+    "npm": ">=3.0"
+  },
   "author": "IBM Corp.",
   "browserify-shim": {
     "jquery": "global:jQuery"
