@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-'use strict';
-
-var express = require('express'),
-  app = express(),
-  watson = require('watson-developer-cloud');
-var expressBrowserify = require('express-browserify');
-
-// load environment properties from a .env file for local development
-require('dotenv').load({silent: true});
+const express = require('express');
+const app = express();
+const watson = require('watson-developer-cloud');
 
 // Bootstrap application settings
 require('./config/express')(app);
 
-var stt = new watson.SpeechToTextV1({
+const stt = new watson.SpeechToTextV1({
   // if left undefined, username and password to fall back to the SPEECH_TO_TEXT_USERNAME and
   // SPEECH_TO_TEXT_PASSWORD environment properties, and then to VCAP_SERVICES (on Bluemix)
   // username: '',
   // password: ''
 });
 
-var authService = new watson.AuthorizationV1(stt.getCredentials());
+const authService = new watson.AuthorizationV1(stt.getCredentials());
 
 app.get('/', function(req, res) {
   res.render('index');
@@ -43,10 +37,11 @@ app.get('/', function(req, res) {
 // Get token using your credentials
 app.get('/api/token', function(req, res, next) {
   authService.getToken(function(err, token) {
-    if (err)
+    if (err) {
       next(err);
-    else
+    } else {
       res.send(token);
+    }
   });
 });
 

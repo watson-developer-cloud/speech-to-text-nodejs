@@ -870,7 +870,7 @@ exports.showResult = function(msg, baseString, model) {
       if (japanese) {
         text = text.replace(/ /g,''); // remove whitespaces
       } else {
-          text = text.charAt(0).toUpperCase() + text.substring(1);
+        text = text.charAt(0).toUpperCase() + text.substring(1);
       }
       $('#resultsText').val(baseString + text);
     }

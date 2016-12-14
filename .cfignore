@@ -1,5 +1,5 @@
 node_modules
-uploads/
-logs/access.log
-.env
+coverage
+uploads
+logs
 npm-debug.log

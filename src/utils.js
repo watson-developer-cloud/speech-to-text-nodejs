@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* global $ */
 'use strict';
 
 // For non-view logic
@@ -82,7 +82,6 @@ exports.createTokenGenerator = function() {
       var url = '/api/token';
       var tokenRequest = new XMLHttpRequest();
       tokenRequest.open('POST', url, true);
-      tokenRequest.setRequestHeader('csrf-token',$('meta[name="ct"]').attr('content'));
       tokenRequest.onreadystatechange = function() {
         if (tokenRequest.readyState === 4) {
           if (tokenRequest.status === 200) {
