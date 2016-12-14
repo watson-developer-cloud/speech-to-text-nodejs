@@ -40,6 +40,7 @@
   "dependencies": {
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.19.0",
     "babelify": "^7.3.0",
     "cf-deployment-tracker-client": "0.1.2",
     "dotenv": "^2.0.0",
@@ -57,7 +58,6 @@
     "watson-speech": "^0.23.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.19.0",
     "casperjs": "^1.1.3",
     "codecov": "^1.0.1",
     "eslint": "^3.12.1",
