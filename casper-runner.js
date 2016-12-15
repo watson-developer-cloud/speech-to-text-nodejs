@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-if (!process.env.SPEECH_TO_TEXT_USERNAME) {
-  console.log('Skipping integration tests because SPEECH_TO_TEXT_USERNAME is null');
+const fs = require('fs');
+if (!fs.existsSync('.env')) {
+  console.log('Skipping integration tests because the .env file does not exist');
   process.exit(0);
 }
-
 require('dotenv').config();
 
 const spawn = require('child_process').spawn;
