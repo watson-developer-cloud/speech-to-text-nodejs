@@ -55,7 +55,7 @@
     "uglifyify": "^3.0.4",
     "watson-developer-cloud": "^2.8.1",
     "watson-react-components": "^0.3.0",
-    "watson-speech": "^0.23.0"
+    "watson-speech": "^0.25.0"
   },
   "devDependencies": {
     "casperjs": "^1.1.3",

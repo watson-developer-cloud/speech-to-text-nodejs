@@ -1,0 +1,16 @@
+.jsonview .options > div {
+    display: inline-block;
+}
+.jsonview .options > div > div {
+    display: inline-block;
+    margin-right: 1em;
+}
+.jsonview .options div:before {
+    display: none;
+}
+.jsonview .results--json {
+    display: inline-block;
+}
+.base--hr {
+    margin-top: 1em;
+}

@@ -1,21 +1,24 @@
 import React from 'react';
 import { Icon, Tabs, Pane, Alert } from 'watson-react-components';
-import SpeechToText from 'watson-speech/speech-to-text';
+import recognizeMicrophone from 'watson-speech/speech-to-text/recognize-microphone';
+import recognizeFile from 'watson-speech/speech-to-text/recognize-file';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
 import { Keywords, getKeywordsSummary } from './keywords.jsx';
-import { JSONView } from './json.jsx';
+import JSONView from './json.jsx';
 import samples from '../src/data/samples.json';
+
+const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 
 export default React.createClass({
 
     getInitialState() {
         return {
             model: 'en-US_BroadbandModel',
-            results: [],
-            speaker_labels: [],
+            raw_messages: [],
+            formatted_messages: [],
             audioSource: null,
-            keywords: samples['en-US_BroadbandModel'].keywords.join(', '),
+            keywords: this.getKeywords('en-US_BroadbandModel'),
             // transcript model and keywords are the state that they were when the button was clicked.
             // Changing them during a transcription would cause a mismatch between the setting sent to the service and what is displayed on the demo, and could cause bugs.
             settingsAtStreamStart: {
@@ -28,8 +31,8 @@ export default React.createClass({
 
     reset() {
         this.setState({
-            results: [],
-            speaker_labels: [],
+            raw_messages: [],
+            formatted_messages: [],
             error: null
         });
     },
@@ -51,7 +54,7 @@ export default React.createClass({
         return Object.assign({
             token: this.state.token,
             smart_formatting: true, // formats phone numbers, currency, etc. (server-side)
-            format: false, // formats sentences (client-side) - false here so that we can show the original JSON on that tab, but the Text tab does apply this.
+            format: true, // adds capitals, periods, and a few other things (client-side)
             model: this.state.model,
             objectMode: true,
             continuous: true,
@@ -61,17 +64,30 @@ export default React.createClass({
         }, extra);
     },
 
+    isNarrowBand(model) {
+        model = model || this.state.model;
+        return model.indexOf('Narrowband') !== -1;
+    },
+
     handleMicClick() {
         if (this.state.audioSource) {
             return this.stopTranscription();
         }
         this.reset();
+        if(this.isNarrowBand()) {
+            return this.handleError(ERR_MIC_NARROWBAND);
+        }
         this.setState({audioSource: 'mic'});
-        this.stream = SpeechToText.recognizeMicrophone(this.getRecognizeOptions())
-            .on('data', this.handleMessage)
-            .on('end', this.handleTranscriptEnd)
-            .on('error', this.handleError);
-        this.captureSettings();
+
+        // The recognizeMicrophone() method is a helper method provided by the watson-speach package
+        // It sets up the microphone, converts and downsamples the audio, and then transcribes it over a WebSocket connection
+        // It also provides a number of optional features, some of which are enabled by default:
+        //  * enables object mode by default (options.objectMode)
+        //  * formats results (Capitals, periods, etc.) (options.format)
+        //  * outputs the text to a DOM element - not used in this demo because it doesn't play nice with react (options.outputElement)
+        //  * a few other things for backwards compatibility and sane defaults
+        // In addition to this, it passes other service-level options along to the RecognizeStream that manages the actual WebSocket connection.
+        this.handleStream(recognizeMicrophone(this.getRecognizeOptions()))
     },
 
     handleUploadClick() {
@@ -82,7 +98,8 @@ export default React.createClass({
         if (!file) {
             return;
         }
-        this.setState({audioSource: 'upload', results: []});
+        this.reset();
+        this.setState({audioSource: 'upload'});
         this.playFile(file);
     },
 
@@ -99,7 +116,7 @@ export default React.createClass({
         }
         // todo: spinner icon while loading audio
         // todo: use opus here for browsers that support it
-        let filename = samples[this.state.model] && samples[this.state.model].files[which-1];
+        let filename = samples[this.state.model] && samples[this.state.model][which-1].filename;
         if (!filename) {
             return this.handleError(`No sample ${which} available for model ${this.state.model}`, samples[this.state.model]);
         }
@@ -114,32 +131,61 @@ export default React.createClass({
     },
 
     playFile(file) {
-        // todo: show a warning if browser cannot play filetype (flac)
-        this.stream = SpeechToText.recognizeFile(this.getRecognizeOptions({
+        // The recognizeFile() method is a helper method provided by the watson-speach package
+        // It accepts a file input and transcribes the contents over a WebSocket connection
+        // It also provides a number of optional features, some of which are enabled by default:
+        //  * enables object mode by default (options.objectMode)
+        //  * plays the file in the browser if possible (options.play)
+        //  * formats results (Capitals, periods, etc.) (options.format)
+        //  * slows results down to realtime speed if received faster than realtime - this causes extra interim `data` events to be emitted (options.realtime)
+        //  * combines speaker_labels with results (options.resultsBySpeaker)
+        //  * outputs the text to a DOM element - not used in this demo because it doesn't play nice with react (options.outputElement)
+        //  * a few other things for backwards compatibility and sane defaults
+        // In addition to this, it passes other service-level options along to the RecognizeStream that manages the actual WebSocket connection.
+        this.handleStream(recognizeFile(this.getRecognizeOptions({
             data: file,
             play: true, // play the audio out loud
-            // todo: enable realtime results for transcript and keywords views, but keep the original results for the JSON view
-            realtime: false, // slows the results down to realtime if they come back faster than real-time (client-side)
-        }))
-            .on('data', this.handleMessage)
-            .on('end', this.handleTranscriptEnd)
-            .on('error', this.handleError);
-        //['send-json','receive-json', 'data', 'error', 'connect', 'listening','close','enc'].forEach(e => this.stream.on(e, console.log.bind(console, e)));
-        this.captureSettings();
+            realtime: true, // use a helper stream to slow down the transcript output to match the audio speed (creates more interim results)
+        })));
     },
 
-    handleMessage(msg) {
-        if (Array.isArray(msg.results) && msg.results.length) {
-            this.setState({
-                results: this.state.results.concat(msg), // concat = new array = immutable state
-            });
-        } else if (Array.isArray(msg.speaker_labels) && msg.speaker_labels.length) {
-            this.setState({
-                speaker_labels: this.state.speaker_labels.concat(msg), // concat = new array = immutable state
-            });
-        } else {
-            console.warn('unhandled message', msg);
-        }
+    handleStream(stream) {
+        this.stream = stream;
+        this.captureSettings();
+
+        // grab the formatted messages and also handle errors and such
+        stream.on('data', this.handleFormattedMessage)
+            .on('end', this.handleTranscriptEnd)
+            .on('error', this.handleError);
+
+        // grab raw messages from the debugging events for display on the JSON tab
+        stream.recognizeStream
+            .on('message', (frame, json) => this.handleRawdMessage({
+                sent: false,
+                frame,
+                json
+            }))
+            .on('send-json', json => this.handleRawdMessage({
+                sent: true,
+                json
+            }))
+            .once('send-data', data => this.handleRawdMessage({
+                sent: true,
+                binary: true,
+                data
+            }));
+    },
+
+    handleRawdMessage(msg) {
+        this.setState({
+            raw_messages: this.state.raw_messages.concat(msg)
+        });
+    },
+
+    handleFormattedMessage(msg) {
+        this.setState({
+            formatted_messages: this.state.formatted_messages.concat(msg)
+        });
     },
 
     handleTranscriptEnd() {
@@ -170,9 +216,28 @@ export default React.createClass({
             .catch(this.handleError);
     },
 
+    getKeywords(model) {
+        // a few models have more than two sample files, but the demo can only handle two samples at the moment
+        // so this just takes the keywords from the first two samples
+        const files = samples[model];
+        return files[0].keywords + ', ' + files[1].keywords;
+    },
+
     handleModelChange(model) {
-        const keywords = ((samples[model] && samples[model].keywords) || []).join(', ');
-        this.setState({model, keywords})
+        this.setState({
+            model,
+            keywords: this.getKeywords(model)
+        });
+        // clear the microphone narrowband error if it's visible and a broadband model was just selected
+        if (this.state.error === ERR_MIC_NARROWBAND && !this.isNarrowBand(model)) {
+            this.setState({
+                error: null
+            })
+        }
+    },
+
+    supportsSpeakerLabels(model) {
+        // todo: make this read from the list of models
     },
 
     handleKeywordsChange(e) {
@@ -185,12 +250,15 @@ export default React.createClass({
     },
 
     getFinalResults() {
-        return this.state.results.filter( r => r.results[0].final );
+        return this.state.formatted_messages.filter( r => r.results && r.results[0].final );
     },
 
     getCurrentInterimResult() {
-        const r = this.state.results[this.state.results.length-1];
-        if (!r || r.results[0].final) {
+        const r = this.state.formatted_messages[this.state.formatted_messages.length-1];
+
+        // When resultsBySpeaker is enabled, each msg.results array may contain multiple results. However, all results
+        // in a given message will be either final or interim, so just checking the first one still works here.
+        if (!r || !r.results || r.results[0].final) {
             return null;
         }
         return r;
@@ -242,11 +310,14 @@ export default React.createClass({
             <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
 
 
-            <button className="base--button" onClick={this.handleMicClick}><Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} /> Record Audio</button>
+            <button className={this.isNarrowBand() ? 'base--button base--button_black' : 'base--button'} onClick={this.handleMicClick}><Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} /> Record Audio</button>
+
             {' '}
-            <label className="base--button"><Icon type={this.state.audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
+            <label className="base--button" style={{display: this.state.audioSource === 'upload' ? 'none' : undefined}}><Icon type='upload' /> Upload Audio File
                 <input type="file" ref={ r => this.fileInput = r } onChange={this.handleUploadClick} style={{display:'none'}} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"/>
             </label>
+            <button className="base--button" style={{display: this.state.audioSource === 'upload' ? undefined : 'none'}}><Icon type='stop' /> Upload Audio File</button>
+
             {' ' /* todo: make these a loading icon while the file is downloading -- also use opus files when possible */}
             <button className="base--button" onClick={this.handleSample1Click}><Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1</button>
             {' '}
@@ -257,13 +328,13 @@ export default React.createClass({
             <h3>Output</h3>
             <Tabs selected={0}>
                 <Pane label="Text">
-                    <Transcript results={this.getFinalResults()} interimResult={this.getCurrentInterimResult()} model={this.state.settingsAtStreamStart.model} />
+                    <Transcript messages={this.getFinalAndLatestInterimResult()} />
                 </Pane>
                 <Pane label={"Keywords " + getKeywordsSummary(this.state.settingsAtStreamStart.keywords, this.getFinalAndLatestInterimResult())}>
-                    <Keywords results={this.getFinalAndLatestInterimResult()} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
+                    <Keywords messages={this.getFinalAndLatestInterimResult()} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
                 </Pane>
                 <Pane label="JSON">
-                    <JSONView results={this.state.results} />
+                    <JSONView raw={this.state.raw_messages} formatted={this.state.formatted_messages} />
                 </Pane>
             </Tabs>
 

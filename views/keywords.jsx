@@ -14,7 +14,7 @@ function keywordReducer(keywords, msg) {
 export function Keywords(props) {
     const notSpotted = props.isInProgress ? 'Not yet spotted.' : 'Not spotted.';
     const notSpottedIcon = props.isInProgress ? 'loader' : 'close';
-    const spotted = props.results.reduce(keywordReducer, {});
+    const spotted = props.messages.reduce(keywordReducer, {});
     const list = props.keywords.map(k => {
         const spottings = spotted[k];
         return (
