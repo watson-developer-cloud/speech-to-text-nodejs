@@ -5,8 +5,9 @@ import recognizeFile from 'watson-speech/speech-to-text/recognize-file';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
 import { Keywords, getKeywordsSummary } from './keywords.jsx';
-import JSONView from './json.jsx';
+import JSONView from './json-view.jsx';
 import samples from '../src/data/samples.json';
+import { SpeakersView } from './speaker.jsx';
 
 const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 
@@ -15,9 +16,10 @@ export default React.createClass({
     getInitialState() {
         return {
             model: 'en-US_BroadbandModel',
-            raw_messages: [],
-            formatted_messages: [],
+            rawMessages: [],
+            formattedMessages: [],
             audioSource: null,
+            speakerLabels: false,
             keywords: this.getKeywords('en-US_BroadbandModel'),
             // transcript model and keywords are the state that they were when the button was clicked.
             // Changing them during a transcription would cause a mismatch between the setting sent to the service and what is displayed on the demo, and could cause bugs.
@@ -37,10 +39,15 @@ export default React.createClass({
         });
     },
 
+    /**
+     * The behavior of several of the views depends on the settings when the transcription was started
+     * So, this stores those values in a settingsAtStreamStart object.
+     */
     captureSettings() {
         this.setState({settingsAtStreamStart: {
             model: this.state.model,
-            keywords: this.getKeywordsArr()
+            keywords: this.getKeywordsArr(),
+            speakerLabels: this.state.speakerLabels
         }});
     },
 
@@ -60,7 +67,9 @@ export default React.createClass({
             continuous: true,
             keywords: keywords,
             keywords_threshold: keywords.length ? 0.01 : undefined, // note: in normal usage, you'd probably set this a bit higher
-            timestamps: true
+            timestamps: true, // set timestamps for each word - automatically turned on by speaker_labels
+            speaker_labels: this.state.speakerLabels, // includes the speaker_labels in separate objects unless resultsBySpeaker is enabled
+            resultsBySpeaker: this.state.speakerLabels // combines speaker_labels and results together into single objects, making for easier transcript outputting
         }, extra);
     },
 
@@ -178,13 +187,13 @@ export default React.createClass({
 
     handleRawdMessage(msg) {
         this.setState({
-            raw_messages: this.state.raw_messages.concat(msg)
+            rawMessages: this.state.rawMessages.concat(msg)
         });
     },
 
     handleFormattedMessage(msg) {
         this.setState({
-            formatted_messages: this.state.formatted_messages.concat(msg)
+            formattedMessages: this.state.formattedMessages.concat(msg)
         });
     },
 
@@ -238,6 +247,13 @@ export default React.createClass({
 
     supportsSpeakerLabels(model) {
         // todo: make this read from the list of models
+        return true;
+    },
+
+    handleSpeakerLabelsChange() {
+        this.setState({
+            speakerLabels: !this.state.speakerLabels
+        })
     },
 
     handleKeywordsChange(e) {
@@ -250,11 +266,11 @@ export default React.createClass({
     },
 
     getFinalResults() {
-        return this.state.formatted_messages.filter( r => r.results && r.results[0].final );
+        return this.state.formattedMessages.filter(r => r.results && r.results[0].final );
     },
 
     getCurrentInterimResult() {
-        const r = this.state.formatted_messages[this.state.formatted_messages.length-1];
+        const r = this.state.formattedMessages[this.state.formattedMessages.length-1];
 
         // When resultsBySpeaker is enabled, each msg.results array may contain multiple results. However, all results
         // in a given message will be either final or interim, so just checking the first one still works here.
@@ -290,6 +306,8 @@ export default React.createClass({
             <p className="base--p">{this.state.error}</p>
         </Alert>) : null;
 
+        const messages = this.getFinalAndLatestInterimResult();
+
         return (<div className="_container _container_large">
             <h2>Transcribe Audio</h2>
 
@@ -299,13 +317,26 @@ export default React.createClass({
                 <li className="base--li">Play one of the sample audio files.</li>
             </ul>
             <div style={{paddingRight: '3em', paddingBottom: '2em'}}>
-                The returned result includes the recognized text, word alternatives, and spotted keywords. Some models can detect multiple speakers; this may slow down performance.
+                The returned result includes the recognized text,
+                {' '}
+                <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#word_alternatives">word alternatives</a>,
+                {' '}
+                and <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#keyword_spotting">spotted keywords</a>.
+                {' '}
+                Some models can <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#speaker_labels">detect multiple speakers</a>; this may slow down performance.
             </div>
 
 
             <h3>Setup</h3>
 
             <p>Voice Model: <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} /></p>
+
+            <p>
+                <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels} onChange={this.handleSpeakerLabelsChange} id="speaker-labels" />
+                <label className="base--inline-label" htmlFor="speaker-labels">
+                    Detect multiple speakers
+                </label>
+            </p>
 
             <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
 
@@ -328,13 +359,16 @@ export default React.createClass({
             <h3>Output</h3>
             <Tabs selected={0}>
                 <Pane label="Text">
-                    <Transcript messages={this.getFinalAndLatestInterimResult()} />
+                    <Transcript messages={messages} />
                 </Pane>
-                <Pane label={"Keywords " + getKeywordsSummary(this.state.settingsAtStreamStart.keywords, this.getFinalAndLatestInterimResult())}>
-                    <Keywords messages={this.getFinalAndLatestInterimResult()} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
+                <Pane label={"Keywords " + getKeywordsSummary(this.state.settingsAtStreamStart.keywords, messages)}>
+                    <Keywords messages={messages} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
+                </Pane>
+                <Pane label="Speakers">
+                    <SpeakersView messages={messages} />
                 </Pane>
                 <Pane label="JSON">
-                    <JSONView raw={this.state.raw_messages} formatted={this.state.formatted_messages} />
+                    <JSONView raw={this.state.rawMessages} formatted={this.state.formattedMessages} />
                 </Pane>
             </Tabs>
 
