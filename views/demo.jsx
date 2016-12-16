@@ -201,10 +201,10 @@ export default React.createClass({
                 message
             }));
 
-        ['open','close','finish','end','error', 'pipe'].forEach(e => {
-            stream.recognizeStream.on(e, console.log.bind(console, 'rs event: ', e));
-            stream.on(e, console.log.bind(console, 'stream event: ', e));
-        });
+        // ['open','close','finish','end','error', 'pipe'].forEach(e => {
+        //     stream.recognizeStream.on(e, console.log.bind(console, 'rs event: ', e));
+        //     stream.on(e, console.log.bind(console, 'stream event: ', e));
+        // });
     },
 
     handleRawdMessage(msg) {
