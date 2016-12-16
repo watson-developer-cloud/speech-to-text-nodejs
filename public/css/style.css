@@ -1,3 +1,18 @@
+/* general styles */
+.base--hr {
+    margin-top: 1em;
+}
+
+/* Speaker View styles */
+.speaker-labels dt {
+    font-weight: bold;
+    display: inline;
+}
+.speaker-labels dd {
+    display: inline;
+}
+
+/* JSONView styles */
 .jsonview .options > div {
     display: inline-block;
 }
@@ -11,6 +26,4 @@
 .jsonview .results--json {
     display: inline-block;
 }
-.base--hr {
-    margin-top: 1em;
-}
+

@@ -5,10 +5,14 @@ export function SpeakersView(props) {
 
         const results = props.messages.map(msg => {
             // When resultsBySpeaker is enabled, each msg.results array may contain multiple results.
-            // The result_index is for the first result in the message, so we need to count up from there to calculate the key.
+            // The result_index is for the first result in the message,
+            // so we need to count up from there to calculate the key.
+
+            // resultsBySpeaker/SpeakerStream sets each results.speaker value once it is known, but can also return
+            // results without any speaker set if the speakerlessInterim flag is set (for faster UI updates).
             return msg.results.map( (result,i) => (
                 <div key={`result-${msg.result_index + i}`}>
-                    <dt>Speaker {~~result.speaker}: </dt>
+                    <dt>{ typeof result.speaker === 'number' ? `Speaker ${result.speaker}: ` : '(Detecting speakers): '}</dt>
                     <dd>{result.alternatives[0].transcript}</dd>
                 </div>
             ))

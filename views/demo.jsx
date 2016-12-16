@@ -5,9 +5,11 @@ import recognizeFile from 'watson-speech/speech-to-text/recognize-file';
 import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
 import { Keywords, getKeywordsSummary } from './keywords.jsx';
+import { SpeakersView } from './speaker.jsx';
 import JSONView from './json-view.jsx';
 import samples from '../src/data/samples.json';
-import { SpeakersView } from './speaker.jsx';
+import cachedModels from '../src/data/models.json';
+
 
 const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 
@@ -25,7 +27,8 @@ export default React.createClass({
             // Changing them during a transcription would cause a mismatch between the setting sent to the service and what is displayed on the demo, and could cause bugs.
             settingsAtStreamStart: {
                 model: '',
-                keywords: []
+                keywords: [],
+                speakerLabels: false,
             },
             error: null
         };
@@ -33,8 +36,8 @@ export default React.createClass({
 
     reset() {
         this.setState({
-            raw_messages: [],
-            formatted_messages: [],
+            rawMessages: [],
+            formattedMessages: [],
             error: null
         });
     },
@@ -69,7 +72,8 @@ export default React.createClass({
             keywords_threshold: keywords.length ? 0.01 : undefined, // note: in normal usage, you'd probably set this a bit higher
             timestamps: true, // set timestamps for each word - automatically turned on by speaker_labels
             speaker_labels: this.state.speakerLabels, // includes the speaker_labels in separate objects unless resultsBySpeaker is enabled
-            resultsBySpeaker: this.state.speakerLabels // combines speaker_labels and results together into single objects, making for easier transcript outputting
+            resultsBySpeaker: this.state.speakerLabels, // combines speaker_labels and results together into single objects, making for easier transcript outputting
+            speakerlessInterim: this.state.speakerLabels // allow interim results through before the speaker has been determined
         }, extra);
     },
 
@@ -167,6 +171,14 @@ export default React.createClass({
             .on('end', this.handleTranscriptEnd)
             .on('error', this.handleError);
 
+        // when errors occur, the end event may not propagate through the helper streams.
+        // However, the recognizeStream should always fire a end and close events
+        stream.recognizeStream.on('end', () => {
+            if (this.state.error) {
+                this.handleTranscriptEnd()
+            }
+        });
+
         // grab raw messages from the debugging events for display on the JSON tab
         stream.recognizeStream
             .on('message', (frame, json) => this.handleRawdMessage({
@@ -182,7 +194,17 @@ export default React.createClass({
                 sent: true,
                 binary: true,
                 data
+            }))
+            .on('close', (code, message) => this.handleRawdMessage({
+                close: true,
+                code,
+                message
             }));
+
+        ['open','close','finish','end','error', 'pipe'].forEach(e => {
+            stream.recognizeStream.on(e, console.log.bind(console, 'rs event: ', e));
+            stream.on(e, console.log.bind(console, 'stream event: ', e));
+        });
     },
 
     handleRawdMessage(msg) {
@@ -198,6 +220,8 @@ export default React.createClass({
     },
 
     handleTranscriptEnd() {
+        // note: this function will be called twice on a clean end,
+        // but may only be called once in the event of an error
         this.setState({audioSource: null});
     },
 
@@ -229,25 +253,36 @@ export default React.createClass({
         // a few models have more than two sample files, but the demo can only handle two samples at the moment
         // so this just takes the keywords from the first two samples
         const files = samples[model];
-        return files[0].keywords + ', ' + files[1].keywords;
+        return files && files.length >=2 && files[0].keywords + ', ' + files[1].keywords || '';
     },
 
     handleModelChange(model) {
         this.setState({
             model,
-            keywords: this.getKeywords(model)
+            keywords: this.getKeywords(model),
+            speakerLabels: this.supportsSpeakerLabels(model)
         });
+
         // clear the microphone narrowband error if it's visible and a broadband model was just selected
         if (this.state.error === ERR_MIC_NARROWBAND && !this.isNarrowBand(model)) {
             this.setState({
                 error: null
             })
         }
+
+        // clear the speaker_lables is not supported error - e.g.
+        // speaker_labels is not a supported feature for model en-US_BroadbandModel
+        if (this.state.error && this.state.error.indexOf('speaker_labels is not a supported feature for model') === 0) {
+            this.setState({
+                error: null
+            });
+        }
     },
 
     supportsSpeakerLabels(model) {
-        // todo: make this read from the list of models
-        return true;
+        model = model || this.state.model;
+        // todo: read the upd-to-date models list instead of the cached one
+        return cachedModels.some(m => m.name === model && m.supported_features.speaker_labels);
     },
 
     handleSpeakerLabelsChange() {
@@ -292,11 +327,7 @@ export default React.createClass({
     handleError(err, extra) {
         console.error(err, extra);
         // todo: catch specific errors here and provide a better UI
-        if (err instanceof Error) {
-            return this.setState({error: err.message})
-        } else {
-            this.setState({error: err});
-        }
+        this.setState({error: err.message || err});
     },
 
     // todo: use classes instead of setting style to show/hide things, consider adding transitions
@@ -331,10 +362,10 @@ export default React.createClass({
 
             <p>Voice Model: <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} /></p>
 
-            <p>
-                <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels} onChange={this.handleSpeakerLabelsChange} id="speaker-labels" />
+            <p className={this.supportsSpeakerLabels() ? 'base--p' : 'base--p_light'}>
+                <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels} onChange={this.handleSpeakerLabelsChange} disabled={!this.supportsSpeakerLabels()} id="speaker-labels" />
                 <label className="base--inline-label" htmlFor="speaker-labels">
-                    Detect multiple speakers
+                    Detect multiple speakers {this.supportsSpeakerLabels() ? '' : ' (Not supported on current model)'}
                 </label>
             </p>
 
@@ -359,13 +390,10 @@ export default React.createClass({
             <h3>Output</h3>
             <Tabs selected={0}>
                 <Pane label="Text">
-                    <Transcript messages={messages} />
+                    {this.state.settingsAtStreamStart.speakerLabels ? <SpeakersView messages={messages} /> : <Transcript messages={messages} />}
                 </Pane>
                 <Pane label={"Keywords " + getKeywordsSummary(this.state.settingsAtStreamStart.keywords, messages)}>
                     <Keywords messages={messages} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />
-                </Pane>
-                <Pane label="Speakers">
-                    <SpeakersView messages={messages} />
                 </Pane>
                 <Pane label="JSON">
                     <JSONView raw={this.state.rawMessages} formatted={this.state.formattedMessages} />

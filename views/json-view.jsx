@@ -42,8 +42,10 @@ function renderRawMessage(msg, i) {
     }
     return (
         <div key={`raw-${i}`}>
-            {msg.sent ? 'Sent: ' : 'Received: '}
-            {msg.sent && msg.binary ? 'Binary audio/l16 data (ongoing...)' : ''}
+            {msg.sent === true ? 'Sent: ' : ' '}
+            {msg.sent === false ? 'Received: ' : ''}
+            {msg.sent && msg.binary ? 'Audio data (ongoing...)' : ''}
+            {msg.close ? `Connection closed: ${msg.code} ${msg.message || ''}`: ''}
             {makeJsonLink(msg.json, i)}
         </div>
     );

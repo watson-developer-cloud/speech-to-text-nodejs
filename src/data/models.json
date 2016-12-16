@@ -5,7 +5,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "French broadband model."
   },
@@ -15,7 +16,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
-      "custom_language_model": true
+      "custom_language_model": true,
+      "speaker_labels": true
     },
     "description": "US English narrowband model."
   },
@@ -25,7 +27,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "Brazilian Portuguese broadband model."
   },
@@ -35,7 +38,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": true,
+      "speaker_labels": true
     },
     "description": "Japanese narrowband model."
   },
@@ -45,7 +49,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "Mandarin broadband model."
   },
@@ -55,7 +60,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": true,
+      "speaker_labels": false
     },
     "description": "Japanese broadband model."
   },
@@ -65,7 +71,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "Brazilian Portuguese narrowband model."
   },
@@ -75,7 +82,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "Spanish broadband model."
   },
@@ -85,7 +93,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ar-AR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "Modern Standard Arabic broadband model."
   },
@@ -95,7 +104,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "Mandarin narrowband model."
   },
@@ -105,7 +115,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "UK English broadband model."
   },
@@ -115,7 +126,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": true
     },
     "description": "Spanish narrowband model."
   },
@@ -125,7 +137,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_BroadbandModel",
     "rate": 16000,
     "supported_features": {
-      "custom_language_model": true
+      "custom_language_model": true,
+      "speaker_labels": false
     },
     "description": "US English broadband model."
   },
@@ -135,7 +148,8 @@
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
-      "custom_language_model": false
+      "custom_language_model": false,
+      "speaker_labels": false
     },
     "description": "UK English narrowband model."
   }
