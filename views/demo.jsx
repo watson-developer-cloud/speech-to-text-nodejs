@@ -378,7 +378,7 @@ export default React.createClass({
             <label className="base--button" style={{display: this.state.audioSource === 'upload' ? 'none' : undefined}}><Icon type='upload' /> Upload Audio File
                 <input type="file" ref={ r => this.fileInput = r } onChange={this.handleUploadClick} style={{display:'none'}} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"/>
             </label>
-            <button className="base--button" style={{display: this.state.audioSource === 'upload' ? undefined : 'none'}}><Icon type='stop' /> Upload Audio File</button>
+            <button className="base--button" style={{display: this.state.audioSource === 'upload' ? undefined : 'none'}} onClick={this.handleUploadClick}><Icon type='stop' /> Upload Audio File</button>
 
             {' ' /* todo: make these a loading icon while the file is downloading -- also use opus files when possible */}
             <button className="base--button" onClick={this.handleSample1Click}><Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1</button>
