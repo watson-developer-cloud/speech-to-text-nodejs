@@ -28,15 +28,15 @@ casper.test.begin('Speech to Text', 26, function suite(test) {
     casper.test.comment('Testing the Voice Model box');
 
     test.assertExists('select.base--select', 'displays Voice Model');
-    test.assertSelectorHasText('select.base--select option:nth-child(1)', 'French broadband', 'French model is found');
-    test.assertSelectorHasText('select.base--select option:nth-child(8)', 'Spanish broadband', 'Spanish model is found');
+    test.assertSelectorHasText('select.base--select option', 'French broadband', 'French model is found');
+    test.assertSelectorHasText('select.base--select option', 'Spanish broadband', 'Spanish model is found');
   }
 
   function testKeywords() {
     casper.test.comment('Testing the Keywords to spot box');
 
-    test.assertExists('input#keywords.base--input', 'displays Keywords to spot');
-    test.assertSelectorHasText('input#keywords.base--input', 'changing the world', 'Changing the world is found');
+    test.assertExists('#keywords', 'displays Keywords to spot');
+    test.assertSelectorHasText('#keywords', 'changing the world', 'Changing the world is found');
   }
 
   function testForTabpanels() {
