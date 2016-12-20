@@ -1,4 +1,5 @@
 node_modules
+coverage
 uploads/
 .DS_Store
 logs/
