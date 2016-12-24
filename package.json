@@ -16,7 +16,7 @@
     "express-secure-only": "^0.2.1",
     "helmet": "^1.3.0",
     "vcap_services": "^0.1.7",
-    "watson-developer-cloud": "^1.2.4"
+    "watson-developer-cloud": "^1.2.5"
   },
   "repository": {
     "type": "git",
