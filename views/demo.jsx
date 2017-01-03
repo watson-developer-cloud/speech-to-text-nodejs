@@ -10,6 +10,9 @@ import JSONView from './json-view.jsx';
 import samples from '../src/data/samples.json';
 import cachedModels from '../src/data/models.json';
 
+// pollyfill for Safari / IE
+// sets window.fetch if it is currently undefined, otherwise a no-op
+require('whatwg-fetch');
 
 const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 
@@ -326,8 +329,14 @@ export default React.createClass({
 
     handleError(err, extra) {
         console.error(err, extra);
-        // todo: catch specific errors here and provide a better UI
-        this.setState({error: err.message || err});
+        if (err.name === 'NotSupportedError' && this.state.audioSource === 'mic') {
+            this.setState({
+                error: "This browser does not support microphone input."
+            });
+        } else {
+            this.setState({error: err.message || err});
+
+        }
     },
 
     // todo: use classes instead of setting style to show/hide things, consider adding transitions
