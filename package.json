@@ -54,7 +54,7 @@
     "react-dom": "^15.3.2",
     "uglifyify": "^3.0.4",
     "watson-developer-cloud": "^2.8.1",
-    "watson-react-components": "^0.3.0",
+    "watson-react-components": "^0.4.0",
     "watson-speech": "^0.28.3",
     "whatwg-fetch": "^2.0.1"
   },
