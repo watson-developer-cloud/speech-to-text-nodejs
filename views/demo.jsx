@@ -6,6 +6,7 @@ import ModelDropdown from './model-dropdown.jsx';
 import { Transcript } from './transcript.jsx';
 import { Keywords, getKeywordsSummary } from './keywords.jsx';
 import { SpeakersView } from './speaker.jsx';
+import { TimingView } from './timing.jsx';
 import JSONView from './json-view.jsx';
 import samples from '../src/data/samples.json';
 import cachedModels from '../src/data/models.json';
@@ -71,6 +72,7 @@ export default React.createClass({
             model: this.state.model,
             objectMode: true,
             continuous: true,
+            word_alternatives_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
             keywords: keywords,
             keywords_threshold: keywords.length ? 0.01 : undefined, // note: in normal usage, you'd probably set this a bit higher
             timestamps: true, // set timestamps for each word - automatically turned on by speaker_labels
@@ -400,6 +402,9 @@ export default React.createClass({
             <Tabs selected={0}>
                 <Pane label="Text">
                     {this.state.settingsAtStreamStart.speakerLabels ? <SpeakersView messages={messages} /> : <Transcript messages={messages} />}
+                </Pane>
+                <Pane label="Word Timings and Alternatives">
+                    <TimingView messages={messages} />
                 </Pane>
                 <Pane label={"Keywords " + getKeywordsSummary(this.state.settingsAtStreamStart.keywords, messages)}>
                     <Keywords messages={messages} keywords={this.state.settingsAtStreamStart.keywords} isInProgress={!!this.state.audioSource} />

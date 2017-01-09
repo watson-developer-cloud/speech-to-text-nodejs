@@ -27,3 +27,13 @@
     display: inline-block;
 }
 
+
+/* Word Timings and Alternatives view styles */
+.arrow-box-container {
+    position: relative;
+}
+
+sup {
+    vertical-align: super;
+    font-size: 0.8rem;
+}
