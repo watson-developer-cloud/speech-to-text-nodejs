@@ -335,10 +335,8 @@ export default React.createClass({
             err = "Unable to determine content type from file header; only wav, flac, and ogg/opus are supported. Please choose a different file."
         } else if (err.name === 'NotSupportedError' && this.state.audioSource === 'mic') {
             err = "This browser does not support microphone input.";
-        } else {
-            this.setState({error: err.message || err});
-
         }
+        this.setState({error: err.message || err});
     },
 
     // todo: use classes instead of setting style to show/hide things, consider adding transitions
