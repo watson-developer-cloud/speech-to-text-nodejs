@@ -1,6 +1,7 @@
 import React from 'react';
 
 export function Transcript(props) {
+    try {
 
     const results = props.messages.map(msg => {
         // When resultsBySpeaker is enabled, each msg.results array may contain multiple results.
@@ -12,4 +13,8 @@ export function Transcript(props) {
         {results}
         </div>
     );
+    } catch(ex) {
+        console.log(ex);
+        return <div>{ex.message}</div>;
+    }
 }

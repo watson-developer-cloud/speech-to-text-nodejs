@@ -168,6 +168,12 @@ export default React.createClass({
     },
 
     handleStream(stream) {
+        // cleanup old stream if appropriate
+        if(this.stream) {
+            this.stream.stop();
+            this.stream.removeAllListeners();
+            this.stream.recognizeStream.removeAllListeners();
+        }
         this.stream = stream;
         this.captureSettings();
 
@@ -198,7 +204,7 @@ export default React.createClass({
             .once('send-data', data => this.handleRawdMessage({
                 sent: true,
                 binary: true,
-                data
+                data: true // discard the binary data to avoid waisting memory
             }))
             .on('close', (code, message) => this.handleRawdMessage({
                 close: true,
@@ -306,7 +312,7 @@ export default React.createClass({
     },
 
     getFinalResults() {
-        return this.state.formattedMessages.filter(r => r.results && r.results[0].final );
+        return this.state.formattedMessages.filter(r => r.results && r.results.length && r.results[0].final );
     },
 
     getCurrentInterimResult() {
@@ -314,7 +320,7 @@ export default React.createClass({
 
         // When resultsBySpeaker is enabled, each msg.results array may contain multiple results. However, all results
         // in a given message will be either final or interim, so just checking the first one still works here.
-        if (!r || !r.results || r.results[0].final) {
+        if (!r || !r.results || !r.results.length || r.results[0].final) {
             return null;
         }
         return r;

@@ -21,7 +21,7 @@ function makeJsonLink(obj, i) {
 
 // we want to insert nulls into the array rather than remove the elements so that the non-null items will have the same key
 function nullImterim(msg) {
-    if (msg.results && !msg.results[0].final) {
+    if (msg.results && msg.results.length && !msg.results[0].final) {
         return null;
     } else {
         return msg;
@@ -71,38 +71,43 @@ export default React.createClass({
     render() {
         // note: this originally rendered the JSON inline with a <Code> tag, but that silently crashed during highlighting.
         // This is probably better for performance anyways.
+        try {
+            let output;
 
-        let output;
+            if (this.state.showRaw) {
+                output = (this.state.interim ? this.props.raw : this.props.raw.map(nullInterimRaw))
+                    .map(renderRawMessage);
+            } else {
+                output = (this.state.interim ? this.props.formatted : this.props.formatted.map(nullImterim))
+                    .map(makeJsonLink);
+            }
 
-        if (this.state.showRaw) {
-            output = (this.state.interim ? this.props.raw : this.props.raw.map(nullInterimRaw))
-                .map(renderRawMessage);
-        } else {
-            output = (this.state.interim ? this.props.formatted : this.props.formatted.map(nullImterim))
-                .map(makeJsonLink);
+            return (
+                <div className="jsonview">
+                    <div className="options">
+                        Show: &nbsp;
+                        <RadioGroup tabStyle={true}
+                                    name="input-name"
+                                    selectedValue={this.state.showRaw ? RAW : FORMATTED}
+                                    onChange={this.handleShowChange}>
+                            <Radio value={RAW}>WebSocket traffic</Radio>
+                            <Radio value={FORMATTED}>Formatted results from the SDK</Radio>
+                        </RadioGroup>
+                        <input role="checkbox" className="base--checkbox" type="checkbox" checked={!this.state.interim}
+                               onChange={this.handleInterimChange} id="interim"/>
+                        <label className="base--inline-label" htmlFor="interim">
+                            Hide interim results
+                        </label>
+                    </div>
+                    <hr className="base--hr"/>
+                    <div className="results">
+                        {output}
+                    </div>
+                </div>
+            );
+        } catch (ex) {
+            console.log(ex);
+            return <div>{ex.message}</div>;
         }
-
-        return (
-            <div className="jsonview">
-                <div className="options">
-                    Show: &nbsp;
-                    <RadioGroup tabStyle={true}
-                              name="input-name"
-                              selectedValue={this.state.showRaw ? RAW : FORMATTED}
-                              onChange={this.handleShowChange}>
-                        <Radio value={RAW}>WebSocket traffic</Radio>
-                        <Radio value={FORMATTED}>Formatted results from the SDK</Radio>
-                    </RadioGroup>
-                    <input role="checkbox" className="base--checkbox" type="checkbox" checked={!this.state.interim} onChange={this.handleInterimChange} id="interim" />
-                    <label className="base--inline-label" htmlFor="interim">
-                        Hide interim results
-                    </label>
-                </div>
-                <hr className="base--hr" />
-                <div className="results">
-                    {output}
-                </div>
-            </div>
-        );
     }
 });
