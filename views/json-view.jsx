@@ -21,7 +21,11 @@ function makeJsonLink(obj, i) {
 
 // we want to insert nulls into the array rather than remove the elements so that the non-null items will have the same key
 function nullImterim(msg) {
-    if (msg.results && msg.results.length && !msg.results[0].final) {
+    if (msg.speaker_labels) {
+        // some messages can have both results (final or interim) and speaker labels
+        // in that case we want to show it for the speaker_labels, even if the result is interim
+        return msg;
+    } else if (msg.results && msg.results.length && !msg.results[0].final) {
         return null;
     } else {
         return msg;
