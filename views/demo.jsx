@@ -11,10 +11,6 @@ import JSONView from './json-view.jsx';
 import samples from '../src/data/samples.json';
 import cachedModels from '../src/data/models.json';
 
-// pollyfill for Safari / IE
-// sets window.fetch if it is currently undefined, otherwise a no-op
-require('whatwg-fetch');
-
 const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 
 export default React.createClass({
