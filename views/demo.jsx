@@ -331,10 +331,10 @@ export default React.createClass({
 
     handleError(err, extra) {
         console.error(err, extra);
-        if (err.name === 'NotSupportedError' && this.state.audioSource === 'mic') {
-            this.setState({
-                error: "This browser does not support microphone input."
-            });
+        if (err.name == 'UNRECOGNIZED_FORMAT') {
+            err = "Unable to determine content type from file header; only wav, flac, and ogg/opus are supported. Please choose a different file."
+        } else if (err.name === 'NotSupportedError' && this.state.audioSource === 'mic') {
+            err = "This browser does not support microphone input.";
         } else {
             this.setState({error: err.message || err});
 
