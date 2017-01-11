@@ -33,11 +33,6 @@ module.exports = function(app) {
     require('./security')(app);
   }
 
-  // OLD demo: automatically compile and serve the front-end js
-  app.get('/js/index.js', expressBrowserify('src/index.js', {
-    watch: process.env.NODE_ENV !== 'production'
-  }));
-
   // automatically bundle the front-end js on the fly
   // note: this should come before the express.static since bundle.js is in the public folder
   const isDev = (app.get('env') === 'development');
