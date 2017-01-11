@@ -78,15 +78,15 @@ See the full [Getting Started][getting_started] documentation for more details, 
     }
     ```
 
-    You need to copy `username`, `password` and `url`. Then you need to pass those values in app.js
+    Put the username and password int environment properties, a [.env](https://www.npmjs.com/package/dotenv) file, or directly into app.js:
 
     ```
-    var config = {
-      version: 'v1',
-      url: 'https://stream.watsonplatform.net/speech-to-text/api',
-      username: '<username>',
-      password: '<password>'  
-    };
+    const stt = new watson.SpeechToTextV1({
+      // if left undefined, username and password to fall back to the SPEECH_TO_TEXT_USERNAME and
+      // SPEECH_TO_TEXT_PASSWORD environment properties, and then to VCAP_SERVICES (on Bluemix)
+      // username: '',
+      // password: ''
+    });
     ```
 
 2. Install [Node.js](http://nodejs.org/)
