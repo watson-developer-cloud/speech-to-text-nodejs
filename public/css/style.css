@@ -29,6 +29,10 @@
 
 
 /* Word Timings and Alternatives view styles */
+.word-timings-alternatives .word {
+    padding-right: 1ex; /* I tried just putting a space here, but safari hides it :( */
+}
+
 .arrow-box-container {
     position: relative;
 }

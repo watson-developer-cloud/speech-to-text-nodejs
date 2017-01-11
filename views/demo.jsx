@@ -67,6 +67,7 @@ export default React.createClass({
             format: true, // adds capitals, periods, and a few other things (client-side)
             model: this.state.model,
             objectMode: true,
+            interim_results: true,
             continuous: true,
             word_alternatives_threshold: 0.01, // note: in normal usage, you'd probably set this a bit higher
             keywords: keywords,
@@ -136,14 +137,12 @@ export default React.createClass({
         }
         this.reset();
         this.setState({audioSource: 'sample-' + which});
-        fetch('audio/' + filename).then(function(response) {
-            // todo: see if there's a way to stream this data instead of downloading it and then processing it
-            return response.blob();
-        }).then(blob => {
-            this.playFile(blob);
-        }).catch(this.handleError);
+        this.playFile('audio/' + filename);
     },
 
+    /**
+     * @param {File|Blob|String} file - url to an audio file or a File instance fro user-provided files
+     */
     playFile(file) {
         // The recognizeFile() method is a helper method provided by the watson-speach package
         // It accepts a file input and transcribes the contents over a WebSocket connection
@@ -157,9 +156,9 @@ export default React.createClass({
         //  * a few other things for backwards compatibility and sane defaults
         // In addition to this, it passes other service-level options along to the RecognizeStream that manages the actual WebSocket connection.
         this.handleStream(recognizeFile(this.getRecognizeOptions({
-            data: file,
+            file: file,
             play: true, // play the audio out loud
-            realtime: true, // use a helper stream to slow down the transcript output to match the audio speed (creates more interim results)
+            realtime: true, // use a helper stream to slow down the transcript output to match the audio speed
         })));
     },
 
