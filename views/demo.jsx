@@ -1,5 +1,6 @@
 import React from 'react';
-import { Icon, Tabs, Pane, Alert } from 'watson-react-components';
+import Dropzone from 'react-dropzone';
+import { Icon, Tabs, Pane, Alert, Colors } from 'watson-react-components';
 import recognizeMicrophone from 'watson-speech/speech-to-text/recognize-microphone';
 import recognizeFile from 'watson-speech/speech-to-text/recognize-file';
 import ModelDropdown from './model-dropdown.jsx';
@@ -35,6 +36,9 @@ export default React.createClass({
     },
 
     reset() {
+        if (this.state.audioSource) {
+            this.stopTranscription();
+        }
         this.setState({
             rawMessages: [],
             formattedMessages: [],
@@ -106,10 +110,15 @@ export default React.createClass({
     },
 
     handleUploadClick() {
-        if (this.state.audioSource) {
-            return this.stopTranscription();
+        if (this.state.audioSource === 'upload') {
+            this.stopTranscription();
+        } else {
+            this.refs.dropzone.open();
         }
-        const file = this.fileInput.files[0];
+    },
+
+    handleUserFile: function(files) {
+        const file = files[0];
         if (!file) {
             return;
         }
@@ -118,6 +127,10 @@ export default React.createClass({
         this.playFile(file);
     },
 
+
+    handleUserFileRejection: function() {
+        this.setState({error: 'Sorry, that file does not appear to be compatible.'})
+    },
     handleSample1Click() {
         this.handleSampleClick(1);
     },
@@ -126,11 +139,9 @@ export default React.createClass({
     },
 
     handleSampleClick(which) {
-        if (this.state.audioSource) {
+        if (this.state.audioSource === 'sample-' + which) {
             return this.stopTranscription();
         }
-        // todo: spinner icon while loading audio
-        // todo: use opus here for browsers that support it
         let filename = samples[this.state.model] && samples[this.state.model][which-1].filename;
         if (!filename) {
             return this.handleError(`No sample ${which} available for model ${this.state.model}`, samples[this.state.model]);
@@ -349,7 +360,23 @@ export default React.createClass({
 
         const messages = this.getFinalAndLatestInterimResult();
 
-        return (<div className="_container _container_large">
+        return (<Dropzone onDropAccepted={this.handleUserFile}
+                          onDropRejected={this.handleUserFileRejection}
+                          maxSize={200*1024*1024}
+                          accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"
+                          disableClick={true}
+                          className="dropzone _container _container_large"
+                          activeClassName="dropzone-active"
+                          rejectClassName="dropzone-reject">
+
+            <div className="drop-info-container">
+                <div className="drop-info">
+                    <h1>Drop an audio file here.</h1>
+                    <p>Watson Speech to Text supports .wav, .opus, and .flack files up to 200mb.</p>
+                </div>
+            </div>
+
+
             <h2>Transcribe Audio</h2>
 
             <ul className="base--ul">
@@ -373,27 +400,37 @@ export default React.createClass({
             <p>Voice Model: <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} /></p>
 
             <p className={this.supportsSpeakerLabels() ? 'base--p' : 'base--p_light'}>
-                <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels} onChange={this.handleSpeakerLabelsChange} disabled={!this.supportsSpeakerLabels()} id="speaker-labels" />
+                <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels}
+                       onChange={this.handleSpeakerLabelsChange} disabled={!this.supportsSpeakerLabels()} id="speaker-labels" />
                 <label className="base--inline-label" htmlFor="speaker-labels">
                     Detect multiple speakers {this.supportsSpeakerLabels() ? '' : ' (Not supported on current model)'}
                 </label>
             </p>
 
-            <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
+            <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text"
+                                        id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
 
 
-            <button className={this.isNarrowBand() ? 'base--button base--button_black' : 'base--button'} onClick={this.handleMicClick}><Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} /> Record Audio</button>
+
+
+            <button className={this.isNarrowBand() ? 'base--button base--button_black' : 'base--button'} onClick={this.handleMicClick}>
+                <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} /> Record Audio
+            </button>
 
             {' '}
-            <label className="base--button" style={{display: this.state.audioSource === 'upload' ? 'none' : undefined}}><Icon type='upload' /> Upload Audio File
-                <input type="file" ref={ r => this.fileInput = r } onChange={this.handleUploadClick} style={{display:'none'}} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac"/>
-            </label>
-            <button className="base--button" style={{display: this.state.audioSource === 'upload' ? undefined : 'none'}} onClick={this.handleUploadClick}><Icon type='stop' /> Upload Audio File</button>
+            <button className="base--button" onClick={this.handleUploadClick}>
+                <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'upload'} /> Upload Audio File
+            </button>
 
-            {' ' /* todo: make these a loading icon while the file is downloading -- also use opus files when possible */}
-            <button className="base--button" onClick={this.handleSample1Click}><Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1</button>
             {' '}
-            <button className="base--button" onClick={this.handleSample2Click}><Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2</button>
+            <button className="base--button" onClick={this.handleSample1Click}>
+                <Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1
+            </button>
+
+            {' '}
+            <button className="base--button" onClick={this.handleSample2Click}>
+                <Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2
+            </button>
 
             {err}
 
@@ -413,6 +450,6 @@ export default React.createClass({
                 </Pane>
             </Tabs>
 
-        </div>);
+        </Dropzone>);
     }
 });

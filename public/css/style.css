@@ -3,6 +3,58 @@
     margin-top: 1em;
 }
 
+.tab-panels--tab-content {
+    min-height: 250px;
+}
+
+.arrow-box-container {
+    position: relative;
+}
+
+sup {
+    vertical-align: super;
+    font-size: 0.8rem;
+}
+
+/* drag-drop styles */
+._container {
+    position: relative;
+}
+.base--checkbox + label, .base--radio + label, .prism {
+    position: static;
+}
+.drop-info-container {
+    position: absolute;
+    display: none;
+    /* This div also gets our container classnames in order to be the correct width.
+    But, it isn't exactly correct until we fiddle with the padding */
+    padding-right: 1rem;
+}
+
+.dropzone.dropzone-active .drop-info-container,
+.dropzone.dropzone-reject .drop-info-container {
+    display: block;
+}
+
+.drop-info {
+    background-color: white;
+    opacity: 0.9;
+    padding: 60px;
+    min-height: 800px;
+    border: 10px dashed #959595; /* gray_40 */
+    border-radius: 10px;
+    z-index: 1;
+}
+.drop-info h1 {
+    font-size: 60px;
+}
+.drop-info p {
+    font-size: 30px;
+}
+.dropzone.dropzone-reject .drop-info{
+    background-color: #E71D32; /* red_50 */
+}
+
 /* Speaker View styles */
 .speaker-labels dt {
     font-weight: bold;
@@ -31,13 +83,4 @@
 /* Word Timings and Alternatives view styles */
 .word-timings-alternatives .word {
     padding-right: 1ex; /* I tried just putting a space here, but safari hides it :( */
-}
-
-.arrow-box-container {
-    position: relative;
-}
-
-sup {
-    vertical-align: super;
-    font-size: 0.8rem;
 }
