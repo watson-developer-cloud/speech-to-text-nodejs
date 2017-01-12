@@ -423,7 +423,7 @@ export default React.createClass({
 
             {' '}
             <button className="base--button" onClick={this.handleUploadClick}>
-                <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'upload'} /> Upload Audio File
+                <Icon type={this.state.audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
             </button>
 
             {' '}
