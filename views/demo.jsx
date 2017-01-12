@@ -374,7 +374,7 @@ export default React.createClass({
             <div className="drop-info-container">
                 <div className="drop-info">
                     <h1>Drop an audio file here.</h1>
-                    <p>Watson Speech to Text supports .wav, .opus, and .flack files up to 200mb.</p>
+                    <p>Watson Speech to Text supports .wav, .opus, and .flac files up to 200mb.</p>
                 </div>
             </div>
 
