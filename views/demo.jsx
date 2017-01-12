@@ -347,6 +347,8 @@ export default React.createClass({
             err = "Unable to determine content type from file header; only wav, flac, and ogg/opus are supported. Please choose a different file."
         } else if (err.name === 'NotSupportedError' && this.state.audioSource === 'mic') {
             err = "This browser does not support microphone input.";
+        } else if (err.message === "('UpsamplingNotAllowed', 8000, 16000)") {
+            err = "Please select a narrowband voice model to transcribe 8KHz audio files."
         }
         this.setState({error: err.message || err});
     },
