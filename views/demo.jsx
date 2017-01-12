@@ -89,7 +89,7 @@ export default React.createClass({
     },
 
     handleMicClick() {
-        if (this.state.audioSource) {
+        if (this.state.audioSource === 'mic') {
             return this.stopTranscription();
         }
         this.reset();
