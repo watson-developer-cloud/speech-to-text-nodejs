@@ -10,7 +10,8 @@ function makeJsonLink(obj, i) {
     }
 
     const json = JSON.stringify(obj);
-    const str = (json.length <= 78) ? json : json.substr(0,14) + ' ...' + json.substr(-60);
+    const str = (json.length <= 78) ? json : json.substr(0,14) + ' ...' + json.substr(-60)
+        .replace(/,/g, ', '); // space after commas to help browsers decide where breakpoints should go on small screens
 
     return (
         <JsonLink json={obj} key={`jsonlink-${i}`} >
