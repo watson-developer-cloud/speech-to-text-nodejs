@@ -353,8 +353,19 @@ export default React.createClass({
         this.setState({error: err.message || err});
     },
 
-    // todo: use classes instead of setting style to show/hide things, consider adding transitions
     render() {
+
+        const buttonsEnabled = !!this.state.token;
+        const buttonClass = buttonsEnabled ? 'base--button' : 'base--button base--button_black';
+
+        let micIconFill = '#000000';
+        let micButtonClass = buttonClass;
+        if (this.state.audioSource === 'mic') {
+            micButtonClass += ' mic-active';
+            micIconFill = '#FFFFFF';
+        } else if (buttonsEnabled && this.isNarrowBand() || !recognizeMicrophone.isSupported) {
+            micButtonClass += ' base--button_black';
+        }
 
         const err = this.state.error ? (<Alert type="error" color="red">
             <p className="base--p">{this.state.error}</p>
@@ -417,22 +428,22 @@ export default React.createClass({
 
 
 
-            <button className={this.isNarrowBand() ? 'base--button base--button_black' : 'base--button'} onClick={this.handleMicClick}>
-                <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} /> Record Audio
+            <button className={micButtonClass} onClick={this.handleMicClick}>
+                <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} fill={micIconFill} /> Record Audio
             </button>
 
             {' '}
-            <button className="base--button" onClick={this.handleUploadClick}>
+            <button className={buttonClass} onClick={this.handleUploadClick}>
                 <Icon type={this.state.audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
             </button>
 
             {' '}
-            <button className="base--button" onClick={this.handleSample1Click}>
+            <button className={buttonClass} onClick={this.handleSample1Click}>
                 <Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1
             </button>
 
             {' '}
-            <button className="base--button" onClick={this.handleSample2Click}>
+            <button className={buttonClass} onClick={this.handleSample2Click}>
                 <Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2
             </button>
 

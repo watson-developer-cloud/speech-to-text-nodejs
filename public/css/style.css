@@ -65,6 +65,14 @@ dialog, dd, dt {
     background-color: #E71D32; /* red_50 */
 }
 
+/* settings */
+
+.base--button.mic-active {
+    background-color: #E71D32;
+    color: white;
+    border-color: #E71D32
+}
+
 /* Speaker View styles */
 .speaker-labels dt {
     font-weight: bold;
