@@ -16,6 +16,16 @@ sup {
     font-size: 0.8rem;
 }
 
+/* override strange defaults in chrome */
+dialog, dd, dt {
+    position: static;
+    display: block;
+    border: 0;
+    padding: 0;
+}
+
+
+
 /* drag-drop styles */
 ._container {
     position: relative;
@@ -75,12 +85,13 @@ sup {
 .jsonview .options div:before {
     display: none;
 }
-.jsonview .results--json {
-    display: inline-block;
+.json-link--span code {
+    word-wrap: break-word;
 }
-
 
 /* Word Timings and Alternatives view styles */
 .word-timings-alternatives .word {
-    padding-right: 1ex; /* I tried just putting a space here, but safari hides it :( */
+    padding-right: 1ex; /*I tried just putting a space in the HTML, but chrome and safari hide it :( */
+    display: inline-block;
+    margin-top: 0;
 }

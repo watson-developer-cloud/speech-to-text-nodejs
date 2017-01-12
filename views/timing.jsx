@@ -10,7 +10,7 @@ const Word = function(props){
     }
     return (
         <span className="word arrow-box-container" onClick={click} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
-            <props className="base--a" href="#">{props.alternatives[0].word}</props>
+            <a className="base--a" href="#">{props.alternatives[0].word}</a>
             {props.alternatives.length > 1 ? (<sup>{props.alternatives.length}</sup>) : null}
             <ArrowBox direction="top" show={props.showDetails} color={Colors.purple_50}>
                 <div style={{color: 'white'}}>
