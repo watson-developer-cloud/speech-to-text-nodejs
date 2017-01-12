@@ -113,7 +113,7 @@ export default React.createClass({
         if (this.state.audioSource === 'upload') {
             this.stopTranscription();
         } else {
-            this.refs.dropzone.open();
+            this.dropzone.open();
         }
     },
 
@@ -367,7 +367,9 @@ export default React.createClass({
                           disableClick={true}
                           className="dropzone _container _container_large"
                           activeClassName="dropzone-active"
-                          rejectClassName="dropzone-reject">
+                          rejectClassName="dropzone-reject"
+                          ref={(node) => { this.dropzone = node; }}
+            >
 
             <div className="drop-info-container">
                 <div className="drop-info">
