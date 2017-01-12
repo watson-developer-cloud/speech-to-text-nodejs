@@ -384,7 +384,7 @@ export default React.createClass({
             <h2>Transcribe Audio</h2>
 
             <ul className="base--ul">
-                <li className="base--li">Use your microphone to record audio (Chrome or Firefox only).</li>
+                <li className="base--li">Use your microphone to record audio (Chrome, Firefox, or Edge only).</li>
                 <li className="base--li">Upload pre-recorded audio (.wav, .flac, or .opus only).</li>
                 <li className="base--li">Play one of the sample audio files.</li>
             </ul>
