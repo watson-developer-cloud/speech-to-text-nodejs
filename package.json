@@ -2,73 +2,73 @@
   "name": "SpeechToTextBrowserStarterApp",
   "version": "1.0.1",
   "description": "A sample browser app for Bluemix that use the speech-to-text service, fetching a token via Node.js",
-  "dependencies": {
-    "body-parser": "~1.14.1",
-    "browserify-shim": "^3.8.12",
-    "cf-deployment-tracker-client": "0.0.8",
-    "cookie-parser": "^1.4.1",
-    "csurf": "^1.8.3",
-    "dotenv": "^2.0.0",
-    "ejs": "^2.3.4",
-    "express": "~4.13.3",
-    "express-browserify": "^1.0.2",
-    "express-rate-limit": "^2.1.0",
-    "express-secure-only": "^0.2.1",
-    "helmet": "^1.3.0",
-    "vcap_services": "^0.1.7",
-    "watson-developer-cloud": "^1.2.4"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/watson-developer-cloud/speech-to-text-nodejs.git"
+  },
+  "engines": {
+    "node": ">=6.0",
+    "npm": ">=3.0"
   },
   "author": "IBM Corp.",
   "browserify-shim": {
     "jquery": "global:jQuery"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
     ]
   },
-  "contributors": [
-    {
-      "name": "German Attanasio Ruiz",
-      "email": "germanatt@us.ibm.com"
-    },
-    {
-      "name": "Daniel Bolano",
-      "email": "dbolano@us.ibm.com"
-    },
-    {
-      "name": "Britany L. Ponvelle",
-      "email": "blponvelle@us.ibm.com"
-    },
-    {
-      "name": "Eric S. Bullington",
-      "email": "esbullin@us.ibm.com"
-    },
-    {
-      "name": "Nathan Friedly",
-      "email": "nfriedly@us.ibm.com",
-      "website": "http://nfriedly.com/"
-    }
-  ],
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/watson-developer-cloud/speech-to-text-nodejs/issues"
   },
   "scripts": {
     "start": "node server.js",
-    "test": "npm run lint && npm run test-offline",
+    "test-integration": "casperjs test ./test/integration/test.*.js",
+    "test-integration-runner": "NODE_ENV=test node casper-runner.js",
+    "test": "npm run lint && npm run test-unit && npm run test-integration-runner",
+    "test-unit": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit",
     "lint": "eslint .",
-    "autofix": "eslint . --fix",
-    "test-offline": "mocha test/offline-test.js"
+    "autofix": "eslint --fix .",
+    "codecov": "npm run test && (codecov || true)"
+  },
+  "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.20.2",
+    "babel-polyfill": "^6.20.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babelify": "^7.3.0",
+    "cf-deployment-tracker-client": "0.1.2",
+    "dotenv": "^4.0.0",
+    "express": "~4.14.0",
+    "express-browserify": "^1.0.2",
+    "express-rate-limit": "^2.6.0",
+    "express-react-views": "^0.10.2",
+    "express-secure-only": "^0.2.1",
+    "helmet": "^3.3.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-dropzone": "^3.9.0",
+    "uglifyify": "^3.0.4",
+    "watson-developer-cloud": "^2.14.5",
+    "watson-react-components": "^0.5.0",
+    "watson-speech": "^0.30.1",
+    "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
-    "eslint": "^2.5.3",
-    "mocha": "^2.4.5",
-    "nock": "^7.7.2",
-    "supertest": "^1.2.0"
+    "casperjs": "^1.1.3",
+    "codecov": "^1.0.1",
+    "eslint": "^3.13.1",
+    "eslint-plugin-react": "^6.9.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "phantomjs-prebuilt": "^2.1.14",
+    "nock": "^9.0.2",
+    "supertest": "^2.0.1"
   }
 }

@@ -1,102 +1,156 @@
-{
-   "models": [
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ar-AR_BroadbandModel", 
-         "rate": 16000, 
-         "name": "ar-AR_BroadbandModel", 
-         "language": "ar-AR", 
-         "description": "Modern Standard Arabic broadband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_BroadbandModel", 
-         "rate": 16000, 
-         "name": "en-UK_BroadbandModel", 
-         "language": "en-UK", 
-         "description": "UK English broadband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_NarrowbandModel", 
-         "rate": 8000, 
-         "name": "en-UK_NarrowbandModel", 
-         "language": "en-UK", 
-         "description": "UK English narrowband model."
-      },
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_BroadbandModel", 
-         "rate": 16000, 
-         "name": "en-US_BroadbandModel", 
-         "language": "en-US", 
-         "description": "US English broadband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel", 
-         "rate": 8000, 
-         "name": "en-US_NarrowbandModel", 
-         "language": "en-US", 
-         "description": "US English narrowband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_BroadbandModel", 
-         "rate": 16000, 
-         "name": "es-ES_BroadbandModel", 
-         "language": "es-ES", 
-         "description": "Spanish broadband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_NarrowbandModel", 
-         "rate": 8000, 
-         "name": "es-ES_NarrowbandModel", 
-         "language": "es-ES", 
-         "description": "Spanish narrowband model."
-      },
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel", 
-         "rate": 16000, 
-         "name": "fr-FR_BroadbandModel", 
-         "language": "fr-FR", 
-         "description": "French broadband model."
-      },
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_BroadbandModel", 
-         "rate": 16000, 
-         "name": "ja-JP_BroadbandModel", 
-         "language": "ja-JP", 
-         "description": "Japanese broadband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_NarrowbandModel", 
-         "rate": 8000, 
-         "name": "ja-JP_NarrowbandModel", 
-         "language": "ja-JP", 
-         "description": "Japanese narrowband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel", 
-         "rate": 16000, 
-         "name": "pt-BR_BroadbandModel", 
-         "language": "pt-BR", 
-         "description": "Brazilian Portuguese broadband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel", 
-         "rate": 8000, 
-         "name": "pt-BR_NarrowbandModel", 
-         "language": "pt-BR", 
-         "description": "Brazilian Portuguese narrowband model."
-      }, 
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_BroadbandModel", 
-         "rate": 16000, 
-         "name": "zh-CN_BroadbandModel", 
-         "language": "zh-CN", 
-         "description": "Mandarin broadband model."
-      },
-      {
-         "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_NarrowbandModel", 
-         "rate": 8000, 
-         "name": "zh-CN_NarrowbandModel", 
-         "language": "zh-CN", 
-         "description": "Mandarin narrowband model."
-      } 
-   ]
-}
+[
+  {
+    "name": "fr-FR_BroadbandModel",
+    "language": "fr-FR",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "French broadband model."
+  },
+  {
+    "name": "en-US_NarrowbandModel",
+    "language": "en-US",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": true
+    },
+    "description": "US English narrowband model."
+  },
+  {
+    "name": "pt-BR_BroadbandModel",
+    "language": "pt-BR",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Brazilian Portuguese broadband model."
+  },
+  {
+    "name": "ja-JP_NarrowbandModel",
+    "language": "ja-JP",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": true
+    },
+    "description": "Japanese narrowband model."
+  },
+  {
+    "name": "zh-CN_BroadbandModel",
+    "language": "zh-CN",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Mandarin broadband model."
+  },
+  {
+    "name": "ja-JP_BroadbandModel",
+    "language": "ja-JP",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": false
+    },
+    "description": "Japanese broadband model."
+  },
+  {
+    "name": "pt-BR_NarrowbandModel",
+    "language": "pt-BR",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Brazilian Portuguese narrowband model."
+  },
+  {
+    "name": "es-ES_BroadbandModel",
+    "language": "es-ES",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Spanish broadband model."
+  },
+  {
+    "name": "ar-AR_BroadbandModel",
+    "language": "ar-AR",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ar-AR_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Modern Standard Arabic broadband model."
+  },
+  {
+    "name": "zh-CN_NarrowbandModel",
+    "language": "zh-CN",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Mandarin narrowband model."
+  },
+  {
+    "name": "en-UK_BroadbandModel",
+    "language": "en-UK",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "UK English broadband model."
+  },
+  {
+    "name": "es-ES_NarrowbandModel",
+    "language": "es-ES",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": true
+    },
+    "description": "Spanish narrowband model."
+  },
+  {
+    "name": "en-US_BroadbandModel",
+    "language": "en-US",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": false
+    },
+    "description": "US English broadband model."
+  },
+  {
+    "name": "en-UK_NarrowbandModel",
+    "language": "en-UK",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "UK English narrowband model."
+  }
+]

@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-'use strict';
+const path = require('path');
+// load default variables for testing
+require('dotenv').config({ path: path.join(__dirname, '../../.env.example') });
 
-// security.js
-var secure = require('express-secure-only'),
-  rateLimit = require('express-rate-limit'),
-  helmet = require('helmet');
+const app = require('../../app');
+const request = require('supertest');
 
-module.exports = function(app) {
-  app.enable('trust proxy');
+describe('express', () => {
+  it('load home page when GET /', () =>
+    request(app).get('/').expect(200)
+  );
 
-  // 1. redirects http to https
-  app.use(secure());
-
-  // 2. helmet with defaults
-  app.use(helmet());
-
-  // 5. rate limiting.
-  app.use('/api/', rateLimit({
-    windowMs: 30 * 1000, // 30 seconds
-    delayMs: 0,
-    max: 3,
-    message: JSON.stringify({
-      error:'Too many requests, please try again in 30 seconds.',
-      code: 429
-    })
-  }));
-};
+  it('404 when page not found', () =>
+    request(app).get('/foo/bar').expect(404)
+  );
+});

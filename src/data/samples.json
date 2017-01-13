@@ -1,0 +1,210 @@
+{
+  "ar-AR_BroadbandModel": [
+    {
+      "filename": "ar-AR_Broadband_sample1.wav",
+      "keywords": "الطقس , رياح معتدلة",
+      "speaker_labels": false
+    },
+    {
+      "filename": "ar-AR_Broadband_sample2.wav",
+      "keywords": "احلامنا , نستلهم",
+      "speaker_labels": false
+    }
+  ],
+  "en-UK_BroadbandModel": [
+    {
+      "filename": "en-UK_Broadband_sample1.wav",
+      "keywords": "important industry, affordable travel, business",
+      "speaker_labels": false
+    },
+    {
+      "filename": "en-UK_Broadband_sample2.wav",
+      "keywords": "consumer, quality, best practice",
+      "speaker_labels": false
+    }
+  ],
+  "en-UK_NarrowbandModel": [
+    {
+      "filename": "en-UK_Narrowband_sample1.wav",
+      "keywords": "heavy rain, northwest, UK",
+      "speaker_labels": false
+    },
+    {
+      "filename": "en-UK_Narrowband_sample2.wav",
+      "keywords": "Watson, sources across social media",
+      "speaker_labels": false
+    }
+  ],
+  "en-US_BroadbandModel": [
+    {
+      "filename": "Us_English_Broadband_Sample_1.wav",
+      "keywords": "sense of pride, watson, technology, changing the world",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Us_English_Broadband_Sample_2.wav",
+      "keywords": "round, whirling velocity, unwanted emotion",
+      "speaker_labels": false
+    }
+  ],
+  "en-US_NarrowbandModel": [
+    {
+      "filename": "english2.g712.wav",
+      "keywords": "twenty thousand dollars, filled out, car",
+      "speaker_labels": true
+    },
+    {
+      "filename": "english3.g712.wav",
+      "keywords": "new company, client, Chris",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Us_English_Narrowband_Sample_1.wav",
+      "keywords": "course online, four hours, help",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Us_English_Narrowband_Sample_2.wav",
+      "keywords": "ibm, customer experience, media data",
+      "speaker_labels": false
+    }
+  ],
+  "es-ES_BroadbandModel": [
+    {
+      "filename": "Es_ES_spk24_16khz.wav",
+      "keywords": "quiero preguntarle, existen productos",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_16khz.wav",
+      "keywords": "preparando, regalos para la familia, sobrinos",
+      "speaker_labels": false
+    }
+  ],
+  "es-ES_NarrowbandModel": [
+    {
+      "filename": "spanish2_60.g712.wav",
+      "keywords": "MÉXICO, GRECIA, DICIEMBRE",
+      "speaker_labels": true
+    },
+    {
+      "filename": "spanish3_60.g712.wav",
+      "keywords": "ROBERTO, MADRID, FIN DE SEMANA",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Es_ES_spk24_8khz.wav",
+      "keywords": "QUIERO PREGUNTARLE, EXISTEN PRODUCTOS",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_8khz.wav",
+      "keywords": "PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS",
+      "speaker_labels": false
+    }
+  ],
+  "ja-JP_BroadbandModel": [
+    {
+      "filename": "sample-Ja_JP-wide1.wav",
+      "keywords": "今日, 六本木, ルノワール",
+      "speaker_labels": true
+    },
+    {
+      "filename": "sample-Ja_JP-wide2.wav",
+      "keywords": "桜並木, 制限",
+      "speaker_labels": true
+    },
+    {
+      "filename": "sample-Ja_JP-wide1.wav",
+      "keywords": "場所 , 今日",
+      "speaker_labels": false
+    },
+    {
+      "filename": "sample-Ja_JP-wide2.wav",
+      "keywords": "変更 , 給与 , コード",
+      "speaker_labels": false
+    }
+  ],
+  "ja-JP_NarrowbandModel": [
+    {
+      "filename": "sample-Ja_JP-narrow5.wav",
+      "keywords": "ご住所, ご本人, 生年月日",
+      "speaker_labels": true
+    },
+    {
+      "filename": "sample-Ja_JP-narrow6.wav",
+      "keywords": "東京都, お電話",
+      "speaker_labels": true
+    },
+    {
+      "filename": "sample-Ja_JP-narrow3.wav",
+      "keywords": "お客様 , お手数",
+      "speaker_labels": false
+    },
+    {
+      "filename": "sample-Ja_JP-narrow4.wav",
+      "keywords": "申し込み , 今回 , 通帳",
+      "speaker_labels": false
+    }
+  ],
+  "pt-BR_BroadbandModel": [
+    {
+      "filename": "pt-BR_Sample1-16KHz.wav",
+      "keywords": "sistema da ibm, setor bancário, qualidade, necessidades dos clientes",
+      "speaker_labels": false
+    },
+    {
+      "filename": "pt-BR_Sample2-16KHz.wav",
+      "keywords": "médicos, informações, planos de tratamento",
+      "speaker_labels": false
+    }
+  ],
+  "pt-BR_NarrowbandModel": [
+    {
+      "filename": "pt-BR_Sample1-8KHz.wav",
+      "keywords": "cozinha, inovadoras receitas, criatividade",
+      "speaker_labels": false
+    },
+    {
+      "filename": "pt-BR_Sample2-8KHz.wav",
+      "keywords": "sistema, treinado por especialistas, setores diferentes",
+      "speaker_labels": false
+    }
+  ],
+  "zh-CN_BroadbandModel": [
+    {
+      "filename": "zh-CN_sample1_for_16k.wav",
+      "keywords": "沃 森 是 认知 , 大 数据 分析 能力",
+      "speaker_labels": false
+    },
+    {
+      "filename": "zh-CN_sample2_for_16k.wav",
+      "keywords": "技术 , 语音 , 的 用户 体验 , 人们 , 手机",
+      "speaker_labels": false
+    }
+  ],
+  "zh-CN_NarrowbandModel": [
+    {
+      "filename": "zh-CN_sample1_for_8k.wav",
+      "keywords": "公司 的 支持 , 理财 计划",
+      "speaker_labels": false
+    },
+    {
+      "filename": "zh-CN_sample2_for_8k.wav",
+      "keywords": "假期 , 安排",
+      "speaker_labels": false
+    }
+  ],
+  "fr-FR_BroadbandModel": [
+    {
+      "filename": "fr-FR_Broadband_sample1.wav",
+      "keywords": "durée du travail, loisirs",
+      "speaker_labels": false
+    },
+    {
+      "filename": "fr-FR_Broadband_sample2.wav",
+      "keywords": "conscience, esprit de fraternité, libres",
+      "speaker_labels": false
+    }
+  ]
+}
