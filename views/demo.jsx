@@ -228,7 +228,7 @@ export default React.createClass({
     // tokens expire after 60 minutes, so automatcally fetch a new one ever 50 minutes
     // Not sure if this will work properly if a computer goes to sleep for > 50 minutes and then wakes back up
     // react automatically binds the call to this
-    this.setState('tokenInterval', setInterval(this.fetchToken, 50 * 60 * 1000));
+    this.setState({'tokenInterval' : setInterval(this.fetchToken, 50 * 60 * 1000) });
   },
 
   componentWillUnmount() {
