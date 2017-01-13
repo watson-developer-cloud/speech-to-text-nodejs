@@ -349,6 +349,9 @@ export default React.createClass({
       : null;
 
     const messages = this.getFinalAndLatestInterimResult();
+    const micBullet = (typeof window !== "undefined" && recognizeMicrophone.isSupported) ?
+        <li className="base--li">Use your microphone to record audio.</li> :
+        <li className="base--li base--p_light">Use your microphone to record audio. (Not supported in current browser)</li>;
 
     return (
       <Dropzone onDropAccepted={this.handleUserFile} onDropRejected={this.handleUserFileRejection} maxSize={200 * 1024 * 1024} accept="audio/wav, audio/l16, audio/ogg, audio/flac, .wav, .ogg, .opus, .flac" disableClick={true} className="dropzone _container _container_large" activeClassName="dropzone-active" rejectClassName="dropzone-reject" ref={(node) => {
@@ -365,9 +368,9 @@ export default React.createClass({
         <h2 className="base--h2">Transcribe Audio</h2>
 
         <ul className="base--ul">
-          <li className="base--li">Use your microphone to record audio (Chrome, Firefox, or Edge only).</li>
-          <li className="base--li">Upload pre-recorded audio (.wav, .flac, or .opus only).</li>
-          <li className="base--li">Play one of the sample audio files.</li>
+            {micBullet}
+            <li className="base--li">Upload pre-recorded audio (.wav, .flac, or .opus only).</li>
+            <li className="base--li">Play one of the sample audio files.</li>
         </ul>
         <div style={{
           paddingRight: '3em',
@@ -381,59 +384,52 @@ export default React.createClass({
           <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#speaker_labels">detect multiple speakers</a>; this may slow down performance.
         </div>
 
-        <h3 className="base--h3">Setup</h3>
 
-        <p>Voice Model:
-          <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange}/></p>
+        <div className="flex setup">
+          <div className="column">
 
-        <p className={this.supportsSpeakerLabels()
-          ? 'base--p'
-          : 'base--p_light'}>
-          <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels} onChange={this.handleSpeakerLabelsChange} disabled={!this.supportsSpeakerLabels()} id="speaker-labels"/>
-          <label className="base--inline-label" htmlFor="speaker-labels">
-            Detect multiple speakers {this.supportsSpeakerLabels()
-              ? ''
-              : ' (Not supported on current model)'}
-          </label>
-        </p>
+            <p>Voice Model: <ModelDropdown model={this.state.model} token={this.state.token} onChange={this.handleModelChange} /></p>
 
-        <p>Keywords to spot:
-          <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text" id="keywords" placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
+            <p className={this.supportsSpeakerLabels() ? 'base--p' : 'base--p_light'}>
+              <input role="checkbox" className="base--checkbox" type="checkbox" checked={this.state.speakerLabels}
+                     onChange={this.handleSpeakerLabelsChange} disabled={!this.supportsSpeakerLabels()} id="speaker-labels" />
+              <label className="base--inline-label" htmlFor="speaker-labels">
+                Detect multiple speakers {this.supportsSpeakerLabels() ? '' : ' (Not supported on current model)'}
+              </label>
+            </p>
 
-        <button className={micButtonClass} onClick={this.handleMicClick}>
-          <Icon type={this.state.audioSource === 'mic'
-            ? 'stop'
-            : 'microphone'} fill={micIconFill}/>
-          Record Audio
-        </button>
+          </div>
+          <div className="column">
 
-        {' '}
-        <button className={buttonClass} onClick={this.handleUploadClick}>
-          <Icon type={this.state.audioSource === 'upload'
-            ? 'stop'
-            : 'upload'}/>
-          Upload Audio File
-        </button>
+            <p>Keywords to spot: <input value={this.state.keywords} onChange={this.handleKeywordsChange} type="text"
+                                        id="keywords"placeholder="Type comma separated keywords here (optional)" className="base--input"/></p>
 
-        {' '}
-        <button className={buttonClass} onClick={this.handleSample1Click}>
-          <Icon type={this.state.audioSource === 'sample-1'
-            ? 'stop'
-            : 'play'}/>
-          Play Sample 1
-        </button>
+          </div>
+        </div>
 
-        {' '}
-        <button className={buttonClass} onClick={this.handleSample2Click}>
-          <Icon type={this.state.audioSource === 'sample-2'
-            ? 'stop'
-            : 'play'}/>
-          Play Sample 2
-        </button>
+
+        <div className="flex buttons">
+
+          <button className={micButtonClass} onClick={this.handleMicClick}>
+            <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} fill={micIconFill} /> Record Audio
+          </button>
+
+          <button className={buttonClass} onClick={this.handleUploadClick}>
+            <Icon type={this.state.audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
+          </button>
+
+          <button className={buttonClass} onClick={this.handleSample1Click}>
+            <Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1
+          </button>
+
+          <button className={buttonClass} onClick={this.handleSample2Click}>
+            <Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2
+          </button>
+
+        </div>
 
         {err}
 
-        <h3 className="base--h3">Output</h3>
         <Tabs selected={0}>
           <Pane label="Text">
             {this.state.settingsAtStreamStart.speakerLabels

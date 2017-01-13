@@ -67,6 +67,42 @@ dialog, dd, dt {
 
 /* settings */
 
+.base--input {
+    border: 2px solid #464646;
+}
+
+.base--input:hover, .base--input:focus {
+    border-width: 2px;
+}
+
+.flex > * {
+    margin: 6px 6px 0 0;
+}
+.flex > *:last-child {
+    margin-right: 0;
+}
+
+@media (min-width: 1024px) {
+    .flex {
+        display: flex;
+    }
+    .flex > * {
+        flex: 1;
+        margin: 0 6px 0 0;
+    }
+    .flex > *:last-child {
+        margin-right: 0;
+    }
+    .base--input, .base--select {
+        max-width: 100%;
+    }
+}
+
+.base--button:focus {
+  outline: 0;
+}
+
+
 .base--button.mic-active {
     background-color: #E71D32;
     color: white;
