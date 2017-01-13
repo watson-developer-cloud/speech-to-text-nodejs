@@ -378,10 +378,8 @@ export default React.createClass({
         }}>
           The returned result includes the recognized text, {' '}
           <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#word_alternatives">word alternatives</a>, {' '}
-          and
-          <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#keyword_spotting">spotted keywords</a>. {' '}
-          Some models can
-          <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#speaker_labels">detect multiple speakers</a>; this may slow down performance.
+          and <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#keyword_spotting">spotted keywords</a>. {' '}
+          Some models can <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#speaker_labels">detect multiple speakers</a>; this may slow down performance.
         </div>
 
 
