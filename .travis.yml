@@ -10,7 +10,7 @@ cache:
   - node_modules
 env:
   global:
-  - CF_APP=speech-to-text-react
+  - CF_APP=speech-to-text-demo
   - CF_API=https://api.ng.bluemix.net
   - CF_ORGANIZATION=WatsonPlatformServices
   - CF_SPACE=demos
@@ -21,7 +21,7 @@ deploy:
   script:
   - cf-blue-green-travis
   on:
-    branch: react
+    branch: master
     repo: watson-developer-cloud/speech-to-text-nodejs
 notifications:
   email: false
