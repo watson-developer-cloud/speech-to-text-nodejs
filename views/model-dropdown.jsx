@@ -45,6 +45,7 @@ export default React.createClass({
   render() {
     const models = this.state.models.sort((a, b) => a.description > b.description);
     const options = models.map(m => <option value={m.name} key={m.name}>{m.description.replace(/\.$/, '')}
+      {' '}
       ({m.rate / 1000}KHz)</option>);
 
     return (
