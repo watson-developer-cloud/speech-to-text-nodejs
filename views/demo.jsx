@@ -93,9 +93,6 @@ export default React.createClass({
       return this.stopTranscription();
     }
     this.reset();
-    if (this.isNarrowBand()) {
-      return this.handleError(ERR_MIC_NARROWBAND);
-    }
     this.setState({audioSource: 'mic'});
 
     // The recognizeMicrophone() method is a helper method provided by the watson-speach package
@@ -336,7 +333,7 @@ export default React.createClass({
     if (this.state.audioSource === 'mic') {
       micButtonClass += ' mic-active';
       micIconFill = '#FFFFFF';
-    } else if (buttonsEnabled && this.isNarrowBand() || !recognizeMicrophone.isSupported) {
+    } else if (!recognizeMicrophone.isSupported) {
       micButtonClass += ' base--button_black';
     }
 
