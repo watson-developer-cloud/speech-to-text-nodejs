@@ -11,7 +11,10 @@ var nock = require('nock');
 describe('offline tests', function() {
 
   describe('server', function() {
+    this.timeout(10000);
+
     it('should return HTML for GET /', function(done) {
+      this.slow(3000);
       request(app).get('/').expect(200, /<html/, done);
     });
 
