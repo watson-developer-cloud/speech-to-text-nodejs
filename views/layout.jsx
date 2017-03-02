@@ -13,6 +13,14 @@ export default function Layout(props) {
         <link rel="stylesheet" href="/css/watson-react-components.min.css"/>
         <link rel="stylesheet" href="/css/style.css"/>
         <script type="text/javascript" src="scripts/bundle.js" defer async></script>
+
+        {/* Bluemix Analytics - begin*/}
+        <script type="text/javascript">{`
+          window._analytics = { coremetrics: false, optimizely: false, addRoll: false };
+        `}</script>
+        <meta name="segment" property="watson-demos" value="speech-to-text-demo" />
+        <script src={props.bluemixAnalytics} />
+        {/* Bluemix Analytics  - end*/}
       </head>
       <body>
         <Header
@@ -43,4 +51,5 @@ export default function Layout(props) {
 
 Layout.propTypes = {
   children: React.PropTypes.object.isRequired,
+  bluemixAnalytics: React.PropTypes.string,
 };

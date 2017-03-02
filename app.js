@@ -31,7 +31,9 @@ const stt = new watson.SpeechToTextV1({
 const authService = new watson.AuthorizationV1(stt.getCredentials());
 
 app.get('/', function(req, res) {
-  res.render('index');
+  res.render('index', {
+    BLUEMIX_ANALYTICS: process.env.BLUEMIX_ANALYTICS,
+  });
 });
 
 // Get token using your credentials
