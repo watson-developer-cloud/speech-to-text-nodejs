@@ -1,5 +1,8 @@
 [
   {
+    "//note 1": "This file is just a temporary cache. Any changes you make here will be lost as soon as model-dropdown.jsx loads an update list from Watson.",
+    "//note 2": "model-dropdown.jsx only loads the *public* models. Any customizations you create will not be included in that list.",
+    
     "name": "fr-FR_BroadbandModel",
     "language": "fr-FR",
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel",
