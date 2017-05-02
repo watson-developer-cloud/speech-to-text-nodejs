@@ -64,7 +64,7 @@
     "rate": 16000,
     "supported_features": {
       "custom_language_model": true,
-      "speaker_labels": false
+      "speaker_labels": true
     },
     "description": "Japanese broadband model."
   },
@@ -86,7 +86,7 @@
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
-      "speaker_labels": false
+      "speaker_labels": true
     },
     "description": "Spanish broadband model."
   },
@@ -141,7 +141,7 @@
     "rate": 16000,
     "supported_features": {
       "custom_language_model": true,
-      "speaker_labels": false
+      "speaker_labels": true
     },
     "description": "US English broadband model."
   },

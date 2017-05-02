@@ -23,7 +23,7 @@ export default React.createClass({
       rawMessages: [],
       formattedMessages: [],
       audioSource: null,
-      speakerLabels: false,
+      speakerLabels: true,
       keywords: this.getKeywords('en-US_BroadbandModel'),
       // transcript model and keywords are the state that they were when the button was clicked.
       // Changing them during a transcription would cause a mismatch between the setting sent to the service and what is displayed on the demo, and could cause bugs.
@@ -367,16 +367,21 @@ export default React.createClass({
         <ul className="base--ul">
             {micBullet}
             <li className="base--li">Upload pre-recorded audio (.wav, .flac, or .opus only).</li>
-            <li className="base--li">Play one of the sample audio files.</li>
+            <li className="base--li">Play one of the sample audio files.*</li>
         </ul>
+
+        <div className="smalltext">
+        *Both US English broadband sample audio files are covered under the Creative Commons license.
+        </div>
+
         <div style={{
           paddingRight: '3em',
           paddingBottom: '2em'
         }}>
           The returned result includes the recognized text, {' '}
-          <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#word_alternatives">word alternatives</a>, {' '}
-          and <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#keyword_spotting">spotted keywords</a>. {' '}
-          Some models can <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.shtml#speaker_labels">detect multiple speakers</a>; this may slow down performance.
+          <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.html#word_alternatives">word alternatives</a>, {' '}
+          and <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.html#keyword_spotting">spotted keywords</a>. {' '}
+          Some models can <a className="base--a" href="http://www.ibm.com/watson/developercloud/doc/speech-to-text/output.html#speaker_labels">detect multiple speakers</a>; this may slow down performance.
         </div>
 
 

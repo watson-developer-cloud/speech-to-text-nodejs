@@ -37,14 +37,14 @@
   ],
   "en-US_BroadbandModel": [
     {
-      "filename": "Us_English_Broadband_Sample_1.wav",
-      "keywords": "sense of pride, watson, technology, changing the world",
-      "speaker_labels": false
+      "filename": "en-US_Broadband_sample1.wav",
+      "keywords": "IBM, admired, AI, transformations, cognitive",
+      "speaker_labels": true
     },
     {
-      "filename": "Us_English_Broadband_Sample_2.wav",
-      "keywords": "round, whirling velocity, unwanted emotion",
-      "speaker_labels": false
+      "filename": "en-US_Broadband_sample2.wav",
+      "keywords": "Artificial Intelligence, data, predict, learn",
+      "speaker_labels": true
     }
   ],
   "en-US_NarrowbandModel": [
@@ -71,24 +71,24 @@
   ],
   "es-ES_BroadbandModel": [
     {
-      "filename": "Es_ES_spk24_16khz.wav",
-      "keywords": "quiero preguntarle, existen productos",
-      "speaker_labels": false
+      "filename": "es-ES_Broadband_sample1.wav",
+      "keywords": "roberto, pedro",
+      "speaker_labels": true
     },
     {
-      "filename": "Es_ES_spk19_16khz.wav",
-      "keywords": "preparando, regalos para la familia, sobrinos",
-      "speaker_labels": false
+      "filename": "es-ES_Broadband_sample2.wav",
+      "keywords": "méxico, grecia",
+      "speaker_labels": true
     }
   ],
   "es-ES_NarrowbandModel": [
     {
-      "filename": "spanish2_60.g712.wav",
+      "filename": "es-ES_Narrowband_sample1.wav",
       "keywords": "MÉXICO, GRECIA, DICIEMBRE",
       "speaker_labels": true
     },
     {
-      "filename": "spanish3_60.g712.wav",
+      "filename": "es-ES_Narrowband_sample2.wav",
       "keywords": "ROBERTO, MADRID, FIN DE SEMANA",
       "speaker_labels": true
     },
@@ -105,13 +105,13 @@
   ],
   "ja-JP_BroadbandModel": [
     {
-      "filename": "sample-Ja_JP-wide1.wav",
-      "keywords": "今日, 六本木, ルノワール",
+      "filename": "ja-JP_Broadband_sample1.wav",
+      "keywords": "音声認識, ディープラーニング, 技術",
       "speaker_labels": true
     },
     {
-      "filename": "sample-Ja_JP-wide2.wav",
-      "keywords": "桜並木, 制限",
+      "filename": "ja-JP_Broadband_sample2.wav",
+      "keywords": "観光地, 水上バス",
       "speaker_labels": true
     },
     {
