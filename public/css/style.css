@@ -139,3 +139,5 @@ dialog, dd, dt {
     display: inline-block;
     margin-top: 0;
 }
+
+.smalltext { font-size: 10pt; }
