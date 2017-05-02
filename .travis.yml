@@ -14,7 +14,7 @@ env:
   - CF_API=https://api.ng.bluemix.net
   - CF_ORGANIZATION=WatsonPlatformServices
   - CF_SPACE=demos
-before_deploy: npm install -g cf-blue-green
+before_deploy: npm install -g https://github.com/germanattanasio/cf-blue-green
 deploy:
   skip_cleanup: true
   provider: script
