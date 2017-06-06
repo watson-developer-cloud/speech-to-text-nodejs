@@ -95,7 +95,7 @@ export default React.createClass({
     this.reset();
     this.setState({audioSource: 'mic'});
 
-    // The recognizeMicrophone() method is a helper method provided by the watson-speach package
+    // The recognizeMicrophone() method is a helper method provided by the watson-speech package
     // It sets up the microphone, converts and downsamples the audio, and then transcribes it over a WebSocket connection
     // It also provides a number of optional features, some of which are enabled by default:
     //  * enables object mode by default (options.objectMode)
