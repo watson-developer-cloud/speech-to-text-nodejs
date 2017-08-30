@@ -1,7 +1,16 @@
 import React from 'react';
-import Layout from './layout.jsx'
-import Demo from './demo.jsx'
+import PropTypes from 'prop-types';
+import Layout from './layout';
+import Demo from './demo';
 
-export default function index(props) {
-  return (<Layout bluemixAnalytics={props.BLUEMIX_ANALYTICS} ><Demo/></Layout>); // eslint-disable-line
+export default function Index(props) {
+  return (<Layout bluemixAnalytics={props.bluemixAnalytics} ><Demo /></Layout>);
 }
+
+Index.defaultProps = {
+  bluemixAnalytics: false,
+};
+
+Index.propTypes = {
+  bluemixAnalytics: PropTypes.bool,
+};

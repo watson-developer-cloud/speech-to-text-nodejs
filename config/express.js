@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-'use strict';
-
 // Module dependencies
 const express = require('express');
 const expressBrowserify = require('express-browserify');
 const path = require('path');
 
 
-module.exports = function(app) {
+module.exports = (app) => {
   app.enable('trust proxy');
   app.set('view engine', 'jsx');
   app.engine('jsx', require('express-react-views').createEngine());

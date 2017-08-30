@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+
 const express = require('express');
+
 const app = express();
 const watson = require('watson-developer-cloud');
 
@@ -24,21 +26,21 @@ require('./config/express')(app);
 const stt = new watson.SpeechToTextV1({
   // if left undefined, username and password to fall back to the SPEECH_TO_TEXT_USERNAME and
   // SPEECH_TO_TEXT_PASSWORD environment properties, and then to VCAP_SERVICES (on Bluemix)
-  //username: '',
-  //password: ''
+  // username: '',
+  // password: ''
 });
 
 const authService = new watson.AuthorizationV1(stt.getCredentials());
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.render('index', {
-    BLUEMIX_ANALYTICS: process.env.BLUEMIX_ANALYTICS,
+    bluemixAnalytics: !!process.env.BLUEMIX_ANALYTICS,
   });
 });
 
 // Get token using your credentials
-app.get('/api/token', function(req, res, next) {
-  authService.getToken(function(err, token) {
+app.get('/api/token', (req, res, next) => {
+  authService.getToken((err, token) => {
     if (err) {
       next(err);
     } else {
