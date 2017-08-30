@@ -39,7 +39,7 @@ export default function Layout(props) {
           {props.children}
         </div>
         <script type="text/javascript" src="scripts/bundle.js" />
-        { props.bluemixAnalytics ? <script type="text/javascript" src="js/analytics.js" /> : null }
+        { props.bluemixAnalytics ? <script type="text/javascript" src="scripts/analytics.js" /> : null }
       </body>
     </html>
   );
