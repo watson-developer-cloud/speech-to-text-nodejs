@@ -60,7 +60,7 @@
     "uglifyify": "^4.0.3",
     "watson-developer-cloud": "^2.39.0",
     "watson-react-components": "^0.6.10",
-    "watson-speech": "0.30.1",
+    "watson-speech": "0.34.0",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
