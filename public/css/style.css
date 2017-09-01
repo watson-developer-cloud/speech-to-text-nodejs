@@ -1,4 +1,8 @@
 /* general styles */
+#root {
+    margin-bottom: 3rem;
+}
+
 .base--hr {
     margin-top: 1em;
 }
