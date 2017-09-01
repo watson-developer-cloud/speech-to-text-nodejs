@@ -1,5 +1,6 @@
 import React from 'react';
-import {Icon} from 'watson-react-components';
+import PropTypes from 'prop-types';
+import { Icon } from 'watson-react-components';
 
 // reducer to convert a list of messages into a (flat) list of results
 function allResultsReducer(list, message) {
@@ -8,8 +9,8 @@ function allResultsReducer(list, message) {
 
 // reducer to extract all matched keywords from a list of results
 function keywordReducer(keywords, result) {
-  Object.keys(result.keywords_result || {}).forEach(k => {
-    keywords[k] = keywords[k] || [];
+  Object.keys(result.keywords_result || {}).forEach((k) => {
+    keywords[k] = keywords[k] || []; // eslint-disable-line
     keywords[k].push(...result.keywords_result[k]);
   });
   return keywords;
@@ -27,13 +28,16 @@ export function Keywords(props) {
     ? 'loader'
     : 'close';
   const spotted = getSpotted(props.messages);
-  const list = props.keywords.map(k => {
+  const list = props.keywords.map((k) => {
     const spottings = spotted[k];
     return (
       <li key={k} className="base--li">
-        <Icon type={spottings
-          ? 'success-o'
-          : notSpottedIcon} size="small"/> {' '}
+        <Icon
+          type={spottings
+            ? 'success-o'
+            : notSpottedIcon}
+          size="small"
+        /> {' '}
         <b>{k}</b>: {spottings
           ? 'Spotted - '
           : notSpotted}
@@ -53,9 +57,9 @@ export function Keywords(props) {
 }
 
 Keywords.propTypes = {
-  messages: React.PropTypes.array.isRequired,
-  keywords: React.PropTypes.array.isRequired,
-  isInProgress: React.PropTypes.bool.isRequired,
+  messages: PropTypes.array.isRequired, // eslint-disable-line
+  keywords: PropTypes.array.isRequired, // eslint-disable-line
+  isInProgress: PropTypes.bool.isRequired,
 };
 
 export function getKeywordsSummary(keywords, messages) {

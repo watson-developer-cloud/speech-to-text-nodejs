@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-'use strict';
-
 // security.js
-var secure = require('express-secure-only'),
-  rateLimit = require('express-rate-limit'),
-  helmet = require('helmet');
+const secure = require('express-secure-only');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
-module.exports = function(app) {
+module.exports = (app) => {
   app.enable('trust proxy');
 
   // 1. redirects http to https
@@ -36,8 +33,8 @@ module.exports = function(app) {
     delayMs: 0,
     max: 3,
     message: JSON.stringify({
-      error:'Too many requests, please try again in 30 seconds.',
-      code: 429
-    })
+      error: 'Too many requests, please try again in 30 seconds.',
+      code: 429,
+    }),
   }));
 };

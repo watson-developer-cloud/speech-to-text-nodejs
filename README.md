@@ -141,6 +141,6 @@ This data is collected from the `package.json` file in the sample application an
 [deploy_track_url]: https://github.com/cloudant-labs/deployment-tracker
 [cloud_foundry]: https://github.com/cloudfoundry/cli
 [getting_started]: https://www.ibm.com/watson/developercloud/doc/common/index.html
-[service_url]: http://www.ibm.com/watson/developercloud/speech-to-text.html
+[service_url]: https://www.ibm.com/watson/services/speech-to-text/
 [docs]: http://www.ibm.com/watson/developercloud/speech-to-text/
-[sign_up]: https://console.ng.bluemix.net/registration/
+[sign_up]: https://console.bluemix.net/registration/

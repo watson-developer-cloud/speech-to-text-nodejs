@@ -13,17 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+require('dotenv').config({ silent: true });
 
 if (!process.env.SPEECH_TO_TEXT_USERNAME) {
   console.log('Skipping integration tests because SPEECH_TO_TEXT_USERNAME is null');
   process.exit(0);
 }
 
-require('dotenv').config({silent: true});
-
 const spawn = require('child_process').spawn;
 
 const app = require('./app');
+
 const port = 3000;
 
 const server = app.listen(port, () => {
@@ -40,7 +40,7 @@ const server = app.listen(port, () => {
     casper.stdout.pipe(process.stdout);
 
     casper.on('error', (error) => {
-      console.log(`ERROR: ${error}`);
+      console.error(`ERROR: ${error}`);
       server.close(() => {
         process.exit(1);
       });
