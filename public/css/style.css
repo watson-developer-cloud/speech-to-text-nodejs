@@ -109,6 +109,10 @@ dialog, dd, dt {
     border-color: #E71D32
 }
 
+.speaker-labels {
+    margin-left: 0px;
+}
+
 /* Speaker View styles */
 .speaker-labels dt {
     font-weight: bold;
