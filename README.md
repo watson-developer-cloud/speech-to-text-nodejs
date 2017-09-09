@@ -12,9 +12,9 @@ Node.js is also used to provide the browser client's authentication token.
 
 1. You need a Bluemix account. If you don't have one, [sign up][sign_up].
 
-1. Download and install the [Cloud-foundry CLI][cloud_foundry] tool if you haven't already.
+2. Download and install the [Cloud-foundry CLI][cloud_foundry] tool if you haven't already.
 
-1. Edit the `manifest.yml` file and change `<application-name>` to something unique. The name you use determines the URL of your application. For example, `<application-name>.mybluemix.net`.
+3. Edit the `manifest.yml` file and change `<application-name>` to something unique. The name you use determines the URL of your application. For example, `<application-name>.mybluemix.net`.
 
   ```yaml
   applications:
@@ -26,14 +26,14 @@ Node.js is also used to provide the browser client's authentication token.
     memory: 512M
   ```
 
-1. Connect to Bluemix with the command line tool.
+4. Connect to Bluemix with the command line tool.
 
   ```sh
   cf api https://api.ng.bluemix.net
   cf login
   ```
 
-1. Create and retrieve service keys to access the [Speech to Text][service_url] service:
+5. Create and retrieve service keys to access the [Speech to Text][service_url] service:
 
   ```none
   cf create-service speech_to_text standard my-stt-service
@@ -41,7 +41,7 @@ Node.js is also used to provide the browser client's authentication token.
   cf service-key my-stt-service myKey
   ```
 
-1. Create a `.env` file in the root directory by copying the sample `.env.example` file using the following command:
+6. Create a `.env` file in the root directory by copying the sample `.env.example` file using the following command:
 
   ```none
   cp .env.example .env
@@ -55,21 +55,21 @@ Node.js is also used to provide the browser client's authentication token.
   SPEECH_TO_TEXT_PASSWORD=<password>
   ```
 
-1. Install the dependencies you application need:
+7. Install the dependencies you application need:
 
   ```none
   npm install
   ```
 
-1. Start the application locally:
+8. Start the application locally:
 
   ```none
   npm start
   ```
 
-1. Point your browser to [http://localhost:3000](http://localhost:3000).
+9. Point your browser to [http://localhost:3000](http://localhost:3000).
 
-1. **Optional:** Push the application to Bluemix:
+10. **Optional:** Push the application to Bluemix:
 
   ```none
   cf push
