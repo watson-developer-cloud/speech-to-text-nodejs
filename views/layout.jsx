@@ -32,7 +32,7 @@ export default function Layout(props) {
           apiReference="http://www.ibm.com/watson/developercloud/speech-to-text/api"
           version="GA"
           serviceIcon="/images/stt.svg"
-          startInBluemix="https://console.bluemix.net/registration/?target=/catalog/services/speech-to-text/"
+          startInBluemix="https://console.bluemix.net/registration?target=%2Fdeveloper%2Fwatson%2Fcreate-project%3Fservices%3Dspeech-to-text%26action%3Dcreate%26cm_mmc%3DOSocial_Tumblr-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmc%3DOSocial_Tumblr-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmca1%3D000000OF%26cm_mmca2%3D10000409"
           description={DESCRIPTION}
         />
         <div id="root">
