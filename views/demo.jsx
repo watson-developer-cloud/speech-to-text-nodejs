@@ -343,11 +343,14 @@ export default React.createClass({
   handleError(err, extra) {
     console.error(err, extra);
     if (err.name === 'UNRECOGNIZED_FORMAT') {
-      err = 'Unable to determine content type from file header; only mp3, wav, flac, and ogg/opus are supported. Please choose a different file.';
+      err = 'Unable to determine content type from file name or header; mp3, wav, flac, ogg, opus, and webm are supported. Please choose a different file.';
     } else if (err.name === 'NotSupportedError' && this.state.audioSource === 'mic') {
       err = 'This browser does not support microphone input.';
     } else if (err.message === '(\'UpsamplingNotAllowed\', 8000, 16000)') {
       err = 'Please select a narrowband voice model to transcribe 8KHz audio files.';
+    } else if (err.message === 'Invalid constraint') {
+      // iPod Touch does this on iOS 11 - there is a microphone, but Safari claims there isn't
+      err = 'Unable to access microphone';
     }
     this.setState({ error: err.message || err });
   },
