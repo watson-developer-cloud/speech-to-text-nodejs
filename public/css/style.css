@@ -1,4 +1,8 @@
 /* general styles */
+#root {
+    margin-bottom: 3rem;
+}
+
 .base--hr {
     margin-top: 1em;
 }
@@ -107,6 +111,10 @@ dialog, dd, dt {
     background-color: #E71D32;
     color: white;
     border-color: #E71D32
+}
+
+.speaker-labels {
+    margin-left: 0px;
 }
 
 /* Speaker View styles */
