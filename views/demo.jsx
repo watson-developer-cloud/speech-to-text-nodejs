@@ -216,12 +216,12 @@ export default React.createClass({
 
     // grab raw messages from the debugging events for display on the JSON tab
     stream.recognizeStream
-      .on('message', (frame, json) => this.handleRawdMessage({ sent: false, frame, json }))
-      .on('send-json', json => this.handleRawdMessage({ sent: true, json }))
-      .once('send-data', () => this.handleRawdMessage({
+      .on('message', (frame, json) => this.handleRawMessage({ sent: false, frame, json }))
+      .on('send-json', json => this.handleRawMessage({ sent: true, json }))
+      .once('send-data', () => this.handleRawMessage({
         sent: true, binary: true, data: true, // discard the binary data to avoid waisting memory
       }))
-      .on('close', (code, message) => this.handleRawdMessage({ close: true, code, message }));
+      .on('close', (code, message) => this.handleRawMessage({ close: true, code, message }));
 
     // ['open','close','finish','end','error', 'pipe'].forEach(e => {
     //     stream.recognizeStream.on(e, console.log.bind(console, 'rs event: ', e));
@@ -229,7 +229,7 @@ export default React.createClass({
     // });
   },
 
-  handleRawdMessage(msg) {
+  handleRawMessage(msg) {
     this.setState({ rawMessages: this.state.rawMessages.concat(msg) });
   },
 
