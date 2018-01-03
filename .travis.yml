@@ -10,16 +10,16 @@ cache:
   - node_modules
 env:
   global:
-  - CF_APP=speech-to-text-demo
-  - CF_API=https://api.ng.bluemix.net
-  - CF_ORGANIZATION=WatsonPlatformServices
-  - CF_SPACE=demos
-before_deploy: npm install -g https://github.com/germanattanasio/cf-blue-green
+  - BX_APP=speech-to-text-demo
+  - BX_API=https://api.ng.bluemix.net
+  - BX_ORGANIZATION=WatsonPlatformServices
+  - BX_SPACE=demos
+before_deploy: npm install -g https://github.com/andresfvilla/bx-blue-green
 deploy:
   skip_cleanup: true
   provider: script
   script:
-  - cf-blue-green-travis
+  - bx-blue-green-travis
   on:
     branch: master
     repo: watson-developer-cloud/speech-to-text-nodejs
