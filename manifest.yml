@@ -1,6 +1,6 @@
 ---
 declared-services:
-  my-stt-service:
+  speech-tutorial-speech-to--1517182282274:
     label: speech_to_text
     plan: standard
 applications:
@@ -9,4 +9,4 @@ applications:
   command: npm start
   memory: 512M
   services:
-  - my-stt-service
+  - speech-tutorial-speech-to--1517182282274
