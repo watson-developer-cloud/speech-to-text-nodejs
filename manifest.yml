@@ -1,12 +1,8 @@
 ---
-declared-services:
-  speech-tutorial-speech-to--1517182282274:
-    label: speech_to_text
-    plan: standard
 applications:
-- name: speech-to-text-demo
-  path: .
+- services:
+  - stt-tjbot
+  name: speech-to-text-tjbot
   command: npm start
+  path: .
   memory: 512M
-  services:
-  - speech-tutorial-speech-to--1517182282274
