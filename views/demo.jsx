@@ -311,7 +311,23 @@ export default React.createClass({
 
   // cleans up the keywords string into an array of individual, trimmed, non-empty keywords/phrases
   getKeywordsArr() {
+    console.log(this.state.keywords.split(',').map(k => k.trim()).filter(k => k));
     return this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
+  },
+
+  // cleans up the keywords string and produces a unique list of keywords
+  getKeywordsUnique() {
+    var arr = this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
+    var u = {}, a = [];
+    for(var i = 0, l = arr.length; i < l; ++i){
+        if(!u.hasOwnProperty(arr[i])) {
+            a.push(arr[i]);
+            u[arr[i]] = 1;
+        }
+    }
+    console.log(a.join());
+
+    return a.join()
   },
 
   getFinalResults() {
@@ -457,7 +473,7 @@ export default React.createClass({
           <div className="column">
 
             <p>Keywords to spot: <input
-              value={this.state.keywords}
+              value={this.getKeywordsUnique()}
               onChange={this.handleKeywordsChange}
               type="text"
               id="keywords"
