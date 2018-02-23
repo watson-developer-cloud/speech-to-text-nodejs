@@ -11,26 +11,26 @@
       "speaker_labels": false
     }
   ],
-  "en-UK_BroadbandModel": [
+  "en-GB_BroadbandModel": [
     {
-      "filename": "en-UK_Broadband_sample1.wav",
+      "filename": "en-GB_Broadband_sample1.wav",
       "keywords": "important industry, affordable travel, business",
       "speaker_labels": false
     },
     {
-      "filename": "en-UK_Broadband_sample2.wav",
+      "filename": "en-GB_Broadband_sample2.wav",
       "keywords": "consumer, quality, best practice",
       "speaker_labels": false
     }
   ],
-  "en-UK_NarrowbandModel": [
+  "en-GB_NarrowbandModel": [
     {
-      "filename": "en-UK_Narrowband_sample1.wav",
+      "filename": "en-GB_Narrowband_sample1.wav",
       "keywords": "heavy rain, northwest, UK",
       "speaker_labels": false
     },
     {
-      "filename": "en-UK_Narrowband_sample2.wav",
+      "filename": "en-GB_Narrowband_sample2.wav",
       "keywords": "Watson, sources across social media",
       "speaker_labels": false
     }
@@ -144,6 +144,30 @@
     {
       "filename": "sample-Ja_JP-narrow4.wav",
       "keywords": "申し込み , 今回 , 通帳",
+      "speaker_labels": false
+    }
+  ],
+  "ko-KR_BroadbandModel": [
+    {
+      "filename": "ko-KR_BroadbandModel_sample1.wav",
+      "keywords": "keyword1, keyword2, keyword3",
+      "speaker_labels": false
+    },
+    {
+      "filename": "ko-KR_BroadbandModel_sample2.wav",
+      "keywords": "keyword1, keyword2, keyword3",
+      "speaker_labels": false
+    }
+  ],
+  "ko-KR_NarrowbandModel": [
+    {
+      "filename": "ko-KR_NarrowbandModel_sample1.wav",
+      "keywords": "keyword1, keyword2, keyword3",
+      "speaker_labels": false
+    },
+    {
+      "filename": "ko-KR_NarrowbandModel_sample2.wav",
+      "keywords": "keyword1, keyword2, keyword3",
       "speaker_labels": false
     }
   ],
