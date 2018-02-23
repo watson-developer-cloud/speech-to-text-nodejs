@@ -150,24 +150,24 @@
   "ko-KR_BroadbandModel": [
     {
       "filename": "ko-KR_BroadbandModel_sample1.wav",
-      "keywords": "keyword1, keyword2, keyword3",
+      "keywords": "네 명, 숙박, 호텔, 싱글룸, 두개, 예약",
       "speaker_labels": false
     },
     {
       "filename": "ko-KR_BroadbandModel_sample2.wav",
-      "keywords": "keyword1, keyword2, keyword3",
+      "keywords": "정오, 입금 완료, 당일 배송, 몇 시 수령",
       "speaker_labels": false
     }
   ],
   "ko-KR_NarrowbandModel": [
     {
       "filename": "ko-KR_NarrowbandModel_sample1.wav",
-      "keywords": "keyword1, keyword2, keyword3",
+      "keywords": "생명보험사, 상담원, 본인 확인, 성함, 생년월일, 휴대폰 번호",
       "speaker_labels": false
     },
     {
       "filename": "ko-KR_NarrowbandModel_sample2.wav",
-      "keywords": "keyword1, keyword2, keyword3",
+      "keywords": "본인 확인, 개인 정보, 성함, 생년월일, 휴대폰 번호",
       "speaker_labels": false
     }
   ],
