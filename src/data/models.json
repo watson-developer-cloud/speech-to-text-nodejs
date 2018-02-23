@@ -86,7 +86,7 @@
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
-      "speaker_labels": true
+      "speaker_labels": false
     },
     "description": "Korean narrowband model. "
   },
