@@ -69,6 +69,28 @@
     "description": "Japanese broadband model."
   },
   {
+    "name": "ko-KR_BroadbandModel",
+    "language": "ko-KR",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ko-KR_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": false
+    },
+    "description": "Korean broadband model."
+  },
+  {
+    "name": "ko-KR_NarrowbandModel",
+    "language": "ko-KR",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ko-KR_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": true
+    },
+    "description": "Korean narrowband model. "
+  },
+  {
     "name": "pt-BR_NarrowbandModel",
     "language": "pt-BR",
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel",
@@ -113,15 +135,15 @@
     "description": "Mandarin narrowband model."
   },
   {
-    "name": "en-UK_BroadbandModel",
-    "language": "en-UK",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_BroadbandModel",
+    "name": "en-GB_BroadbandModel",
+    "language": "en-GB",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-GB_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
       "speaker_labels": false
     },
-    "description": "UK English broadband model."
+    "description": "GB English broadband model."
   },
   {
     "name": "es-ES_NarrowbandModel",
@@ -146,14 +168,14 @@
     "description": "US English broadband model."
   },
   {
-    "name": "en-UK_NarrowbandModel",
-    "language": "en-UK",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-UK_NarrowbandModel",
+    "name": "en-GB_NarrowbandModel",
+    "language": "en-GB",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-GB_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
       "speaker_labels": false
     },
-    "description": "UK English narrowband model."
+    "description": "GB English narrowband model."
   }
 ]
