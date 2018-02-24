@@ -54,7 +54,7 @@ export default React.createClass({
     this.setState({
       settingsAtStreamStart: {
         model: this.state.model,
-        keywords: this.getKeywordsArr(),
+        keywords: this.getKeywordsArrUnique(),
         speakerLabels: this.state.speakerLabels,
       },
     });
@@ -70,7 +70,7 @@ export default React.createClass({
   },
 
   getRecognizeOptions(extra) {
-    const keywords = this.getKeywordsArr();
+    const keywords = this.getKeywordsArrUnique();
     return Object.assign({
       // formats phone numbers, currency, etc. (server-side)
       token: this.state.token,
@@ -311,12 +311,11 @@ export default React.createClass({
 
   // cleans up the keywords string into an array of individual, trimmed, non-empty keywords/phrases
   getKeywordsArr() {
-    console.log(this.state.keywords.split(',').map(k => k.trim()).filter(k => k));
     return this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
   },
 
   // cleans up the keywords string and produces a unique list of keywords
-  getKeywordsUnique() {
+  getKeywordsArrUnique() {
     var arr = this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
     var u = {}, a = [];
     for(var i = 0, l = arr.length; i < l; ++i){
@@ -325,9 +324,7 @@ export default React.createClass({
             u[arr[i]] = 1;
         }
     }
-    console.log(a.join());
-
-    return a.join()
+    return a;
   },
 
   getFinalResults() {
@@ -473,7 +470,7 @@ export default React.createClass({
           <div className="column">
 
             <p>Keywords to spot: <input
-              value={this.getKeywordsUnique()}
+              value={this.getKeywordsArrUnique().join()}
               onChange={this.handleKeywordsChange}
               type="text"
               id="keywords"
