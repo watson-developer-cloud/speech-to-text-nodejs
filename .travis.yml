@@ -14,7 +14,7 @@ env:
   - BX_API=https://api.ng.bluemix.net
   - BX_ORGANIZATION=WatsonPlatformServices
   - BX_SPACE=demos
-before_deploy: npm install -g https://github.com/andresfvilla/bx-blue-green
+before_deploy: npm install -g bx-blue-green
 deploy:
   skip_cleanup: true
   provider: script
