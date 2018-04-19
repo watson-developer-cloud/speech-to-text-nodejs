@@ -13,7 +13,7 @@
 //
 // @see http://casperjs.readthedocs.org/en/latest
 
-casper.test.begin('Speech to Text', 24, function suite(test) {
+casper.test.begin('Speech to Text', 23, function suite(test) {
   const baseHost = 'http://localhost:3000';
 
   function testForButtons() {
