@@ -38,7 +38,6 @@ casper.test.begin('Speech to Text', 24, function suite(test) {
     casper.test.comment('Testing the Keywords to spot box');
 
     test.assertExists('#keywords', 'displays Keywords to spot');
-    test.assertSelectorHasText('#keywords', 'IBM, admired, AI, transformations, cognitive, Artificial Intelligence, data, predict, learn', 'Changing the world is found');
   }
 
   function testForTabpanels() {
