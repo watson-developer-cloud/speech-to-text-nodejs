@@ -84,22 +84,22 @@
   "es-ES_NarrowbandModel": [
     {
       "filename": "es-ES_Narrowband_sample1.wav",
-      "keywords": "MÉXICO, GRECIA, DICIEMBRE",
+      "keywords": "méxico, grecia, diciembre",
       "speaker_labels": true
     },
     {
       "filename": "es-ES_Narrowband_sample2.wav",
-      "keywords": "ROBERTO, MADRID, FIN DE SEMANA",
+      "keywords": "roberto, madrid, fin de semana",
       "speaker_labels": true
     },
     {
       "filename": "Es_ES_spk24_8khz.wav",
-      "keywords": "QUIERO PREGUNTARLE, EXISTEN PRODUCTOS",
+      "keywords": "quiero preguntarle, existen productos",
       "speaker_labels": false
     },
     {
       "filename": "Es_ES_spk19_8khz.wav",
-      "keywords": "PREPARANDO, REGALOS PARA LA FAMILIA, SOBRINOS",
+      "keywords": "preparando, regalos para la familia, sobrinos",
       "speaker_labels": false
     }
   ],
