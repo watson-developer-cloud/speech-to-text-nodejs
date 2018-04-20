@@ -72,24 +72,24 @@
   "es-ES_BroadbandModel": [
     {
       "filename": "es-ES_Broadband_sample1.wav",
-      "keywords": "roberto, pedro",
+      "keywords": "Roberto, Pedro",
       "speaker_labels": true
     },
     {
       "filename": "es-ES_Broadband_sample2.wav",
-      "keywords": "méxico, grecia",
+      "keywords": "México, Grecia",
       "speaker_labels": true
     }
   ],
   "es-ES_NarrowbandModel": [
     {
       "filename": "es-ES_Narrowband_sample1.wav",
-      "keywords": "méxico, grecia, diciembre",
+      "keywords": "México, Grecia, diciembre",
       "speaker_labels": true
     },
     {
       "filename": "es-ES_Narrowband_sample2.wav",
-      "keywords": "roberto, madrid, fin de semana",
+      "keywords": "Roberto, Madrid, fin de semana",
       "speaker_labels": true
     },
     {
