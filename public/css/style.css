@@ -149,3 +149,8 @@ dialog, dd, dt {
 }
 
 .smalltext { font-size: 10pt; }
+
+.gdpr-info {
+	font-size: 10pt;
+	margin-top: 1em;
+}
