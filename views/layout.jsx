@@ -4,6 +4,7 @@ import { Header, Jumbotron } from 'watson-react-components';
 
 // eslint-disable-mnext-lin =
 const DESCRIPTION = 'The IBM Watson Speech to Text service uses speech recognition capabilities to convert Arabic, English, Spanish, French, Brazilian Portuguese, Japanese, and Mandarin speech into text.';
+const GDPR_INFO = 'This system is for demonstration purposes only and is not intended to process Personal Data. No Personal Data is to be entered into this system as it may not have the necessary controls in place to meet the requirements of the General Data Protection Regulation (EU) 2016/679';
 
 export default function Layout(props) {
   return (
@@ -23,7 +24,6 @@ export default function Layout(props) {
           mainBreadcrumbsUrl="https://www.ibm.com/watson/services/speech-to-text/"
           subBreadcrumbs="Speech to Text Demo"
           subBreadcrumbsUrl="https://speech-to-text-demo.mybluemix.net"
-
         />
         <Jumbotron
           serviceName="Speech to Text"
@@ -35,6 +35,11 @@ export default function Layout(props) {
           startInBluemix="https://console.bluemix.net/registration?target=%2Fdeveloper%2Fwatson%2Fcreate-project%3Fservices%3Dspeech_to_text%26action%3Dcreate%26hideTours%3Dtrue%26cm_mmc%3DOSocial_Tumblr-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmc%3DOSocial_Tumblr-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmca1%3D000000OF%26cm_mmca2%3D10000409"
           description={DESCRIPTION}
         />
+
+        <div className="_container _container_large gdpr-info">
+          {GDPR_INFO}
+        </div>
+        
         <div id="root">
           {props.children}
         </div>
