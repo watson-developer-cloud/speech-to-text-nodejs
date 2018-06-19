@@ -39,12 +39,11 @@ export default function Layout(props) {
         <div className="_container _container_large gdpr-info">
           {GDPR_INFO}
         </div>
-        
         <div id="root">
           {props.children}
         </div>
         <script type="text/javascript" src="scripts/bundle.js" />
-        { props.bluemixAnalytics ? <script type="text/javascript" src="scripts/analytics.js" /> : null }
+        { props.bluemixAnalytics ? <script type="text/javascript" src="https://cdn.rawgit.com/watson-developer-cloud/watson-developer-cloud.github.io/master/analytics.js" /> : null }
       </body>
     </html>
   );

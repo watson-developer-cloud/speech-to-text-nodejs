@@ -20,7 +20,7 @@ if (!process.env.SPEECH_TO_TEXT_USERNAME) {
   process.exit(0);
 }
 
-const spawn = require('child_process').spawn;
+const spawn = require('child_process').spawn; // eslint-disable-line
 
 const app = require('./app');
 
