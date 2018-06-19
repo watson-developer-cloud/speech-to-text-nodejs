@@ -7,11 +7,9 @@ const request = require('supertest');
 const nock = require('nock');
 
 describe('offline tests', () => {
-  describe('server', function server() {
-    this.timeout(10000);
+  describe('server', function server() { // eslint-disable-line
 
     it('should return HTML for GET /', (done) => {
-      this.slow(3000);
       request(app).get('/').expect(200, /<html/, done);
     });
 
@@ -35,9 +33,5 @@ describe('offline tests', () => {
 
       request(app).get('/api/token').expect(200, fakeToken, done);
     });
-  });
-
-  describe('client', () => {
-    // todo: add a few frontend code tests
   });
 });
