@@ -32,7 +32,7 @@
     "test-integration": "casperjs test ./test/integration/test.*.js",
     "test-integration-runner": "NODE_ENV=test node casper-runner.js",
     "test": "npm run lint && npm run test-unit && npm run test-integration-runner",
-    "test-unit": "jest test/unit --coverage",
+    "test-unit": "mocha test/unit/ --exit",
     "lint": "eslint .",
     "autofix": "eslint --fix .",
     "codecov": "npm run test && (codecov || true)"
@@ -70,7 +70,7 @@
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.9.1",
-    "jest": "^23.1.0",
+    "mocha": "^5.2.0",
     "nock": "^9.3.3",
     "phantomjs-prebuilt": "^2.1.16",
     "supertest": "^3.1.0"
