@@ -18,29 +18,36 @@
 const express = require('express');
 
 const app = express();
-const watson = require('watson-developer-cloud');
+const SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
+const AuthorizationV1 = require('watson-developer-cloud/authorization/v1');
+const IamTokenManagerV1 = require('watson-developer-cloud/iam-token-manager/v1');
 
 // Bootstrap application settings
 require('./config/express')(app);
 
-const stt = new watson.SpeechToTextV1({
-  // if left undefined, username and password to fall back to the SPEECH_TO_TEXT_USERNAME and
-  // SPEECH_TO_TEXT_PASSWORD environment properties, and then to VCAP_SERVICES (on Bluemix)
-  // username: '',
-  // password: ''
-});
+// Create the token manager
+let tokenManager;
 
-const authService = new watson.AuthorizationV1(stt.getCredentials());
-
-app.get('/', (req, res) => {
-  res.render('index', {
-    bluemixAnalytics: !!process.env.BLUEMIX_ANALYTICS,
+if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIKEY !== '') {
+  tokenManager = new IamTokenManagerV1({
+    iamApikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
+    iam_url: 'https://iam.bluemix.net/identity/token',
+    url: process.env.SPEECH_TO_TEXT_URL || '<url>',
   });
-});
+} else {
+  const speechService = new SpeechToTextV1({
+    username: process.env.SPEECH_TO_TEXT_USERNAME || '<username>',
+    password: process.env.SPEECH_TO_TEXT_PASSWORD || '<password>',
+    url: process.env.SPEECH_TO_TEXT_URL || '<url>',
+  });
+  tokenManager = new AuthorizationV1(speechService.getCredentials());
+}
+
+app.get('/', (req, res) => res.render('index'));
 
 // Get token using your credentials
 app.get('/api/token', (req, res, next) => {
-  authService.getToken((err, token) => {
+  tokenManager.getToken((err, token) => {
     if (err) {
       next(err);
     } else {
