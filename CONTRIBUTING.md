@@ -57,7 +57,7 @@ By making a contribution to this project, I certify that:
 
 ## Tests
 
-Ideally, we'd like to see both unit and innervation tests on each method.
+Ideally, we'd like to see both unit and integration tests on each method.
 (Unit tests do not actually connect to the Watson service, integration tests do.)
 
 Out of the box, `npm test` runs linting and unit tests, but skips the integration tests,
