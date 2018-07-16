@@ -22,7 +22,7 @@ deploy:
   - bx-blue-green-travis
   on:
     branch: master
-    repo: watson-developer-cloud/assistant-simple
+    repo: watson-developer-cloud/speech-to-text-nodejs
 - provider: script
   skip_cleanup: true
   script: npx semantic-release
