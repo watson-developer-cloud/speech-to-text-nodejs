@@ -30,7 +30,8 @@ function nullImterim(msg) {
     // some messages can have both results (final or interim) and speaker labels
     // in that case we want to show it for the speaker_labels, even if the result is interim
     return msg;
-  } else if (msg.results && msg.results.length && !msg.results[0].final) {
+  }
+  if (msg.results && msg.results.length && !msg.results[0].final) {
     return null;
   }
   return msg;
@@ -85,9 +86,9 @@ export default React.createClass({
   },
 
   handleInterimChange() {
-    this.setState({
-      interim: !this.state.interim,
-    });
+    this.setState(preState => ({
+      interim: !preState.interim,
+    }));
   },
 
   render() {

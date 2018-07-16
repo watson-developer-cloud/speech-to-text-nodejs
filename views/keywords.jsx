@@ -21,14 +21,15 @@ function getSpotted(messages) {
 }
 
 export function Keywords(props) {
-  const notSpotted = props.isInProgress
+  const { isInProgress, messages, keywords } = props;
+  const notSpotted = isInProgress
     ? 'Not yet spotted.'
     : 'Not spotted.';
-  const notSpottedIcon = props.isInProgress
+  const notSpottedIcon = isInProgress
     ? 'loader'
     : 'close';
-  const spotted = getSpotted(props.messages);
-  const list = props.keywords.map((k) => {
+  const spotted = getSpotted(messages);
+  const list = keywords.map((k) => {
     const spottings = spotted[k];
     return (
       <li key={k} className="base--li">
