@@ -6,11 +6,13 @@ import { Header, Jumbotron } from 'watson-react-components';
 const DESCRIPTION = 'The IBM Watson Speech to Text service uses speech recognition capabilities to convert Arabic, English, Spanish, French, Brazilian Portuguese, Japanese, and Mandarin speech into text.';
 const GDPR_INFO = 'This system is for demonstration purposes only and is not intended to process Personal Data. No Personal Data is to be entered into this system as it may not have the necessary controls in place to meet the requirements of the General Data Protection Regulation (EU) 2016/679';
 
-export default function Layout(props) {
+export default function Layout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>Speech to Text Demo</title>
+        <title>
+          Speech to Text Demo
+        </title>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -40,10 +42,10 @@ export default function Layout(props) {
           {GDPR_INFO}
         </div>
         <div id="root">
-          {props.children}
+          {children}
         </div>
         <script type="text/javascript" src="scripts/bundle.js" />
-        { props.bluemixAnalytics ? <script type="text/javascript" src="https://cdn.rawgit.com/watson-developer-cloud/watson-developer-cloud.github.io/master/analytics.js" /> : null }
+        <script type="text/javascript" src="https://cdn.rawgit.com/watson-developer-cloud/watson-developer-cloud.github.io/master/analytics.js" />
       </body>
     </html>
   );
@@ -51,5 +53,4 @@ export default function Layout(props) {
 
 Layout.propTypes = {
   children: PropTypes.object.isRequired, // eslint-disable-line
-  bluemixAnalytics: PropTypes.bool.isRequired,
 };

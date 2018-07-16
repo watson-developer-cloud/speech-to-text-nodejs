@@ -45,15 +45,20 @@ export default React.createClass({
   },
 
   render() {
-    const models = this.state.models.sort((a, b) => a.description > b.description);
-    const options = models.map(m => (<option value={m.name} key={m.name}>{m.description.replace(/\.$/, '')}
-      {' '}
-      ({m.rate / 1000}KHz)</option>));
+    const { models } = this.state;
+    const { model } = this.props;
+    const options = models
+      .sort((a, b) => a.description > b.description)
+      .map(m => (
+        <option value={m.name} key={m.name}>{m.description.replace(/\.$/, '')}
+          {' '}
+        ({m.rate / 1000}KHz)
+        </option>));
 
     return (
       <select
         name="model"
-        value={this.props.model}
+        value={model}
         onChange={this.handleChange}
         className="base--select"
       >

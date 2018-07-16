@@ -1,7 +1,9 @@
 /* eslint no-param-reassign: 0 */
 import React from 'react';
 import Dropzone from 'react-dropzone';
-import { Icon, Tabs, Pane, Alert } from 'watson-react-components';
+import {
+  Icon, Tabs, Pane, Alert,
+} from 'watson-react-components';
 import recognizeMicrophone from 'watson-speech/speech-to-text/recognize-microphone';
 import recognizeFile from 'watson-speech/speech-to-text/recognize-file';
 
@@ -51,11 +53,12 @@ export default React.createClass({
      * transcription was started. So, this stores those values in a settingsAtStreamStart object.
      */
   captureSettings() {
+    const { model, speakerLabels } = this.state;
     this.setState({
       settingsAtStreamStart: {
-        model: this.state.model,
+        model,
         keywords: this.getKeywordsArrUnique(),
-        speakerLabels: this.state.speakerLabels,
+        speakerLabels,
       },
     });
   },
@@ -230,11 +233,13 @@ export default React.createClass({
   },
 
   handleRawMessage(msg) {
-    this.setState({ rawMessages: this.state.rawMessages.concat(msg) });
+    const { rawMessages } = this.state;
+    this.setState({ rawMessages: rawMessages.concat(msg) });
   },
 
   handleFormattedMessage(msg) {
-    this.setState({ formattedMessages: this.state.formattedMessages.concat(msg) });
+    const { formattedMessages } = this.state;
+    this.setState({ formattedMessages: formattedMessages.concat(msg) });
   },
 
   handleTranscriptEnd() {
@@ -277,9 +282,11 @@ export default React.createClass({
 
   handleModelChange(model) {
     this.reset();
-    this.setState({ model,
+    this.setState({
+      model,
       keywords: this.getKeywords(model),
-      speakerLabels: this.supportsSpeakerLabels(model) });
+      speakerLabels: this.supportsSpeakerLabels(model),
+    });
 
     // clear the microphone narrowband error if it's visible and a broadband model was just selected
     if (this.state.error === ERR_MIC_NARROWBAND && !this.isNarrowBand(model)) {
@@ -300,9 +307,7 @@ export default React.createClass({
   },
 
   handleSpeakerLabelsChange() {
-    this.setState({
-      speakerLabels: !this.state.speakerLabels,
-    });
+    this.setState(prevState => ({ speakerLabels: !prevState.speakerLabels }));
   },
 
   handleKeywordsChange(e) {
@@ -316,20 +321,16 @@ export default React.createClass({
 
   // cleans up the keywords string and produces a unique list of keywords
   getKeywordsArrUnique() {
-    var arr = this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
-    var u = {}, a = [];
-    for(var i = 0, l = arr.length; i < l; ++i){
-        if(!u.hasOwnProperty(arr[i])) {
-            a.push(arr[i]);
-            u[arr[i]] = 1;
-        }
-    }
-    return a;
+    return this.state.keywords
+      .split(',')
+      .map(k => k.trim())
+      .filter(k => k)
+      .filter((value, index, self) => self.indexOf(value) === index);
   },
 
   getFinalResults() {
-    return this.state.formattedMessages.filter(r => r.results &&
-      r.results.length && r.results[0].final);
+    return this.state.formattedMessages.filter(r => r.results
+      && r.results.length && r.results[0].final);
   },
 
   getCurrentInterimResult() {
@@ -369,35 +370,41 @@ export default React.createClass({
   },
 
   render() {
-    const buttonsEnabled = !!this.state.token;
+    const {
+      token, audioSource, error, model, speakerLabels, settingsAtStreamStart,
+      formattedMessages, rawMessages,
+    } = this.state;
+
+    const buttonsEnabled = !!token;
     const buttonClass = buttonsEnabled
       ? 'base--button'
       : 'base--button base--button_black';
 
     let micIconFill = '#000000';
     let micButtonClass = buttonClass;
-    if (this.state.audioSource === 'mic') {
+    if (audioSource === 'mic') {
       micButtonClass += ' mic-active';
       micIconFill = '#FFFFFF';
     } else if (!recognizeMicrophone.isSupported) {
       micButtonClass += ' base--button_black';
     }
 
-    const err = this.state.error
+    const err = error
       ? (
         <Alert type="error" color="red">
-          <p className="base--p">{this.state.error}</p>
+          <p className="base--p">
+            {error}
+          </p>
         </Alert>
       )
       : null;
 
     const messages = this.getFinalAndLatestInterimResult();
-    const micBullet = (typeof window !== 'undefined' && recognizeMicrophone.isSupported) ?
-      <li className="base--li">Use your microphone to record audio.</li> :
-      <li className="base--li base--p_light">Use your microphone to record audio. (Not supported in current browser)</li>;// eslint-disable-line
+    const micBullet = (typeof window !== 'undefined' && recognizeMicrophone.isSupported)
+      ? <li className="base--li">Use your microphone to record audio.</li>
+      : <li className="base--li base--p_light">Use your microphone to record audio. (Not supported in current browser)</li>;// eslint-disable-line
 
     return (
-
       <Dropzone
         onDropAccepted={this.handleUserFile}
         onDropRejected={this.handleUserFileRejection}
@@ -415,7 +422,9 @@ export default React.createClass({
         <div className="drop-info-container">
           <div className="drop-info">
             <h1>Drop an audio file here.</h1>
-            <p>{'Watson Speech to Text supports .mp3, .mpeg, .wav, .opus, and .flac files up to 200mb.'}</p>
+            <p>Watson Speech to Text supports .mp3, .mpeg, .wav, .opus, and
+              .flac files up to 200mb.
+            </p>
           </div>
         </div>
 
@@ -423,12 +432,13 @@ export default React.createClass({
 
         <ul className="base--ul">
           {micBullet}
-          <li className="base--li">{'Upload pre-recorded audio (.mp3, .mpeg, .wav, .flac, or .opus only).'}</li>
+          <li className="base--li">'Upload pre-recorded audio (.mp3, .mpeg, .wav, .flac, or .opus only).</li>
           <li className="base--li">Play one of the sample audio files.*</li>
         </ul>
 
         <div className="smalltext">
-          {'*Both US English broadband sample audio files are covered under the Creative Commons license.'}
+          *Both US English broadband sample audio files are covered under the
+          Creative Commons license.
         </div>
 
         <div style={{
@@ -446,8 +456,8 @@ export default React.createClass({
 
             <p>Voice Model:
               <ModelDropdown
-                model={this.state.model}
-                token={this.state.token}
+                model={model}
+                token={token}
                 onChange={this.handleModelChange}
               />
             </p>
@@ -456,7 +466,7 @@ export default React.createClass({
               <input
                 className="base--checkbox"
                 type="checkbox"
-                checked={this.state.speakerLabels}
+                checked={speakerLabels}
                 onChange={this.handleSpeakerLabelsChange}
                 disabled={!this.supportsSpeakerLabels()}
                 id="speaker-labels"
@@ -476,7 +486,8 @@ export default React.createClass({
               id="keywords"
               placeholder="Type comma separated keywords here (optional)"
               className="base--input"
-            /></p>
+            />
+            </p>
 
           </div>
         </div>
@@ -484,20 +495,20 @@ export default React.createClass({
 
         <div className="flex buttons">
 
-          <button className={micButtonClass} onClick={this.handleMicClick}>
-            <Icon type={this.state.audioSource === 'mic' ? 'stop' : 'microphone'} fill={micIconFill} /> Record Audio
+          <button type="button" className={micButtonClass} onClick={this.handleMicClick}>
+            <Icon type={audioSource === 'mic' ? 'stop' : 'microphone'} fill={micIconFill} /> Record Audio
           </button>
 
-          <button className={buttonClass} onClick={this.handleUploadClick}>
-            <Icon type={this.state.audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
+          <button type="button" className={buttonClass} onClick={this.handleUploadClick}>
+            <Icon type={audioSource === 'upload' ? 'stop' : 'upload'} /> Upload Audio File
           </button>
 
-          <button className={buttonClass} onClick={this.handleSample1Click}>
-            <Icon type={this.state.audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1
+          <button type="button" className={buttonClass} onClick={this.handleSample1Click}>
+            <Icon type={audioSource === 'sample-1' ? 'stop' : 'play'} /> Play Sample 1
           </button>
 
-          <button className={buttonClass} onClick={this.handleSample2Click}>
-            <Icon type={this.state.audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2
+          <button type="button" className={buttonClass} onClick={this.handleSample2Click}>
+            <Icon type={audioSource === 'sample-2' ? 'stop' : 'play'} /> Play Sample 2
           </button>
 
         </div>
@@ -506,22 +517,22 @@ export default React.createClass({
 
         <Tabs selected={0}>
           <Pane label="Text">
-            {this.state.settingsAtStreamStart.speakerLabels
+            {settingsAtStreamStart.speakerLabels
               ? <SpeakersView messages={messages} />
               : <Transcript messages={messages} />}
           </Pane>
           <Pane label="Word Timings and Alternatives">
             <TimingView messages={messages} />
           </Pane>
-          <Pane label={`Keywords ${getKeywordsSummary(this.state.settingsAtStreamStart.keywords, messages)}`}>
+          <Pane label={`Keywords ${getKeywordsSummary(settingsAtStreamStart.keywords, messages)}`}>
             <Keywords
               messages={messages}
-              keywords={this.state.settingsAtStreamStart.keywords}
-              isInProgress={!!this.state.audioSource}
+              keywords={settingsAtStreamStart.keywords}
+              isInProgress={!!audioSource}
             />
           </Pane>
           <Pane label="JSON">
-            <JSONView raw={this.state.rawMessages} formatted={this.state.formattedMessages} />
+            <JSONView raw={rawMessages} formatted={formattedMessages} />
           </Pane>
         </Tabs>
 
