@@ -27,9 +27,10 @@ require('./config/express')(app);
 
 // Create the token manager
 let tokenManager;
+const serviceUrl = process.env.SPEECH_TO_TEXT_URL || 'https://gateway.watsonplatform.net/speech-to-text/api';
 
 if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIKEY !== '') {
-  tokenManager = new IamTokenManagerV1({
+  tokenManager = new IamTokenManagerV1.IamTokenManagerV1({
     iamApikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
     iamUrl: process.env.SPEECH_TO_TEXT_IAM_URL || 'https://iam.bluemix.net/identity/token',
   });
@@ -37,20 +38,23 @@ if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIK
   const speechService = new SpeechToTextV1({
     username: process.env.SPEECH_TO_TEXT_USERNAME || '<username>',
     password: process.env.SPEECH_TO_TEXT_PASSWORD || '<password>',
-    url: process.env.SPEECH_TO_TEXT_URL || '<url>',
+    url: serviceUrl,
   });
   tokenManager = new AuthorizationV1(speechService.getCredentials());
 }
 
 app.get('/', (req, res) => res.render('index'));
 
-// Get token using your credentials
-app.get('/api/token', (req, res, next) => {
+// Get credentials using your credentials
+app.get('/api/credentials', (req, res, next) => {
   tokenManager.getToken((err, token) => {
     if (err) {
       next(err);
     } else {
-      res.send(token);
+      res.json({
+        token,
+        serviceUrl,
+      });
     }
   });
 });

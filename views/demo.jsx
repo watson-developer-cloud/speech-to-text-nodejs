@@ -96,6 +96,7 @@ export default React.createClass({
       resultsBySpeaker: this.state.speakerLabels,
       // allow interim results through before the speaker has been determined
       speakerlessInterim: this.state.speakerLabels,
+      url: this.state.serviceUrl,
     }, extra);
   },
 
@@ -263,13 +264,13 @@ export default React.createClass({
   },
 
   fetchToken() {
-    return fetch('/api/token').then((res) => {
+    return fetch('/api/credentials').then((res) => {
       if (res.status !== 200) {
         throw new Error('Error retrieving auth token');
       }
-      return res.text();
+      return res.json();
     }) // todo: throw here if non-200 status
-      .then(token => this.setState({ token })).catch(this.handleError);
+      .then(creds => this.setState({ ...creds })).catch(this.handleError);
   },
 
   getKeywords(model) {
