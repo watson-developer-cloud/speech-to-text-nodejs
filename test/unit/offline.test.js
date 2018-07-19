@@ -17,13 +17,16 @@ describe('offline tests', () => {
       request(app).get('/foo/bar').expect(404, done);
     });
 
-    it('should fetch and return a token for GET /api/token', (done) => {
-      const fakeToken = 'asdfasdfasdf';
+    it('should fetch and return a token for GET /api/credentials', (done) => {
+      const fakeToken = {
+        token: 'faketoken',
+        serviceUrl: 'https://stream.watsonplatform.net/speech-to-text/api',
+      };
 
       nock('https://stream.watsonplatform.net:443', { encodedQueryParams: true })
         .get('/authorization/api/v1/token')
         .query({ url: 'https://stream.watsonplatform.net/speech-to-text/api' })
-        .reply(200, fakeToken, {
+        .reply(200, 'faketoken', {
           connection: 'close',
           'transfer-encoding': 'chunked',
           'content-type': 'text/xml',
@@ -31,7 +34,7 @@ describe('offline tests', () => {
           date: 'Tue, 29 Mar 2016 19:50:27 GMT',
         });
 
-      request(app).get('/api/token').expect(200, fakeToken, done);
+      request(app).get('/api/credentials').expect(200, fakeToken, done);
     });
   });
 });

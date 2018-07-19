@@ -96,6 +96,7 @@ export default React.createClass({
       resultsBySpeaker: this.state.speakerLabels,
       // allow interim results through before the speaker has been determined
       speakerlessInterim: this.state.speakerLabels,
+      url: this.state.serviceUrl,
     }, extra);
   },
 
@@ -263,13 +264,13 @@ export default React.createClass({
   },
 
   fetchToken() {
-    return fetch('/api/token').then((res) => {
+    return fetch('/api/credentials').then((res) => {
       if (res.status !== 200) {
         throw new Error('Error retrieving auth token');
       }
-      return res.text();
+      return res.json();
     }) // todo: throw here if non-200 status
-      .then(token => this.setState({ token })).catch(this.handleError);
+      .then(creds => this.setState({ ...creds })).catch(this.handleError);
   },
 
   getKeywords(model) {
@@ -401,7 +402,7 @@ export default React.createClass({
 
     const messages = this.getFinalAndLatestInterimResult();
     const micBullet = (typeof window !== 'undefined' && recognizeMicrophone.isSupported)
-      ? <li className="base--li">Use your microphone to record audio.</li>
+      ? <li className="base--li">Use your microphone to record audio. For best results, use broadband models for microphone input.</li>
       : <li className="base--li base--p_light">Use your microphone to record audio. (Not supported in current browser)</li>;// eslint-disable-line
 
     return (
@@ -432,7 +433,7 @@ export default React.createClass({
 
         <ul className="base--ul">
           {micBullet}
-          <li className="base--li">'Upload pre-recorded audio (.mp3, .mpeg, .wav, .flac, or .opus only).</li>
+          <li className="base--li">Upload pre-recorded audio (.mp3, .mpeg, .wav, .flac, or .opus only).</li>
           <li className="base--li">Play one of the sample audio files.*</li>
         </ul>
 
@@ -535,7 +536,6 @@ export default React.createClass({
             <JSONView raw={rawMessages} formatted={formattedMessages} />
           </Pane>
         </Tabs>
-
       </Dropzone>
     );
   },
