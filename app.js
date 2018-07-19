@@ -27,7 +27,7 @@ require('./config/express')(app);
 
 // Create the token manager
 let tokenManager;
-const serviceUrl = process.env.SPEECH_TO_TEXT_URL || 'https://gateway.watsonplatform.net/speech-to-text/api';
+const serviceUrl = process.env.SPEECH_TO_TEXT_URL || 'https://stream.watsonplatform.net/speech-to-text/api';
 
 if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIKEY !== '') {
   tokenManager = new IamTokenManagerV1.IamTokenManagerV1({
