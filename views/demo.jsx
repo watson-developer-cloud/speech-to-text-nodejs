@@ -402,7 +402,7 @@ export default React.createClass({
 
     const messages = this.getFinalAndLatestInterimResult();
     const micBullet = (typeof window !== 'undefined' && recognizeMicrophone.isSupported)
-      ? <li className="base--li">Use your microphone to record audio.</li>
+      ? <li className="base--li">Use your microphone to record audio. For best results, use broadband models for microphone input.</li>
       : <li className="base--li base--p_light">Use your microphone to record audio. (Not supported in current browser)</li>;// eslint-disable-line
 
     return (
@@ -433,7 +433,7 @@ export default React.createClass({
 
         <ul className="base--ul">
           {micBullet}
-          <li className="base--li">'Upload pre-recorded audio (.mp3, .mpeg, .wav, .flac, or .opus only).</li>
+          <li className="base--li">Upload pre-recorded audio (.mp3, .mpeg, .wav, .flac, or .opus only).</li>
           <li className="base--li">Play one of the sample audio files.*</li>
         </ul>
 
@@ -536,7 +536,6 @@ export default React.createClass({
             <JSONView raw={rawMessages} formatted={formattedMessages} />
           </Pane>
         </Tabs>
-
       </Dropzone>
     );
   },
