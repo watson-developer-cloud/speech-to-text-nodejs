@@ -58,7 +58,7 @@
     "uglifyify": "^5.0.1",
     "watson-developer-cloud": "^3.7.0",
     "watson-react-components": "^0.6.16",
-    "watson-speech": "^0.34.1",
+    "watson-speech": "^0.36.0",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {

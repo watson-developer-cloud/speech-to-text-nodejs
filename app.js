@@ -27,14 +27,17 @@ require('./config/express')(app);
 
 // Create the token manager
 let tokenManager;
+let instanceType;
 const serviceUrl = process.env.SPEECH_TO_TEXT_URL || 'https://stream.watsonplatform.net/speech-to-text/api';
 
 if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIKEY !== '') {
+  instanceType = 'iam';
   tokenManager = new IamTokenManagerV1.IamTokenManagerV1({
     iamApikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
     iamUrl: process.env.SPEECH_TO_TEXT_IAM_URL || 'https://iam.bluemix.net/identity/token',
   });
 } else {
+  instanceType = 'cf';
   const speechService = new SpeechToTextV1({
     username: process.env.SPEECH_TO_TEXT_USERNAME || '<username>',
     password: process.env.SPEECH_TO_TEXT_PASSWORD || '<password>',
@@ -51,10 +54,19 @@ app.get('/api/credentials', (req, res, next) => {
     if (err) {
       next(err);
     } else {
-      res.json({
-        token,
-        serviceUrl,
-      });
+      let credentials;
+      if (instanceType === 'iam') {
+        credentials = {
+          accessToken: token,
+          serviceUrl,
+        };
+      } else {
+        credentials = {
+          token,
+          serviceUrl,
+        };
+      }
+      res.json(credentials);
     }
   });
 });
