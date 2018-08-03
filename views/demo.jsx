@@ -76,6 +76,7 @@ export default React.createClass({
     const keywords = this.getKeywordsArrUnique();
     return Object.assign({
       // formats phone numbers, currency, etc. (server-side)
+      access_token: this.state.accessToken,
       token: this.state.token,
       smart_formatting: true,
       format: true, // adds capitals, periods, and a few other things (client-side)
@@ -372,11 +373,11 @@ export default React.createClass({
 
   render() {
     const {
-      token, audioSource, error, model, speakerLabels, settingsAtStreamStart,
+      token, accessToken, audioSource, error, model, speakerLabels, settingsAtStreamStart,
       formattedMessages, rawMessages,
     } = this.state;
 
-    const buttonsEnabled = !!token;
+    const buttonsEnabled = !!token || !!accessToken;
     const buttonClass = buttonsEnabled
       ? 'base--button'
       : 'base--button base--button_black';
@@ -458,7 +459,7 @@ export default React.createClass({
             <p>Voice Model:
               <ModelDropdown
                 model={model}
-                token={token}
+                token={token || accessToken}
                 onChange={this.handleModelChange}
               />
             </p>
