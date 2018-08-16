@@ -326,7 +326,6 @@ export default React.createClass({
     return this.state.keywords
       .split(',')
       .map(k => k.trim())
-      .filter(k => k)
       .filter((value, index, self) => self.indexOf(value) === index);
   },
 
