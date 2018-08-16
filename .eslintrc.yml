@@ -8,10 +8,11 @@ rules:
   no-console: 0
   import/extensions: 0
   global-require: 0
-  react/no-array-index-key: 1
-  react/jsx-no-bind: 1
   jsx-a11y/href-no-hash: 0
   jsx-a11y/label-has-for: 0
   react/no-this-in-sfc: 0
   react/jsx-one-expression-per-line: 0
   react/no-deprecated: 0
+  react/destructuring-assignment: 0
+  react/no-array-index-key: 0
+  react/jsx-no-bind: 0
