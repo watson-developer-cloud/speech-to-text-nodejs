@@ -1,5 +1,5 @@
 /* eslint camelcase: off, jsx-a11y/click-events-have-key-events: off */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ArrowBox, Colors } from 'watson-react-components';
 
@@ -58,26 +58,26 @@ Word.propTypes = {
   onMouseLeave: PropTypes.func.isRequired,
   alternatives: PropTypes.array.isRequired, // eslint-disable-line
   showDetails: PropTypes.bool.isRequired,
-  start_time: PropTypes.string.isRequired,
-  end_time: PropTypes.string.isRequired,
+  start_time: PropTypes.number.isRequired,
+  end_time: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 
-const TimingView = React.createClass({
-  propTypes: {
-    messages: PropTypes.array.isRequired // eslint-disable-line
-  },
+export class TimingView extends Component {
+  constructor() {
+    super();
+    this.state = { clickSelected: null, mouseSelected: null };
+  }
 
-  getInitialState() {
-    return { clickSelected: null, mouseSelected: null };
-  },
   getSelected() {
-    return this.state.clickSelected || this.state.mouseSelected;
-  },
+    const { clickSelected, mouseSelected } = this.state;
+    return clickSelected || mouseSelected;
+  }
+
   /**
      * Two UI interactions: hover and click
      *
-     * If anything gets clicked, it overrides the hover interaction until it is hidden 
+     * If anything gets clicked, it overrides the hover interaction until it is hidden
      * by a second click
      *
      * @param clickSelected
@@ -89,14 +89,15 @@ const TimingView = React.createClass({
       clickSelected = null;
     }
     this.setState({ clickSelected, mouseSelected: null });
-  },
+  }
 
   mouseSelect(mouseSelected) {
     if (this.state.clickSelected) {
       return;
     }
     this.setState({ mouseSelected });
-  },
+  }
+
   render() {
     try {
       const results = this.props.messages
@@ -121,7 +122,13 @@ const TimingView = React.createClass({
       console.log(ex);
       return <span>{ex.message}</span>;
     }
-  },
-});
+  }
+}
+
+
+TimingView.propTypes = {
+  messages: PropTypes.array.isRequired, // eslint-disable-line
+};
+
 
 export default TimingView;

@@ -1,5 +1,5 @@
 /* eslint no-param-reassign: 0 */
-import React from 'react';
+import React, { Component } from 'react';
 import Dropzone from 'react-dropzone';
 import {
   Icon, Tabs, Pane, Alert,
@@ -18,11 +18,10 @@ import cachedModels from '../src/data/models.json';
 
 const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 
-export default React.createClass({
-  displayName: 'Demo',
-
-  getInitialState() {
-    return {
+export class Demo extends Component {
+  constructor(props) {
+    super();
+    this.state = {
       model: 'en-US_BroadbandModel',
       rawMessages: [],
       formattedMessages: [],
@@ -39,14 +38,43 @@ export default React.createClass({
       },
       error: null,
     };
-  },
+
+    this.handleSampleClick = this.handleSampleClick.bind(this);
+    this.handleSample1Click = this.handleSample1Click.bind(this);
+    this.handleSample2Click = this.handleSample2Click.bind(this);
+    this.reset = this.reset.bind(this);
+    this.captureSettings = this.captureSettings.bind(this);
+    this.stopTranscription = this.stopTranscription.bind(this);
+    this.getRecognizeOptions = this.getRecognizeOptions.bind(this);
+    this.isNarrowBand = this.isNarrowBand.bind(this);
+    this.handleMicClick = this.handleMicClick.bind(this);
+    this.handleUploadClick = this.handleUploadClick.bind(this);
+    this.handleUserFile = this.handleUserFile.bind(this);
+    this.handleUserFileRejection = this.handleUserFileRejection.bind(this);
+    this.playFile = this.playFile.bind(this);
+    this.handleStream = this.handleStream.bind(this);
+    this.handleRawMessage = this.handleRawMessage.bind(this);
+    this.handleFormattedMessage = this.handleFormattedMessage.bind(this);
+    this.handleTranscriptEnd = this.handleTranscriptEnd.bind(this);
+    this.getKeywords = this.getKeywords.bind(this);
+    this.handleModelChange = this.handleModelChange.bind(this);
+    this.supportsSpeakerLabels = this.supportsSpeakerLabels.bind(this);
+    this.handleSpeakerLabelsChange = this.handleSpeakerLabelsChange.bind(this);
+    this.handleKeywordsChange = this.handleKeywordsChange.bind(this);
+    this.getKeywordsArr = this.getKeywordsArr.bind(this);
+    this.getKeywordsArrUnique = this.getKeywordsArrUnique.bind(this);
+    this.getFinalResults = this.getFinalResults.bind(this);
+    this.getCurrentInterimResult = this.getCurrentInterimResult.bind(this);
+    this.getFinalAndLatestInterimResult = this.getFinalAndLatestInterimResult.bind(this);
+    this.handleError = this.handleError.bind(this);
+  }
 
   reset() {
     if (this.state.audioSource) {
       this.stopTranscription();
     }
     this.setState({ rawMessages: [], formattedMessages: [], error: null });
-  },
+  }
 
   /**
      * The behavior of several of the views depends on the settings when the
@@ -61,7 +89,7 @@ export default React.createClass({
         speakerLabels,
       },
     });
-  },
+  }
 
   stopTranscription() {
     if (this.stream) {
@@ -70,7 +98,7 @@ export default React.createClass({
       // this.stream.recognizeStream.removeAllListeners();
     }
     this.setState({ audioSource: null });
-  },
+  }
 
   getRecognizeOptions(extra) {
     const keywords = this.getKeywordsArrUnique();
@@ -99,12 +127,12 @@ export default React.createClass({
       speakerlessInterim: this.state.speakerLabels,
       url: this.state.serviceUrl,
     }, extra);
-  },
+  }
 
   isNarrowBand(model) {
     model = model || this.state.model;
     return model.indexOf('Narrowband') !== -1;
-  },
+  }
 
   handleMicClick() {
     if (this.state.audioSource === 'mic') {
@@ -126,7 +154,7 @@ export default React.createClass({
     // In addition to this, it passes other service-level options along to the RecognizeStream that
     // manages the actual WebSocket connection.
     this.handleStream(recognizeMicrophone(this.getRecognizeOptions()));
-  },
+  }
 
   handleUploadClick() {
     if (this.state.audioSource === 'upload') {
@@ -134,7 +162,7 @@ export default React.createClass({
     } else {
       this.dropzone.open();
     }
-  },
+  }
 
   handleUserFile(files) {
     const file = files[0];
@@ -144,17 +172,20 @@ export default React.createClass({
     this.reset();
     this.setState({ audioSource: 'upload' });
     this.playFile(file);
-  },
+  }
 
   handleUserFileRejection() {
     this.setState({ error: 'Sorry, that file does not appear to be compatible.' });
-  },
+  }
+
   handleSample1Click() {
     this.handleSampleClick(1);
-  },
+  }
+
   handleSample2Click() {
     this.handleSampleClick(2);
-  },
+  }
+
 
   handleSampleClick(which) {
     if (this.state.audioSource === `sample-${which}`) {
@@ -168,7 +199,7 @@ export default React.createClass({
       this.setState({ audioSource: `sample-${which}` });
       this.playFile(`audio/${filename}`);
     }
-  },
+  }
 
   /**
    * @param {File|Blob|String} file - url to an audio file or a File
@@ -195,7 +226,7 @@ export default React.createClass({
       // use a helper stream to slow down the transcript output to match the audio speed
       realtime: true,
     })));
-  },
+  }
 
   handleStream(stream) {
     console.log(stream);
@@ -232,23 +263,23 @@ export default React.createClass({
     //     stream.recognizeStream.on(e, console.log.bind(console, 'rs event: ', e));
     //     stream.on(e, console.log.bind(console, 'stream event: ', e));
     // });
-  },
+  }
 
   handleRawMessage(msg) {
     const { rawMessages } = this.state;
     this.setState({ rawMessages: rawMessages.concat(msg) });
-  },
+  }
 
   handleFormattedMessage(msg) {
     const { formattedMessages } = this.state;
     this.setState({ formattedMessages: formattedMessages.concat(msg) });
-  },
+  }
 
   handleTranscriptEnd() {
     // note: this function will be called twice on a clean end,
     // but may only be called once in the event of an error
     this.setState({ audioSource: null });
-  },
+  }
 
   componentDidMount() {
     this.fetchToken();
@@ -258,11 +289,11 @@ export default React.createClass({
     // react automatically binds the call to this
     // eslint-disable-next-line
     this.setState({ tokenInterval: setInterval(this.fetchToken, 50 * 60 * 1000) });
-  },
+  }
 
   componentWillUnmount() {
     clearInterval(this.state.tokenInterval);
-  },
+  }
 
   fetchToken() {
     return fetch('/api/credentials').then((res) => {
@@ -272,7 +303,7 @@ export default React.createClass({
       return res.json();
     }) // todo: throw here if non-200 status
       .then(creds => this.setState({ ...creds })).catch(this.handleError);
-  },
+  }
 
   getKeywords(model) {
     // a few models have more than two sample files, but the demo can only handle
@@ -280,7 +311,7 @@ export default React.createClass({
     // so this just takes the keywords from the first two samples
     const files = samples[model];
     return (files && files.length >= 2 && `${files[0].keywords}, ${files[1].keywords}`) || '';
-  },
+  }
 
   handleModelChange(model) {
     this.reset();
@@ -300,26 +331,26 @@ export default React.createClass({
     if (this.state.error && this.state.error.indexOf('speaker_labels is not a supported feature for model') === 0) {
       this.setState({ error: null });
     }
-  },
+  }
 
   supportsSpeakerLabels(model) {
     model = model || this.state.model;
     // todo: read the upd-to-date models list instead of the cached one
     return cachedModels.some(m => m.name === model && m.supported_features.speaker_labels);
-  },
+  }
 
   handleSpeakerLabelsChange() {
     this.setState(prevState => ({ speakerLabels: !prevState.speakerLabels }));
-  },
+  }
 
   handleKeywordsChange(e) {
     this.setState({ keywords: e.target.value });
-  },
+  }
 
   // cleans up the keywords string into an array of individual, trimmed, non-empty keywords/phrases
   getKeywordsArr() {
     return this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
-  },
+  }
 
   // cleans up the keywords string and produces a unique list of keywords
   getKeywordsArrUnique() {
@@ -327,12 +358,12 @@ export default React.createClass({
       .split(',')
       .map(k => k.trim())
       .filter((value, index, self) => self.indexOf(value) === index);
-  },
+  }
 
   getFinalResults() {
     return this.state.formattedMessages.filter(r => r.results
       && r.results.length && r.results[0].final);
-  },
+  }
 
   getCurrentInterimResult() {
     const r = this.state.formattedMessages[this.state.formattedMessages.length - 1];
@@ -344,7 +375,7 @@ export default React.createClass({
       return null;
     }
     return r;
-  },
+  }
 
   getFinalAndLatestInterimResult() {
     const final = this.getFinalResults();
@@ -353,7 +384,7 @@ export default React.createClass({
       final.push(interim);
     }
     return final;
-  },
+  }
 
   handleError(err, extra) {
     console.error(err, extra);
@@ -368,7 +399,7 @@ export default React.createClass({
       err = 'Unable to access microphone';
     }
     this.setState({ error: err.message || err });
-  },
+  }
 
   render() {
     const {
@@ -538,5 +569,7 @@ export default React.createClass({
         </Tabs>
       </Dropzone>
     );
-  },
-});
+  }
+};
+
+export default Demo;

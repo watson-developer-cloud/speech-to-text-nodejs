@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SpeechToText from 'watson-speech/speech-to-text';
 
@@ -7,42 +7,38 @@ import SpeechToText from 'watson-speech/speech-to-text';
 // of models and update the UI if necessary.
 import cachedModels from '../src/data/models.json';
 
-export default React.createClass({
-  propTypes: {
-    model: PropTypes.string.isRequired,
-    token: PropTypes.string,
-    onChange: PropTypes.func,
-  },
 
-  getInitialState() {
+export class ModelDropdown extends Component {
+  constructor() {
+    super();
     // initialize with a (possibly outdated) cached JSON models file,
     // then update it once we have a token
-    return { models: cachedModels };
-  },
+    this.state = { models: cachedModels }
+  }
 
   componentDidMount() {
     if (this.props.token) {
       this.fetchModels(this.props.token);
     }
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.token !== this.props.token) {
       this.fetchModels(nextProps.token);
     }
-  },
+  }
 
   fetchModels(token) {
     SpeechToText.getModels({ token }).then(models => this.setState({ models }))
       .catch(err => console.log('error loading models', err));
-  },
+  }
 
   handleChange(e) {
     const model = e.target.value;
     if (model !== this.props.model && this.props.onChange) {
       this.props.onChange(e.target.value);
     }
-  },
+  }
 
   render() {
     const { models } = this.state;
@@ -65,5 +61,13 @@ export default React.createClass({
         {options}
       </select>
     );
-  },
-});
+  }
+}
+
+ModelDropdown.propTypes = {
+  model: PropTypes.string.isRequired,
+  token: PropTypes.string,
+  onChange: PropTypes.func,
+};
+
+export default ModelDropdown;
