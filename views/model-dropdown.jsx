@@ -13,6 +13,7 @@ export class ModelDropdown extends Component {
     super();
     // initialize with a (possibly outdated) cached JSON models file,
     // then update it once we have a token
+    this.handleChange = this.handleChange.bind(this);
     this.state = { models: cachedModels }
   }
 
