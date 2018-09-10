@@ -177,5 +177,16 @@
       "speaker_labels": false
     },
     "description": "GB English narrowband model."
+  },
+  {
+    "name": "de-DE_BroadbandModel",
+    "language": "de-DE",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/de-DE_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": true,
+      "speaker_labels": false
+    },
+    "description": "German broadband model."
   }
 ]
