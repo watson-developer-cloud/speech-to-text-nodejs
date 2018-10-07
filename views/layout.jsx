@@ -25,7 +25,7 @@ export default function Layout({ children }) {
           mainBreadcrumbs="Speech to Text"
           mainBreadcrumbsUrl="https://www.ibm.com/watson/services/speech-to-text/"
           subBreadcrumbs="Speech to Text Demo"
-          subBreadcrumbsUrl="https://speech-to-text-demo.mybluemix.net"
+          subBreadcrumbsUrl="https://speech-to-text-demo.ng.bluemix.net"
         />
         <Jumbotron
           serviceName="Speech to Text"
