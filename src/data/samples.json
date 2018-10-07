@@ -171,6 +171,18 @@
       "speaker_labels": false
     }
   ],
+  "de-DE_BroadbandModel": [
+    {
+      "filename": "de-DE_BroadbandModel_sample1.wav",
+      "keywords": "diskussion, künstlicher intelligenz, möglichkeiten, grundprinzipien",
+      "speaker_labels": false
+    },
+    {
+      "filename": "de-DE_BroadbandModel_sample2.wav",
+      "keywords": "schläfrig, gänseblümchen zu pflücken, weißes kaninchen",
+      "speaker_labels": false
+    }
+  ],
   "pt-BR_BroadbandModel": [
     {
       "filename": "pt-BR_Sample1-16KHz.wav",
