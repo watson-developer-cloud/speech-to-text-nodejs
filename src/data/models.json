@@ -14,6 +14,17 @@
     "description": "French broadband model."
   },
   {
+    "name": "fr-FR_NarrowbandModel", 
+    "language": "fr-FR", 
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_NarrowbandModel", 
+    "rate": 8000, 
+    "supported_features": {
+      "custom_language_model": true, 
+      "speaker_labels": true
+    }, 
+    "description": "French narrowband model."
+  },
+  {
     "name": "en-US_NarrowbandModel",
     "language": "en-US",
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel",
@@ -188,5 +199,27 @@
       "speaker_labels": false
     },
     "description": "German broadband model."
+  },
+  {
+    "name": "de-DE_NarrowbandModel", 
+    "language": "de-DE", 
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/de-DE_NarrowbandModel", 
+    "rate": 8000, 
+    "supported_features": {
+      "custom_language_model": true, 
+      "speaker_labels": false
+    }, 
+    "description": "German narrowband model."
+  },
+  {
+    "name": "en-US_ShortForm_NarrowbandModel", 
+    "language": "en-US", 
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_ShortForm_NarrowbandModel", 
+    "rate": 8000, 
+    "supported_features": {
+      "custom_language_model": true, 
+      "speaker_labels": true
+    }, 
+    "description": "US English Short Form narrowband model."
   }
 ]
