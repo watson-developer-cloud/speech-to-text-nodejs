@@ -47,6 +47,18 @@
       "speaker_labels": true
     }
   ],
+  "en-US_ShortForm_NarrowbandModel": [
+    {
+      "filename": "english2.g712.wav",
+      "keywords": "twenty thousand dollars, filled out, car",
+      "speaker_labels": true
+    },
+    {
+      "filename": "english3.g712.wav",
+      "keywords": "new company, client, Chris",
+      "speaker_labels": true
+    }
+  ],
   "en-US_NarrowbandModel": [
     {
       "filename": "english2.g712.wav",
@@ -183,6 +195,18 @@
       "speaker_labels": false
     }
   ],
+  "de-DE_NarrowbandModel": [
+    {
+      "filename": "de-DE_NarrowbandModel_sample1.wav",
+      "keywords": "Augen, Lindenbäumen, Türme von Wien",
+      "speaker_labels": false
+    },
+    {
+      "filename": "de-DE_NarrowbandModel_sample2.wav",
+      "keywords": "Geige, mein Vater, Dorf",
+      "speaker_labels": false
+    }
+  ],
   "pt-BR_BroadbandModel": [
     {
       "filename": "pt-BR_Sample1-16KHz.wav",
@@ -241,6 +265,18 @@
       "filename": "fr-FR_Broadband_sample2.wav",
       "keywords": "conscience, esprit de fraternité, libres",
       "speaker_labels": false
+    }
+  ],
+  "fr-FR_NarrowbandModel": [
+    {
+      "filename": "fr-FR_Narrowband_sample1.wav",
+      "keywords": "durée du travail, loisirs",
+      "speaker_labels": true
+    },
+    {
+      "filename": "fr-FR_Narrowband_sample2.wav",
+      "keywords": "conscience, esprit de fraternité, libres",
+      "speaker_labels": true
     }
   ]
 }
