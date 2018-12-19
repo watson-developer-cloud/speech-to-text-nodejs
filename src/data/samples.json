@@ -198,12 +198,12 @@
   "de-DE_NarrowbandModel": [
     {
       "filename": "de-DE_NarrowbandModel_sample1.wav",
-      "keywords": "diskussion, künstlicher intelligenz, möglichkeiten, grundprinzipien",
+      "keywords": "Augen, Lindenbäumen, Türme von Wien",
       "speaker_labels": false
     },
     {
       "filename": "de-DE_NarrowbandModel_sample2.wav",
-      "keywords": "schläfrig, gänseblümchen zu pflücken, weißes kaninchen",
+      "keywords": "Geige, mein Vater, Dorf",
       "speaker_labels": false
     }
   ],
