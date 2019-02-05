@@ -40,7 +40,7 @@ You can view a [demo][demo_url] of this app.
 
     ```
     SPEECH_TO_TEXT_IAM_APIKEY=X4rbi8vwZmKpXfowaS3GAsA7vdy17Qh7km5D6EzKLHL2
-    SPEECH_TO_TEXT_URL=https://stream-wdc.watsonplatform.net/speech-to-text/api
+    SPEECH_TO_TEXT_URL=https://gateway-wdc.watsonplatform.net/speech-to-text/api
     ```
 
     - If your service instance uses `username` and `password` credentials, add the `SPEECH_TO_TEXT_USERNAME` and `SPEECH_TO_TEXT_PASSWORD` variables to the *.env* file.
