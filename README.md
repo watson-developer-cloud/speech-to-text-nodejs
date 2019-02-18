@@ -16,10 +16,10 @@ You can view a [demo][demo_url] of this app.
 
 ## Prerequisites
 
-1. Sign up for an [IBM Cloud account](https://console.bluemix.net/registration/).
-1. Download the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview).
+1. Sign up for an [IBM Cloud account](https://cloud.ibm.com/registration/).
+1. Download the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli/index.html#overview).
 1. Create an instance of the Speech to Text service and get your credentials:
-    - Go to the [Speech to Text](https://console.bluemix.net/catalog/services/speech-to-text) page in the IBM Cloud Catalog.
+    - Go to the [Speech to Text](https://cloud.ibm.com/catalog/services/speech-to-text) page in the IBM Cloud Catalog.
     - Log in to your IBM Cloud account.
     - Click **Create**.
     - Click **Show** to view the service credentials.
@@ -71,7 +71,7 @@ You can view a [demo][demo_url] of this app.
 
 ## Deploying to IBM Cloud as a Cloud Foundry Application
 
-1. Login to IBM Cloud with the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview)
+1. Login to IBM Cloud with the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli/index.html#overview)
 
     ```
     ibmcloud login
@@ -106,6 +106,6 @@ You can view a [demo][demo_url] of this app.
 
 
 [service_url]: https://www.ibm.com/watson/services/speech-to-text/
-[docs]: https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/curl.html?curl
-[sign_up]: https://console.bluemix.net/registration/?target=/catalog/services/speech-to-text/
+[docs]: https://cloud.ibm.com/apidocs/speech-to-text
+[sign_up]: https://cloud.ibm.com/registration/?target=/catalog/services/speech-to-text/
 [demo_url]: https://speech-to-text-demo.ng.bluemix.net

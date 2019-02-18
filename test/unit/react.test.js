@@ -16,7 +16,7 @@
 const assert = require('assert');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-require('babel-register');
+require('@babel/register');
 
 describe('react', () => {
   it('should render some html', () => {

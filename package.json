@@ -15,11 +15,13 @@
   },
   "babel": {
     "presets": [
-      "es2015",
-      "react"
-    ],
-    "plugins": [
-      "transform-object-rest-spread"
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "entry"
+        }
+      ],
+      "@babel/preset-react"
     ]
   },
   "license": "Apache-2.0",
@@ -37,42 +39,42 @@
     "codecov": "npm run test && (codecov || true)"
   },
   "dependencies": {
-    "babel-eslint": "^8.2.6",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "babelify": "^8.0.0",
-    "dotenv": "^6.0.0",
-    "express": "^4.16.3",
+    "@babel/core": "^7.3.3",
+    "@babel/polyfill": "^7.2.5",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babelify": "^10.0.0",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
     "express-browserify": "^1.0.2",
-    "express-rate-limit": "^3.2.0",
-    "express-react-views": "^0.10.5",
+    "express-rate-limit": "^3.3.2",
+    "express-react-views": "^0.11.0",
     "express-secure-only": "^0.2.1",
-    "helmet": "^3.13.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "helmet": "^3.15.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
     "react-dropzone": "^4.3.0",
     "uglifyify": "^5.0.1",
-    "watson-developer-cloud": "^3.11.1",
-    "watson-react-components": "^0.6.17",
+    "watson-developer-cloud": "^3.18.1",
+    "watson-react-components": "^0.6.19",
     "watson-speech": "^0.36.0",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "casperjs": "^1.1.4",
-    "codecov": "^3.1.0",
-    "eslint": "^5.6.1",
+    "codecov": "^3.2.0",
+    "eslint": "^5.14.0",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
     "mocha": "^5.2.0",
-    "nock": "^10.0.0",
+    "nock": "^10.0.6",
     "phantomjs-prebuilt": "^2.1.16",
-    "supertest": "^3.3.0"
+    "supertest": "^3.4.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
