@@ -16,6 +16,8 @@ You can view a [demo][demo_url] of this app.
 
 ## Prerequisites
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/watson-developer-cloud/speech-to-text-nodejs.svg)](https://greenkeeper.io/)
+
 1. Sign up for an [IBM Cloud account](https://console.bluemix.net/registration/).
 1. Download the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview).
 1. Create an instance of the Speech to Text service and get your credentials:
