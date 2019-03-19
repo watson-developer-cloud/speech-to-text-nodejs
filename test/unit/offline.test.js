@@ -17,7 +17,7 @@ describe('offline tests', () => {
       request(app).get('/foo/bar').expect(404, done);
     });
 
-    it('should fetch and return a token for GET /api/credentials', (done) => {
+    it('should fetch and return a token for GET /api/v1/credentials', (done) => {
       const fakeToken = {
         token: 'faketoken',
         serviceUrl: 'https://stream.watsonplatform.net/speech-to-text/api',
@@ -34,7 +34,7 @@ describe('offline tests', () => {
           date: 'Tue, 29 Mar 2016 19:50:27 GMT',
         });
 
-      request(app).get('/api/credentials').expect(200, fakeToken, done);
+      request(app).get('/api/v1/credentials').expect(200, fakeToken, done);
     });
   });
 });

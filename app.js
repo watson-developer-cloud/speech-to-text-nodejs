@@ -49,7 +49,7 @@ if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIK
 app.get('/', (req, res) => res.render('index'));
 
 // Get credentials using your credentials
-app.get('/api/credentials', (req, res, next) => {
+app.get('/api/v1/credentials', (req, res, next) => {
   tokenManager.getToken((err, token) => {
     if (err) {
       next(err);

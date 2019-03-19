@@ -296,7 +296,7 @@ export class Demo extends Component {
   }
 
   fetchToken() {
-    return fetch('/api/credentials').then((res) => {
+    return fetch('/api/v1/credentials').then((res) => {
       if (res.status !== 200) {
         throw new Error('Error retrieving auth token');
       }

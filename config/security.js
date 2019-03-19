@@ -28,7 +28,7 @@ module.exports = (app) => {
   app.use(helmet());
 
   // 5. rate limiting.
-  app.use('/api/', rateLimit({
+  app.use('/api/v1/', rateLimit({
     windowMs: 30 * 1000, // 30 seconds
     delayMs: 0,
     max: 3,
