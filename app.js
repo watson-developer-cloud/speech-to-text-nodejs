@@ -32,7 +32,7 @@ const serviceUrl = process.env.SPEECH_TO_TEXT_URL || 'https://stream.watsonplatf
 
 if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIKEY !== '') {
   instanceType = 'iam';
-  tokenManager = new IamTokenManagerV1.IamTokenManagerV1({
+  tokenManager = new IamTokenManagerV1({
     iamApikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
     iamUrl: process.env.SPEECH_TO_TEXT_IAM_URL || 'https://iam.bluemix.net/identity/token',
   });
