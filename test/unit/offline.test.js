@@ -8,6 +8,7 @@ const nock = require('nock');
 
 describe('offline tests', () => {
   describe('server', function server() { // eslint-disable-line
+    this.timeout(5000);
 
     it('should return HTML for GET /', (done) => {
       request(app).get('/').expect(200, /<html/, done);

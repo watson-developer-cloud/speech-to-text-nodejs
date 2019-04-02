@@ -18,7 +18,8 @@
       [
         "@babel/preset-env",
         {
-          "useBuiltIns": "entry"
+          "useBuiltIns": "entry",
+          "corejs": 3
         }
       ],
       "@babel/preset-react"
@@ -39,13 +40,14 @@
     "codecov": "npm run test && (codecov || true)"
   },
   "dependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/polyfill": "^7.2.5",
-    "@babel/preset-env": "^7.3.4",
+    "@babel/core": "^7.4.0",
+    "@babel/polyfill": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
     "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.0.0",
+    "@babel/register": "^7.4.0",
     "babel-eslint": "^10.0.1",
     "babelify": "^10.0.0",
+    "core-js": "^3.0.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-browserify": "^1.0.3",
@@ -54,11 +56,11 @@
     "express-secure-only": "^0.2.1",
     "helmet": "^3.16.0",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-dropzone": "^4.3.0",
     "uglifyify": "^5.0.1",
-    "watson-developer-cloud": "^3.18.3",
+    "watson-developer-cloud": "^3.18.4",
     "watson-react-components": "^0.6.19",
     "watson-speech": "^0.36.0",
     "whatwg-fetch": "^2.0.4"
@@ -66,7 +68,7 @@
   "devDependencies": {
     "casperjs": "^1.1.4",
     "codecov": "^3.2.0",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",

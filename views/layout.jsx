@@ -30,11 +30,11 @@ export default function Layout({ children }) {
         <Jumbotron
           serviceName="Speech to Text"
           repository="https://github.com/watson-developer-cloud/speech-to-text-nodejs"
-          documentation="https://console.bluemix.net/docs/services/speech-to-text/getting-started.html"
-          apiReference="http://www.ibm.com/watson/developercloud/speech-to-text/api"
+          documentation="https://cloud.ibm.com/docs/services/speech-to-text?topic=speech-to-text-gettingStarted#gettingStarted"
+          apiReference="https://cloud.ibm.com/apidocs/speech-to-text"
           version="GA"
           serviceIcon="/images/stt.svg"
-          startInBluemix="https://console.bluemix.net/registration/?target=%2Fcatalog%2Fservices%2Fspeech-to-text%3FhideTours%3Dtrue%26cm_mmc%3D-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmc%3D-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmca1%3D000000OF%26cm_mmca2%3D10000409"
+          startInBluemix="https://cloud.ibm.com/registration/?target=%2Fcatalog%2Fservices%2Fspeech-to-text%3FhideTours%3Dtrue%26cm_mmc%3D-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmc%3D-_-Watson%2BCore_Watson%2BCore%2B-%2BPlatform-_-WW_WW-_-wdc-ref%26cm_mmca1%3D000000OF%26cm_mmca2%3D10000409"
           description={DESCRIPTION}
         />
 
