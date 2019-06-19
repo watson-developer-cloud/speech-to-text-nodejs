@@ -27,7 +27,7 @@ describe('offline tests', () => {
       nock('https://stream.watsonplatform.net:443', { encodedQueryParams: true })
         .get('/authorization/api/v1/token')
         .query({ url: 'https://stream.watsonplatform.net/speech-to-text/api' })
-        .reply(200, 'faketoken', {
+        .reply(200, fakeToken, {
           connection: 'close',
           'transfer-encoding': 'chunked',
           'content-type': 'text/xml',
