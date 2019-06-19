@@ -60,10 +60,7 @@ app.get('/api/v1/credentials', (req, res, next) => {
           serviceUrl,
         };
       } else {
-        credentials = {
-          token,
-          serviceUrl,
-        };
+        credentials = token;
       }
       res.json(credentials);
     }
