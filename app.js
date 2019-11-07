@@ -17,57 +17,31 @@
 const express = require('express');
 
 const app = express();
-const SpeechToTextV1 = require('ibm-watson/speech-to-text/v1');
-const AuthorizationV1 = require('ibm-watson/authorization/v1');
-const IamTokenManagerV1 = require('ibm-watson/iam-token-manager/v1');
+const { IamTokenManager } = require('ibm-watson/auth');
 
 // Bootstrap application settings
 require('./config/express')(app);
 
-// Create the token manager
-let tokenManager;
-let instanceType;
-const serviceUrl = process.env.SPEECH_TO_TEXT_URL || 'https://stream.watsonplatform.net/speech-to-text/api';
+const serviceUrl = process.env.SPEECH_TO_TEXT_URL;
 
-if (process.env.SPEECH_TO_TEXT_IAM_APIKEY && process.env.SPEECH_TO_TEXT_IAM_APIKEY !== '') {
-  instanceType = 'iam';
-  tokenManager = new IamTokenManagerV1({
-    iamApikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
-    iamUrl: process.env.SPEECH_TO_TEXT_IAM_URL || 'https://iam.bluemix.net/identity/token',
-  });
-} else {
-  instanceType = 'cf';
-  const speechService = new SpeechToTextV1({
-    username: process.env.SPEECH_TO_TEXT_USERNAME || '<username>',
-    password: process.env.SPEECH_TO_TEXT_PASSWORD || '<password>',
-    url: serviceUrl,
-  });
-  tokenManager = new AuthorizationV1(speechService.getServiceCredentials());
-}
+const tokenManager = new IamTokenManager({
+  apikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
+});
+
 
 app.get('/', (req, res) => res.render('index'));
 
 // Get credentials using your credentials
-app.get('/api/v1/credentials', (req, res, next) => {
-  tokenManager.getToken((err, token) => {
-    if (err) {
-      next(err);
-    } else {
-      let credentials;
-      if (instanceType === 'iam') {
-        credentials = {
-          accessToken: token,
-          serviceUrl,
-        };
-      } else {
-        credentials = {
-          token: token.token,
-          serviceUrl,
-        };
-      }
-      res.json(credentials);
-    }
-  });
+app.get('/api/v1/credentials', async (req, res, next) => {
+  try {
+    const accessToken = await tokenManager.getToken();
+    res.json({
+      accessToken,
+      serviceUrl,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = app;

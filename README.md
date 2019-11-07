@@ -23,7 +23,7 @@ You can view a [demo][demo_url] of this app.
     - Log in to your IBM Cloud account.
     - Click **Create**.
     - Click **Show** to view the service credentials.
-    - Copy the `apikey` value, or copy the `username` and `password` values if your service instance doesn't provide an `apikey`.
+    - Copy the `apikey` value.
     - Copy the `url` value.
 
 ## Configuring the application
@@ -41,16 +41,6 @@ You can view a [demo][demo_url] of this app.
     ```
     SPEECH_TO_TEXT_IAM_APIKEY=X4rbi8vwZmKpXfowaS3GAsA7vdy17Qh7km5D6EzKLHL2
     SPEECH_TO_TEXT_URL=https://gateway-wdc.watsonplatform.net/speech-to-text/api
-    ```
-
-    - If your service instance uses `username` and `password` credentials, add the `SPEECH_TO_TEXT_USERNAME` and `SPEECH_TO_TEXT_PASSWORD` variables to the *.env* file.
-
-    Example *.env* file that configures the `username`, `password`, and `url` for a Speech to Text service instance hosted in the Sydney region:
-
-    ```
-    SPEECH_TO_TEXT_USERNAME=522be-7b41-ab44-dec3-g1eab2ha73c6
-    SPEECH_TO_TEXT_PASSWORD=A4Z5BdGENrwu8
-    SPEECH_TO_TEXT_URL=https://gateway-syd.watsonplatform.net/speech-to-text/api
     ```
 
 ## Running locally
@@ -105,7 +95,7 @@ You can view a [demo][demo_url] of this app.
   Find more open source projects on the [IBM Github Page](http://ibm.github.io/)
 
 
-[service_url]: https://www.ibm.com/watson/services/speech-to-text/
+[service_url]: https://www.ibm.com/cloud/watson-speech-to-text
 [docs]: https://cloud.ibm.com/apidocs/speech-to-text
 [sign_up]: https://cloud.ibm.com/registration/?target=/catalog/services/speech-to-text/
 [demo_url]: https://speech-to-text-demo.ng.bluemix.net

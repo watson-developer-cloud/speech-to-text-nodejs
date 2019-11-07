@@ -15,9 +15,9 @@
  */
 require('dotenv').config({ silent: true });
 
-if (!process.env.SPEECH_TO_TEXT_IAM_APIKEY && !process.env.SPEECH_TO_TEXT_USERNAME) {
+if (!process.env.SPEECH_TO_TEXT_IAM_APIKEY) {
   console.log(
-    'Skipping integration tests because SPEECH_TO_TEXT_IAM_APIKEY and SPEECH_TO_TEXT_USERNAME are null',
+    'Skipping integration tests because SPEECH_TO_TEXT_IAM_APIKEY is null',
   );
   process.exit(0);
 }

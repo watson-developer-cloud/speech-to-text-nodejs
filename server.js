@@ -1,5 +1,5 @@
 // load environment properties from a .env file for local development
-require('dotenv').load({ silent: true });
+require('dotenv').config({ silent: true });
 
 const app = require('./app.js');
 

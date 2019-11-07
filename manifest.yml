@@ -1,12 +1,6 @@
 ---
-declared-services:
-  my-stt-service:
-    label: speech_to_text
-    plan: standard
 applications:
 - name: speech-to-text-demo
   path: .
   command: npm start
   memory: 512M
-  services:
-  - my-stt-service
