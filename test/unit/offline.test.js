@@ -1,10 +1,9 @@
 const path = require('path');
 // load default variables for testing
 require('dotenv').config({ path: path.join(__dirname, '../../.env.example') });
+const request = require('supertest');
 
 const app = require('../../app'); // eslint-disable-line
-const request = require('supertest');
-const nock = require('nock');
 
 describe('offline tests', () => {
   describe('server', function server() { // eslint-disable-line
