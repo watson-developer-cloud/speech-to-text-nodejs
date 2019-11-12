@@ -115,6 +115,176 @@
       "speaker_labels": false
     }
   ],
+  "es-AR_BroadbandModel": [
+    {
+      "filename": "es-ES_Broadband_sample1.wav",
+      "keywords": "Roberto, Pedro",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Broadband_sample2.wav",
+      "keywords": "México, Grecia",
+      "speaker_labels": true
+    }
+  ],
+  "es-AR_NarrowbandModel": [
+    {
+      "filename": "es-ES_Narrowband_sample1.wav",
+      "keywords": "México, Grecia, diciembre",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Narrowband_sample2.wav",
+      "keywords": "Roberto, Madrid, fin de semana",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Es_ES_spk24_8khz.wav",
+      "keywords": "quiero preguntarle, existen productos",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_8khz.wav",
+      "keywords": "preparando, regalos para la familia, sobrinos",
+      "speaker_labels": false
+    }
+  ],
+  "es-CL_BroadbandModel": [
+    {
+      "filename": "es-ES_Broadband_sample1.wav",
+      "keywords": "Roberto, Pedro",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Broadband_sample2.wav",
+      "keywords": "México, Grecia",
+      "speaker_labels": true
+    }
+  ],
+  "es-CL_NarrowbandModel": [
+    {
+      "filename": "es-ES_Narrowband_sample1.wav",
+      "keywords": "México, Grecia, diciembre",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Narrowband_sample2.wav",
+      "keywords": "Roberto, Madrid, fin de semana",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Es_ES_spk24_8khz.wav",
+      "keywords": "quiero preguntarle, existen productos",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_8khz.wav",
+      "keywords": "preparando, regalos para la familia, sobrinos",
+      "speaker_labels": false
+    }
+  ],
+  "es-CO_BroadbandModel": [
+    {
+      "filename": "es-ES_Broadband_sample1.wav",
+      "keywords": "Roberto, Pedro",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Broadband_sample2.wav",
+      "keywords": "México, Grecia",
+      "speaker_labels": true
+    }
+  ],
+  "es-CO_NarrowbandModel": [
+    {
+      "filename": "es-ES_Narrowband_sample1.wav",
+      "keywords": "México, Grecia, diciembre",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Narrowband_sample2.wav",
+      "keywords": "Roberto, Madrid, fin de semana",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Es_ES_spk24_8khz.wav",
+      "keywords": "quiero preguntarle, existen productos",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_8khz.wav",
+      "keywords": "preparando, regalos para la familia, sobrinos",
+      "speaker_labels": false
+    }
+  ],
+  "es-MX_BroadbandModel": [
+    {
+      "filename": "es-ES_Broadband_sample1.wav",
+      "keywords": "Roberto, Pedro",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Broadband_sample2.wav",
+      "keywords": "México, Grecia",
+      "speaker_labels": true
+    }
+  ],
+  "es-MX_NarrowbandModel": [
+    {
+      "filename": "es-ES_Narrowband_sample1.wav",
+      "keywords": "México, Grecia, diciembre",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Narrowband_sample2.wav",
+      "keywords": "Roberto, Madrid, fin de semana",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Es_ES_spk24_8khz.wav",
+      "keywords": "quiero preguntarle, existen productos",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_8khz.wav",
+      "keywords": "preparando, regalos para la familia, sobrinos",
+      "speaker_labels": false
+    }
+  ],
+  "es-PE_BroadbandModel": [
+    {
+      "filename": "es-ES_Broadband_sample1.wav",
+      "keywords": "Roberto, Pedro",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Broadband_sample2.wav",
+      "keywords": "México, Grecia",
+      "speaker_labels": true
+    }
+  ],
+  "es-PE_NarrowbandModel": [
+    {
+      "filename": "es-ES_Narrowband_sample1.wav",
+      "keywords": "México, Grecia, diciembre",
+      "speaker_labels": true
+    },
+    {
+      "filename": "es-ES_Narrowband_sample2.wav",
+      "keywords": "Roberto, Madrid, fin de semana",
+      "speaker_labels": true
+    },
+    {
+      "filename": "Es_ES_spk24_8khz.wav",
+      "keywords": "quiero preguntarle, existen productos",
+      "speaker_labels": false
+    },
+    {
+      "filename": "Es_ES_spk19_8khz.wav",
+      "keywords": "preparando, regalos para la familia, sobrinos",
+      "speaker_labels": false
+    }
+  ],
   "ja-JP_BroadbandModel": [
     {
       "filename": "ja-JP_Broadband_sample1.wav",
