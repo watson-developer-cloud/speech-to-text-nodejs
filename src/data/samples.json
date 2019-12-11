@@ -454,12 +454,22 @@
       "filename": "dutch-duo2-mono.wav",
       "keywords": "bedankt, informatie, gelegenheid",
       "speaker_labels": false
+    },
+    {
+      "filename": "new_single2-mono.wav",
+      "keywords": "optimaliseren, klantervaring, de organisaties",
+      "speaker_labels": false
     }
   ],
   "nl-NL_NarrowbandModel": [
     {
       "filename": "dutch-duo2-mono-NB.wav",
       "keywords": "bedankt, informatie, gelegenheid",
+      "speaker_labels": true
+    },
+    {
+      "filename": "new_single2-mono-NB.wav",
+      "keywords": "optimaliseren, klantervaring, de organisaties",
       "speaker_labels": true
     }
   ]

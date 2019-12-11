@@ -221,5 +221,27 @@
       "speaker_labels": true
     }, 
     "description": "US English Short Form narrowband model."
+  },
+  {
+    "name": "nl-NL_BroadbandModel",
+    "language": "nl-NL",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/nl-NL_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Dutch broadband model."
+  },
+  {
+    "name": "nl-NL_NarrowbandModel",
+    "language": "nl-NL",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/nl-NL_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": true
+    },
+    "description": "Dutch narrowband model."
   }
 ]
