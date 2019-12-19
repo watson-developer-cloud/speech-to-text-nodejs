@@ -2,7 +2,6 @@
   {
     "//note 1": "This file is just a temporary cache. Any changes you make here will be lost as soon as model-dropdown.jsx loads an update list from Watson.",
     "//note 2": "model-dropdown.jsx only loads the *public* models. Any customizations you create will not be included in that list.",
-    
     "name": "fr-FR_BroadbandModel",
     "language": "fr-FR",
     "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel",
@@ -219,8 +218,30 @@
     "supported_features": {
       "custom_language_model": true, 
       "speaker_labels": true
-    }, 
+    },
     "description": "US English Short Form narrowband model."
+  },
+  {
+    "name": "it-IT_BroadbandModel",
+    "language": "it-IT",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/it-IT_BroadbandModel",
+    "rate": 16000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Italian broadband model."
+  },
+  {
+    "name": "it-IT_NarrowbandModel",
+    "language": "it-IT",
+    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/it-IT_NarrowbandModel",
+    "rate": 8000,
+    "supported_features": {
+      "custom_language_model": false,
+      "speaker_labels": false
+    },
+    "description": "Italian narrowband model."
   },
   {
     "name": "nl-NL_BroadbandModel",

@@ -472,5 +472,29 @@
       "keywords": "optimaliseren, klantervaring, de organisaties",
       "speaker_labels": true
     }
+  ],
+  "it-IT_BroadbandModel": [
+    {
+      "filename": "it-IT_BroadbandModel_sample1.wav",
+      "keywords": "assistente, intelligenza, tecnologia",
+      "speaker_labels": false
+    },
+    {
+      "filename": "it-IT_BroadbandModel_sample2.wav",
+      "keywords": "fatura, bolette, pagamento",
+      "speaker_labels": false
+    }
+  ],
+  "it-IT_NarrowbandModel": [
+    {
+      "filename": "it-IT_NarrowbandModel_sample1.wav",
+      "keywords": "assistente, intelligenza, tecnologia",
+      "speaker_labels": false
+    },
+    {
+      "filename": "it-IT_NarrowbandModel_sample2.wav",
+      "keywords": "fatura, bolette, pagamento",
+      "speaker_labels": false
+    }
   ]
 }
