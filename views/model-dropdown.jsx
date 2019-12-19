@@ -6,6 +6,7 @@ import SpeechToText from 'watson-speech/speech-to-text';
 // load time. Once we have a token, this component will automatically fetch the current list
 // of models and update the UI if necessary.
 import cachedModels from '../src/data/models.json';
+import betaModels from '../src/data/beta-models.json';
 
 
 export class ModelDropdown extends Component {
@@ -49,7 +50,9 @@ export class ModelDropdown extends Component {
       .map(m => (
         <option value={m.name} key={m.name}>{m.description.replace(/\.$/, '')}
           {' '}
-        ({m.rate / 1000}KHz)
+          {betaModels.some(b => b === m.name) ? '(Beta)' : ''}
+          {' '}
+          ({m.rate / 1000}KHz)
         </option>));
 
     return (
