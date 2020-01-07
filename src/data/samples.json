@@ -451,8 +451,8 @@
   ],
   "nl-NL_BroadbandModel": [
     {
-      "filename": "dutch-duo2-mono.wav",
-      "keywords": "bedankt, informatie, gelegenheid",
+      "filename": "dutch_duo_sample_2-mono-BB.wav",
+      "keywords": "bestelling, voertuig, auto, aanvraag",
       "speaker_labels": false
     },
     {
@@ -463,14 +463,14 @@
   ],
   "nl-NL_NarrowbandModel": [
     {
-      "filename": "dutch-duo2-mono-NB.wav",
-      "keywords": "bedankt, informatie, gelegenheid",
+      "filename": "dutch_duo_sample_2-mono-NB.wav",
+      "keywords": "bestelling, voertuig, auto, aanvraag",
       "speaker_labels": true
     },
     {
       "filename": "new_single2-mono-NB.wav",
       "keywords": "optimaliseren, klantervaring, de organisaties",
-      "speaker_labels": true
+      "speaker_labels": false
     }
   ],
   "it-IT_BroadbandModel": [
