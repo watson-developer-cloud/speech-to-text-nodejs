@@ -481,7 +481,7 @@
     },
     {
       "filename": "it-IT_BroadbandModel_sample2.wav",
-      "keywords": "fatura, bolette, pagamento",
+      "keywords": "fattura, bollette, pagamento",
       "speaker_labels": false
     }
   ],
@@ -493,7 +493,7 @@
     },
     {
       "filename": "it-IT_NarrowbandModel_sample2.wav",
-      "keywords": "fatura, bolette, pagamento",
+      "keywords": "fattura, bollette, pagamento",
       "speaker_labels": false
     }
   ]
