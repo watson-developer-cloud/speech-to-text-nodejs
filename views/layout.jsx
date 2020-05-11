@@ -31,7 +31,7 @@ export default function Layout({ children }) {
         <Jumbotron
           serviceName="Speech to Text"
           repository="https://github.com/watson-developer-cloud/speech-to-text-nodejs"
-          documentation="https://cloud.ibm.com/docs/services/speech-to-text?topic=speech-to-text-gettingStarted#gettingStarted"
+          documentation="https://cloud.ibm.com/docs/speech-to-text?topic=speech-to-text-gettingStarted#gettingStarted"
           apiReference="https://cloud.ibm.com/apidocs/speech-to-text"
           version="GA"
           serviceIcon="/images/stt.svg"
