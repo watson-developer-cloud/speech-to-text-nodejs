@@ -479,9 +479,9 @@ export class Demo extends Component {
         }}
         >
           The returned result includes the recognized text, {' '}
-          <a className="base--a" href="https://cloud.ibm.com/docs/services/speech-to-text?topic=speech-to-text-output#word_alternatives">word alternatives</a>, {' '}
-          and <a className="base--a" href="https://cloud.ibm.com/docs/services/speech-to-text?topic=speech-to-text-output#keyword_spotting">spotted keywords</a>. {' '}
-          Some models can <a className="base--a" href="https://cloud.ibm.com/docs/services/speech-to-text?topic=speech-to-text-output#speaker_labels">detect multiple speakers</a>; this may slow down performance.
+          <a className="base--a" href="https://cloud.ibm.com/docs/speech-to-text?topic=speech-to-text-output#word_alternatives">word alternatives</a>, {' '}
+          and <a className="base--a" href="https://cloud.ibm.com/docs/speech-to-text?topic=speech-to-text-output#keyword_spotting">spotted keywords</a>. {' '}
+          Some models can <a className="base--a" href="https://cloud.ibm.com/docs/speech-to-text?topic=speech-to-text-output#speaker_labels">detect multiple speakers</a>; this may slow down performance.
         </div>
         <div className="flex setup">
           <div className="column">
