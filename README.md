@@ -17,7 +17,7 @@ You can view a [demo][demo_url] of this app.
 ## Prerequisites
 
 1. Sign up for an [IBM Cloud account](https://cloud.ibm.com/registration/).
-1. Download the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli/index.html#overview).
+1. Download the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cloud-cli-getting-started#overview).
 1. Create an instance of the Speech to Text service and get your credentials:
     - Go to the [Speech to Text](https://cloud.ibm.com/catalog/services/speech-to-text) page in the IBM Cloud Catalog.
     - Log in to your IBM Cloud account.
@@ -61,7 +61,7 @@ You can view a [demo][demo_url] of this app.
 
 ## Deploying to IBM Cloud as a Cloud Foundry Application
 
-1. Login to IBM Cloud with the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli/index.html#overview)
+1. Login to IBM Cloud with the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cloud-cli-getting-started#overview)
 
     ```
     ibmcloud login
