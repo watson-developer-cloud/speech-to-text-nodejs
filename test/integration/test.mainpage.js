@@ -13,7 +13,7 @@
 //
 // @see http://casperjs.readthedocs.org/en/latest
 
-casper.test.begin('Speech to Text', 23, function suite(test) {
+casper.test.begin('Speech to Text', 24, function suite(test) {
   const baseHost = 'http://localhost:3000';
 
   function testForButtons() {
@@ -94,6 +94,12 @@ casper.test.begin('Speech to Text', 23, function suite(test) {
     });
   }
 
+  function testNoBetaVoiceModel() {
+    casper.test.comment('Testing no beta tag is appended anymore to Voice Models');
+
+    test.assertSelectorDoesntHaveText('select.base--select option', '(beta)', 'Beta tag is not appended to any Voice Model');
+  }
+
   casper.start(baseHost, function (result) {
     casper.test.comment('Starting Testing');
 
@@ -106,6 +112,7 @@ casper.test.begin('Speech to Text', 23, function suite(test) {
     testForButtons();
     testForTabpanels();
     testPlaySample();
+    testNoBetaVoiceModel();
   });
 
   casper.run(function () {
