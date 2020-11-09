@@ -4,7 +4,7 @@
     "//note 2": "model-dropdown.jsx only loads the *public* models. Any customizations you create will not be included in that list.",
     "name": "fr-FR_BroadbandModel",
     "language": "fr-FR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/fr-FR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -15,7 +15,7 @@
   {
     "name": "fr-FR_NarrowbandModel",
     "language": "fr-FR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/fr-FR_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/fr-FR_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
@@ -26,7 +26,7 @@
   {
     "name": "en-US_NarrowbandModel",
     "language": "en-US",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/en-US_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
@@ -37,7 +37,7 @@
   {
     "name": "pt-BR_BroadbandModel",
     "language": "pt-BR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/pt-BR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -48,7 +48,7 @@
   {
     "name": "ja-JP_NarrowbandModel",
     "language": "ja-JP",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/ja-JP_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
@@ -59,7 +59,7 @@
   {
     "name": "zh-CN_BroadbandModel",
     "language": "zh-CN",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/zh-CN_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -70,7 +70,7 @@
   {
     "name": "ja-JP_BroadbandModel",
     "language": "ja-JP",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ja-JP_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/ja-JP_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": true,
@@ -81,7 +81,7 @@
   {
     "name": "ko-KR_BroadbandModel",
     "language": "ko-KR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ko-KR_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/ko-KR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": true,
@@ -92,7 +92,7 @@
   {
     "name": "ko-KR_NarrowbandModel",
     "language": "ko-KR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ko-KR_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/ko-KR_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
@@ -103,7 +103,7 @@
   {
     "name": "pt-BR_NarrowbandModel",
     "language": "pt-BR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/pt-BR_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/pt-BR_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
@@ -114,7 +114,7 @@
   {
     "name": "es-ES_BroadbandModel",
     "language": "es-ES",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/es-ES_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -125,7 +125,7 @@
   {
     "name": "ar-AR_BroadbandModel",
     "language": "ar-AR",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/ar-AR_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/ar-AR_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -136,7 +136,7 @@
   {
     "name": "zh-CN_NarrowbandModel",
     "language": "zh-CN",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/zh-CN_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/zh-CN_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
@@ -147,7 +147,7 @@
   {
     "name": "en-GB_BroadbandModel",
     "language": "en-GB",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-GB_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/en-GB_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -158,7 +158,7 @@
   {
     "name": "es-ES_NarrowbandModel",
     "language": "es-ES",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/es-ES_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/es-ES_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
@@ -169,7 +169,7 @@
   {
     "name": "en-US_BroadbandModel",
     "language": "en-US",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/en-US_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": true,
@@ -180,7 +180,7 @@
   {
     "name": "en-GB_NarrowbandModel",
     "language": "en-GB",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-GB_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/en-GB_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
@@ -191,7 +191,7 @@
   {
     "name": "de-DE_BroadbandModel",
     "language": "de-DE",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/de-DE_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/de-DE_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": true,
@@ -202,7 +202,7 @@
   {
     "name": "de-DE_NarrowbandModel",
     "language": "de-DE",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/de-DE_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/de-DE_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
@@ -213,7 +213,7 @@
   {
     "name": "en-US_ShortForm_NarrowbandModel",
     "language": "en-US",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/en-US_ShortForm_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/en-US_ShortForm_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": true,
@@ -224,7 +224,7 @@
   {
     "name": "it-IT_BroadbandModel",
     "language": "it-IT",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/it-IT_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/it-IT_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -235,7 +235,7 @@
   {
     "name": "it-IT_NarrowbandModel",
     "language": "it-IT",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/it-IT_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/it-IT_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
@@ -246,7 +246,7 @@
   {
     "name": "nl-NL_BroadbandModel",
     "language": "nl-NL",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/nl-NL_BroadbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/nl-NL_BroadbandModel",
     "rate": 16000,
     "supported_features": {
       "custom_language_model": false,
@@ -257,7 +257,7 @@
   {
     "name": "nl-NL_NarrowbandModel",
     "language": "nl-NL",
-    "url": "https://stream.watsonplatform.net/speech-to-text/api/v1/models/nl-NL_NarrowbandModel",
+    "url": "https://api.us-south.speech-to-text.watson.cloud.ibm.com/v1/models/nl-NL_NarrowbandModel",
     "rate": 8000,
     "supported_features": {
       "custom_language_model": false,
