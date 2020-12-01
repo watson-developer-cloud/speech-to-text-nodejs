@@ -154,3 +154,7 @@ dialog, dd, dt {
 	font-size: 10pt;
 	margin-top: 1em;
 }
+
+.new_demo_notification {
+    max-width: 48rem;
+}
