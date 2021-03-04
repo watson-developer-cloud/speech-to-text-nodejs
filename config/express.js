@@ -19,12 +19,10 @@ const express = require('express');
 const expressBrowserify = require('express-browserify');
 const path = require('path');
 
-
 module.exports = (app) => {
   app.enable('trust proxy');
   app.set('view engine', 'jsx');
   app.engine('jsx', require('express-react-views').createEngine());
-
 
   // Only loaded when running in Bluemix
   if (process.env.VCAP_APPLICATION) {
