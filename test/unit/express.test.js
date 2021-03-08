@@ -22,7 +22,6 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env.example') });
 
 const app = require('../../app');
 
-
 describe('express', () => {
   it('load home page when GET /', () => {
     request(app).get('/').expect(200);

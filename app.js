@@ -28,7 +28,6 @@ const tokenManager = new IamTokenManager({
   apikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY || '<iam_apikey>',
 });
 
-
 app.get('/', (req, res) => res.render('index'));
 
 // Get credentials using your credentials
