@@ -105,22 +105,22 @@ export class Demo extends Component {
     const keywords = this.getKeywordsArrUnique();
     return Object.assign({
       // formats phone numbers, currency, etc. (server-side)
-      access_token: this.state.accessToken,
+      accessToken: this.state.accessToken,
       token: this.state.token,
-      smart_formatting: true,
+      smartFormatting: true,
       format: true, // adds capitals, periods, and a few other things (client-side)
       model: this.state.model,
       objectMode: true,
-      interim_results: true,
+      interimResults: true,
       // note: in normal usage, you'd probably set this a bit higher
-      word_alternatives_threshold: 0.01,
+      wordAlternatives_threshold: 0.01,
       keywords,
-      keywords_threshold: keywords.length
+      keywordsThreshold: keywords.length
         ? 0.01
         : undefined, // note: in normal usage, you'd probably set this a bit higher
       timestamps: true, // set timestamps for each word - automatically turned on by speaker_labels
       // includes the speaker_labels in separate objects unless resultsBySpeaker is enabled
-      speaker_labels: this.state.speakerLabels,
+      speakerLabels: this.state.speakerLabels,
       // combines speaker_labels and results together into single objects,
       // making for easier transcript outputting
       resultsBySpeaker: this.state.speakerLabels,
@@ -499,7 +499,7 @@ export class Demo extends Component {
             <p>Voice Model:
               <ModelDropdown
                 model={model}
-                token={token || accessToken}
+                accessToken={token || accessToken}
                 onChange={this.handleModelChange}
               />
             </p>
