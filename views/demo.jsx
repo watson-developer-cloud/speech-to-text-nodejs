@@ -113,7 +113,7 @@ export class Demo extends Component {
       objectMode: true,
       interimResults: true,
       // note: in normal usage, you'd probably set this a bit higher
-      wordAlternatives_threshold: 0.01,
+      wordAlternativesThreshold: 0.01,
       keywords,
       keywordsThreshold: keywords.length
         ? 0.01
