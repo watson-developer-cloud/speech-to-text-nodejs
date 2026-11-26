@@ -19,6 +19,11 @@ import cachedModels from '../src/data/models.json';
 const ERR_MIC_NARROWBAND = 'Microphone transcription cannot accommodate narrowband voice models, please select a broadband one.';
 const NEW_DEMO_NOTIFICATION = 'A new Speech to Text demo is available, check it out ';
 
+function parseKeywords(value) {
+  const keywords = value.split(',').map(keyword => keyword.trim()).filter(Boolean);
+  return Array.from(new Set(keywords));
+}
+
 export class Demo extends Component {
   constructor(props) {
     super();
@@ -62,8 +67,6 @@ export class Demo extends Component {
     this.supportsSpeakerLabels = this.supportsSpeakerLabels.bind(this);
     this.handleSpeakerLabelsChange = this.handleSpeakerLabelsChange.bind(this);
     this.handleKeywordsChange = this.handleKeywordsChange.bind(this);
-    this.getKeywordsArr = this.getKeywordsArr.bind(this);
-    this.getKeywordsArrUnique = this.getKeywordsArrUnique.bind(this);
     this.getFinalResults = this.getFinalResults.bind(this);
     this.getCurrentInterimResult = this.getCurrentInterimResult.bind(this);
     this.getFinalAndLatestInterimResult = this.getFinalAndLatestInterimResult.bind(this);
@@ -86,7 +89,7 @@ export class Demo extends Component {
     this.setState({
       settingsAtStreamStart: {
         model,
-        keywords: this.getKeywordsArrUnique(),
+        keywords: parseKeywords(this.state.keywords),
         speakerLabels,
       },
     });
@@ -102,7 +105,7 @@ export class Demo extends Component {
   }
 
   getRecognizeOptions(extra) {
-    const keywords = this.getKeywordsArrUnique();
+    const keywords = parseKeywords(this.state.keywords);
     return Object.assign({
       // formats phone numbers, currency, etc. (server-side)
       accessToken: this.state.accessToken,
@@ -311,7 +314,8 @@ export class Demo extends Component {
     // two samples at the moment
     // so this just takes the keywords from the first two samples
     const files = samples[model];
-    return (files && files.length >= 2 && `${files[0].keywords}, ${files[1].keywords}`) || '';
+    if (!files || files.length < 2) return '';
+    return parseKeywords(`${files[0].keywords},${files[1].keywords}`).join(',');
   }
 
   handleModelChange(model) {
@@ -346,19 +350,6 @@ export class Demo extends Component {
 
   handleKeywordsChange(e) {
     this.setState({ keywords: e.target.value });
-  }
-
-  // cleans up the keywords string into an array of individual, trimmed, non-empty keywords/phrases
-  getKeywordsArr() {
-    return this.state.keywords.split(',').map(k => k.trim()).filter(k => k);
-  }
-
-  // cleans up the keywords string and produces a unique list of keywords
-  getKeywordsArrUnique() {
-    return this.state.keywords
-      .split(',')
-      .map(k => k.trim())
-      .filter((value, index, self) => self.indexOf(value) === index);
   }
 
   getFinalResults() {
@@ -405,7 +396,7 @@ export class Demo extends Component {
   render() {
     const {
       token, accessToken, audioSource, error, model, speakerLabels, settingsAtStreamStart,
-      formattedMessages, rawMessages,
+      formattedMessages, rawMessages, keywords,
     } = this.state;
 
     const buttonsEnabled = !!token || !!accessToken;
@@ -522,7 +513,7 @@ export class Demo extends Component {
           <div className="column">
 
             <p>Keywords to spot: <input
-              value={this.getKeywordsArrUnique().join()}
+              value={keywords}
               onChange={this.handleKeywordsChange}
               type="text"
               id="keywords"

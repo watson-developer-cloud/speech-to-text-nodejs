@@ -17,6 +17,7 @@ const assert = require('assert');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 require('@babel/register');
+const { Demo } = require('../../views/demo.jsx');
 
 describe('react', () => {
   it('should render some html', () => {
@@ -25,5 +26,20 @@ describe('react', () => {
     const result = ReactDOMServer.renderToString(element);
     assert(result);
     assert.equal(result.substr(0, 5), '<html');
+  });
+
+  it('keeps a trailing space in the keyword field while a phrase is being typed', () => {
+    const demo = new Demo();
+    demo.state.keywords = 'how ';
+
+    const html = ReactDOMServer.renderToStaticMarkup(demo.render());
+    assert(html.includes('value="how "'));
+  });
+
+  it('uses unique non-empty phrases for recognition', () => {
+    const demo = new Demo();
+    demo.state.keywords = ' how did you, next, how did you, ';
+
+    assert.deepStrictEqual(demo.getRecognizeOptions().keywords, ['how did you', 'next']);
   });
 });
